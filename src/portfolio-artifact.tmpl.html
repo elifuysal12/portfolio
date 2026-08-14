@@ -1,0 +1,1739 @@
+<title>Elif Uysal — Product Designer</title>
+<style>
+/* ============================================================
+   FONTS — inlined as data URIs (the Artifact CSP blocks the
+   Google Fonts CDN, and a silent fallback would take the whole
+   typographic voice with it). Both faces are variable, so one
+   file per subset covers every weight the page asks for.
+   ============================================================ */
+@font-face{
+  font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-stretch:100%;font-display:block;
+  src:url(data:font/woff2;base64,{{F_BRIC_LATIN}}) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;font-stretch:100%;font-display:block;
+  src:url(data:font/woff2;base64,{{F_BRIC_LATINEXT}}) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face{
+  font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-stretch:100%;font-display:block;
+  src:url(data:font/woff2;base64,{{F_IS_LATIN}}) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-stretch:100%;font-display:block;
+  src:url(data:font/woff2;base64,{{F_IS_LATINEXT}}) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+/* ============================================================
+   PALETTE — derived from the character herself:
+   bandana red, navy tank, warm skin, cream paper.
+   ============================================================ */
+:root{
+  color-scheme:light;          /* committed single-theme page — don't let the host tint it */
+
+  /* Two colours and a ground: bandana red, ink black, cream paper. The navy
+     from her tank is kept below for reference but nothing paints with it. */
+  --paper:#F3EFE7;
+  --paper-2:#F8F6F1;
+  --tile:#F7F5F0;
+  --ink:#17140F;
+  --ink-2:#4A443A;
+  --muted:#9A9285;
+  --line:rgba(23,20,15,.11);
+  --line-soft:rgba(23,20,15,.06);
+  --accent:#D6342A;      /* bandana */
+  --navy:#1F2E52;        /* tank top — reference only, unused */
+  --skin:#F2C9A0;
+
+  /* the hover payoff: the accent pouring across a word and dissolving back
+     into the ink. Interpolated in oklab so the middle stays a deep oxblood
+     rather than the flat brown sRGB gives you between red and near-black. */
+  --grad:linear-gradient(102deg, #D6342A, #7A211A 58%, #17140F);
+  --grad:linear-gradient(102deg in oklab, #D6342A, #17140F);
+
+  /* Two families, not three. Bricolage carries the poster type; Fraunces
+     carries everything else — labels included. The tracked-uppercase-mono
+     label is the single loudest tell of a generated portfolio, so it is
+     gone: labels are sentence case, at their natural width. */
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --label:'Instrument Sans',system-ui,sans-serif;
+  --ui:'Instrument Sans',system-ui,sans-serif;
+  --mono:var(--label);           /* legacy alias — nothing new should use it */
+
+  --dock-h:150px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--ui); -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:#fff}
+
+/* keyboard users get to see where they are */
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+
+/* one place the gradient is defined for type, so every hover reads as the
+   same gesture rather than four separate effects */
+.grad-text{
+  background-image:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+}
+
+/* static grain — painted once, costs nothing per frame */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.30; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.42'/></svg>");
+}
+/* warm glow behind the character — static gradient, no blur filter */
+.glow{
+  position:fixed; left:50%; top:52%; width:min(120vh,1100px); aspect-ratio:1;
+  transform:translate(-50%,-50%); z-index:0; pointer-events:none;
+  background:radial-gradient(circle at 50% 45%, rgba(214,52,42,.10), rgba(214,52,42,.04) 38%, rgba(243,239,231,0) 66%);
+  transition:opacity .8s ease;
+}
+
+/* ---------------- NAV ---------------- */
+nav{
+  position:fixed; top:18px; left:50%; transform:translateX(-50%);
+  z-index:50; display:flex; align-items:center; gap:6px;
+  padding:7px 8px 7px 18px; border-radius:16px;
+  background:rgba(248,246,241,.72); backdrop-filter:blur(14px) saturate(1.3);
+  border:1px solid var(--line); box-shadow:0 6px 24px rgba(23,20,15,.06);
+}
+nav .mark{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.02em;margin-right:14px}
+nav .mark i{color:var(--accent);font-style:normal}
+nav a{
+  font-family:var(--mono); font-size:11px; letter-spacing:.01em;
+  color:var(--ink-2); text-decoration:none; padding:8px 12px; border-radius:10px;
+  transition:background .25s ease,color .25s ease;
+}
+nav a:hover{background:rgba(23,20,15,.06); color:var(--ink)}
+.lang{display:flex;gap:2px;margin-left:8px;padding:3px;border-radius:11px;background:rgba(23,20,15,.05)}
+.lang button{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.01em;border:0;cursor:pointer;
+  padding:5px 9px;border-radius:8px;background:transparent;color:var(--muted);transition:.3s cubic-bezier(.34,1.4,.5,1);
+}
+.lang button.on{background:var(--ink);color:var(--paper)}
+
+/* ---------------- CHARACTER STAGE (fixed, scroll-driven) ---------------- */
+#stage{position:fixed;inset:0;z-index:40;pointer-events:none}
+#char{
+  position:absolute; left:0; top:0; width:720px; height:713px;
+  transform-origin:50% 100%; will-change:transform;
+}
+#char img{
+  width:100%; height:100%; display:block; object-fit:contain;
+  will-change:transform; user-select:none;
+  filter:drop-shadow(0 18px 30px rgba(23,20,15,.18));
+}
+
+/* dialogue — sits beside her, never labelled as an "assistant" */
+#say{
+  position:absolute; left:0; top:0; width:min(360px,74vw);
+  will-change:transform,opacity; opacity:0;
+  transition:opacity .5s ease;
+}
+#say.show{opacity:1}
+.say-card{
+  position:relative; display:flex; gap:12px; align-items:flex-start;
+  width:fit-content; max-width:100%;
+  padding:14px 16px 14px 14px; border-radius:16px;
+  background:rgba(248,246,241,.86); backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid var(--line); box-shadow:0 10px 34px rgba(23,20,15,.08);
+}
+.say-card:before{ /* tail pointing back at her */
+  content:''; position:absolute; left:-5px; top:26px; width:11px; height:11px;
+  background:rgba(248,246,241,.9); border-left:1px solid var(--line); border-bottom:1px solid var(--line);
+  transform:rotate(45deg); border-radius:0 0 0 3px;
+}
+/* docked bottom-right: she is on the right, so the tail points that way */
+#say.flip .say-card{margin-left:auto}
+#say.flip .say-card:before{
+  left:auto; right:-5px;
+  border-left:0; border-bottom:0;
+  border-right:1px solid var(--line); border-top:1px solid var(--line);
+  border-radius:0 3px 0 0;
+}
+#say.flip .chips{justify-content:flex-end;padding-left:0;padding-right:2px}
+.say-ico{
+  flex:0 0 auto; width:30px;height:30px;border-radius:9px;
+  background:rgba(214,52,42,.09); display:grid;place-items:center; overflow:hidden; position:relative;
+}
+.say-ico svg{width:17px;height:17px;stroke:var(--accent);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;position:absolute;
+  transition:transform .5s cubic-bezier(.22,1.3,.36,1), opacity .32s ease;}
+.say-ico svg.out{transform:translateY(-130%);opacity:0}
+.say-ico svg.in-pre{transform:translateY(130%);opacity:0}
+.say-txt{font-family:var(--mono);font-size:12.5px;line-height:1.55;color:var(--ink);padding-top:3px;min-height:19px;max-width:32ch}
+.caret{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.chips{display:flex;gap:7px;margin-top:9px;padding-left:2px;flex-wrap:wrap}
+.chip{
+  pointer-events:auto; cursor:pointer; border:1px solid var(--line); background:rgba(248,246,241,.9);
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;color:var(--ink-2);
+  padding:7px 11px;border-radius:11px; backdrop-filter:blur(8px);
+  transition:transform .4s cubic-bezier(.34,1.5,.5,1),background .25s,color .25s,border-color .25s;
+}
+.chip:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-2px)}
+
+/* ---------------- LAYOUT ---------------- */
+main{position:relative;z-index:10}
+section{position:relative}
+.pad{padding-inline:clamp(20px,5vw,72px)}
+.eyebrow{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.01em;color:var(--muted);
+  display:flex;align-items:center;gap:9px;
+}
+.eyebrow:before{content:'';width:22px;height:1px;background:var(--muted);opacity:.6}
+
+/* HERO */
+#hero{height:100svh;min-height:620px;display:flex;flex-direction:column;justify-content:center;position:relative}
+.hero-type{position:relative;z-index:1;pointer-events:none;text-align:center;line-height:.78}
+.hero-type span{
+  display:block; font-family:var(--display); font-weight:800; letter-spacing:-.045em;
+  font-size:clamp(64px,16.5vw,250px); color:var(--ink);
+}
+.hero-type span.b{color:transparent;-webkit-text-stroke:1.4px rgba(23,20,15,.42)}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:1px;
+  animation:pulse 2.4s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+
+/* WORK STRIP — the Relate mechanic, rebuilt */
+#work{padding-top:6vh;padding-bottom:8vh}
+.strip-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:26px}
+.strip-head h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,58px);letter-spacing:-.035em;line-height:.95}
+.strip-head p{font-family:var(--mono);font-size:11px;color:var(--muted);max-width:280px;line-height:1.6;text-align:right}
+
+/* discipline badge: icon only at rest, unfurls its label on hover */
+
+/* thin counter-drifting capability band */
+
+/* ABOUT */
+#about{padding-block:clamp(90px,15vh,190px)}
+.statement{
+  font-family:var(--display);font-weight:400;font-size:clamp(26px,4.6vw,62px);
+  line-height:1.08;letter-spacing:-.032em;max-width:17ch;margin-top:26px;
+}
+.statement w{display:inline-block;opacity:0;transform:translateY(16px) rotate(2deg);
+  transition:opacity .5s ease,transform .7s cubic-bezier(.2,1.1,.3,1)}
+.statement.in w{opacity:1;transform:none}
+.statement em{font-style:normal;color:var(--accent)}
+.stats{display:flex;flex-wrap:wrap;gap:clamp(28px,6vw,80px);margin-top:clamp(44px,7vh,80px);padding-top:26px;border-top:1px solid var(--line)}
+.stat b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(30px,4.4vw,54px);letter-spacing:-.04em;line-height:1}
+.stat s{display:block;text-decoration:none;font-family:var(--mono);font-size:12.5px;letter-spacing:.01em;color:var(--muted);margin-top:8px}
+
+/* EXPERIENCE — the CV, told as a list rather than a wall */
+#experience{padding-block:clamp(70px,11vh,140px);border-top:1px solid var(--line)}
+.exp-h{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,58px);
+  letter-spacing:-.035em;line-height:.95;margin-top:22px}
+.exp{list-style:none;margin-top:clamp(34px,5vh,56px)}
+.exp-row{
+  display:grid;grid-template-columns:minmax(150px,.9fr) minmax(0,2.1fr);
+  gap:clamp(14px,3vw,54px);padding:clamp(22px,3vh,34px) 0;
+  border-top:1px solid var(--line-soft);
+}
+.exp-row:first-child{border-top:0}
+.exp-when{font-family:var(--mono);font-size:13px;letter-spacing:.01em;color:var(--muted);
+  padding-top:6px}
+.exp-when b{display:block;color:var(--ink);font-size:12px;letter-spacing:.01em;margin-bottom:5px}
+.exp-role{font-family:var(--display);font-weight:800;font-size:clamp(19px,2.1vw,27px);
+  letter-spacing:-.025em;line-height:1.15}
+.exp-role i{font-style:normal;color:var(--accent)}
+/* list-style:none is load-bearing — an <li> keeps display:list-item inside a
+   flex container, so without this the browser's own bullet renders alongside
+   the accent dot below and every line gets two markers */
+.exp-what{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.exp-what li{position:relative;padding-left:18px;font-size:14.5px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+.exp-what li:before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);opacity:.5}
+@media (max-width:820px){ .exp-row{grid-template-columns:1fr;gap:10px} .exp-when{padding-top:0} }
+
+/* CONTACT */
+#contact{padding-block:clamp(90px,16vh,200px);border-top:1px solid var(--line);position:relative;overflow:hidden}
+.big-cta{
+  display:block;text-decoration:none;color:var(--ink);
+  font-family:var(--display);font-weight:800;letter-spacing:-.05em;line-height:.85;
+  font-size:clamp(52px,13vw,190px);margin-top:22px;
+  background-image:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:var(--ink);
+  transition:-webkit-text-fill-color .45s ease;
+}
+.big-cta:hover{-webkit-text-fill-color:transparent}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:clamp(50px,8vh,90px);
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.01em;color:var(--muted)}
+.foot a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
+.foot a:hover{color:var(--accent);border-color:var(--accent)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .9s cubic-bezier(.2,1.05,.3,1)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:820px){
+  :root{--dock-h:104px}
+  nav .mark{margin-right:6px}
+  nav a{padding:7px 8px;font-size:10px}
+  .strip-head{flex-direction:column;gap:10px}
+  .strip-head p{text-align:left;max-width:none}
+  #say{width:calc(100vw - 32px)}
+  }
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  html{scroll-behavior:auto}
+}
+
+/* a centred measure — the about block was hugging the left edge with a
+   dead half-page beside it */
+.col{max-width:1120px;margin-inline:auto}
+#about{padding-block:clamp(56px,9vh,120px)}
+#about .statement{max-width:20ch}
+
+/* ============================================================
+   ABOUT PAGE — the CV lives here, not on the home page
+   ============================================================ */
+.about-page{padding-top:clamp(120px,16vh,180px)}
+.about-hero{padding-bottom:clamp(50px,8vh,90px)}
+.about-title{
+  font-family:var(--display);font-weight:800;letter-spacing:-.045em;line-height:.92;
+  font-size:clamp(48px,8vw,110px);margin-top:18px;
+}
+.about-role{margin-top:14px;font-size:15px;color:var(--ink-2)}
+.about-bio{
+  margin-top:clamp(24px,4vh,40px);max-width:58ch;
+  font-size:clamp(17px,1.5vw,20px);line-height:1.65;color:var(--ink-2);
+}
+.about-links{display:flex;flex-wrap:wrap;gap:22px;margin-top:clamp(24px,4vh,38px)}
+.about-links a{
+  color:var(--ink);text-decoration:none;font-size:15px;
+  border-bottom:1px solid var(--line);padding-bottom:3px;transition:color .25s,border-color .25s;
+}
+.about-links a:hover{color:var(--accent);border-color:var(--accent)}
+
+.about-block{padding-block:clamp(46px,7vh,84px);border-top:1px solid var(--line)}
+.block-h{
+  font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,42px);
+  letter-spacing:-.035em;line-height:1;margin-bottom:clamp(26px,4vh,42px);
+}
+.skills{list-style:none;display:flex;flex-wrap:wrap;gap:9px}
+.skills li{
+  border:1px solid var(--line);border-radius:999px;padding:9px 16px;
+  font-size:14px;color:var(--ink-2);background:var(--paper-2);
+}
+.about-end{text-align:center}
+.about-end .big-cta{margin-top:0}
+.about-back{margin-top:clamp(34px,5vh,60px)}
+.about-back a{color:var(--muted);text-decoration:none;font-size:15px}
+.about-back a:hover{color:var(--accent)}
+nav a[aria-current="page"]{background:rgba(23,20,15,.07);color:var(--ink)}
+
+/* ============================================================
+   Hero → About should read as two frames, not one screen and
+   then a long silence. Each becomes a full viewport that the
+   scroll clicks into.
+   ============================================================ */
+html{scroll-snap-type:y proximity}
+#hero,#about,#work,#contact{scroll-snap-align:start}
+
+#about{
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-block:clamp(40px,6vh,80px);
+  text-align:center;                 /* centred page, centred type */
+}
+#about .eyebrow{justify-content:center}
+#about .statement{
+  max-width:22ch; margin-inline:auto; margin-top:clamp(20px,3vh,34px);
+}
+#about .stats{justify-content:center}
+#about .stat{text-align:center}
+
+/* ============================================================
+   WORK INDEX — photo first
+   Relate's structure (big stills, quiet caption underneath), in
+   paper rather than black. The image is the card; the words sit
+   under it and stay out of the way.
+   ============================================================ */
+#work{padding-top:clamp(40px,7vh,90px);padding-bottom:clamp(60px,9vh,120px)}
+.index{
+  list-style:none; margin-top:clamp(26px,4vh,46px);
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(22px,3vw,48px) clamp(18px,2.4vw,36px);
+}
+.index li:first-child{grid-column:1 / -1}          /* the featured one */
+
+.entry{display:flex;flex-direction:column;gap:13px;text-decoration:none;color:inherit}
+.entry-media{
+  display:grid; place-items:center; overflow:hidden;
+  aspect-ratio:16/10; border-radius:18px;
+  background:linear-gradient(160deg,#FBFAF7,#EFEBE3);
+  border:1px solid var(--line);
+  transition:transform .55s cubic-bezier(.22,1.1,.36,1), box-shadow .55s ease;
+}
+.index li:first-child .entry-media{aspect-ratio:24/9}
+.entry:hover .entry-media{transform:translateY(-6px);box-shadow:0 26px 50px -28px rgba(23,20,15,.35)}
+.entry-media img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(.86);transition:filter .45s ease}
+.entry:hover .entry-media img{filter:saturate(1)}
+/* until an export exists, the slot holds the name — deliberate, not empty */
+.plate{
+  font-family:var(--display); color:var(--ink); opacity:.4;
+  text-align:center; padding-inline:18px; line-height:1;
+  transform:scale(1.7); transition:opacity .4s ease;
+}
+.entry:hover .plate{opacity:.66}
+
+.entry-body{display:flex;flex-direction:column;gap:7px}
+
+/* who it was for comes first — the client carries as much weight here as the
+   project name, and it is readable without hovering anything */
+.entry-brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.entry-brand .brand{font-size:14px;color:var(--ink);opacity:1;overflow:visible}
+.entry-brand .brand img{height:19px;max-width:132px}
+.entry-year{font-style:normal;font-size:12.5px;color:var(--muted)}
+.entry-note{
+  font-size:11.5px;color:var(--accent);background:rgba(214,52,42,.09);
+  padding:4px 9px;border-radius:8px;
+}
+.entry-title{font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:1.05;
+  font-size:clamp(19px,1.9vw,26px);
+  align-self:flex-start;   /* hug the word, so the gradient ramps across it and
+                              not across a mostly-empty full-width box */
+  background-image:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:var(--ink);
+  transition:-webkit-text-fill-color .4s ease}
+.entry:hover .entry-title{-webkit-text-fill-color:transparent}
+.entry-line{font-size:15px;line-height:1.55;color:var(--ink-2);max-width:52ch}
+
+.entry-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.entry-tags i{
+  font-style:normal;display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:9px;background:rgba(23,20,15,.045);
+  font-size:12px;color:var(--ink-2);
+  transition:background .32s ease,color .32s ease;
+}
+.entry-tags svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.entry:hover .entry-tags i{background:rgba(214,52,42,.08);color:var(--accent)}
+.entry-go{display:none}
+
+@media (max-width:820px){ .index{grid-template-columns:1fr} .index li:first-child .entry-media{aspect-ratio:16/10} }
+
+/* the hero title answers the cursor. The gradient sits under the type the
+   whole time and the fill colour is what animates — background-image can't
+   transition, text-fill-color can, so the wash arrives instead of snapping. */
+.hero-type{pointer-events:auto}
+.hero-type span{
+  background-image:var(--grad);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:var(--ink);
+  transition:-webkit-text-fill-color .45s ease,-webkit-text-stroke-color .45s ease;
+}
+/* the outline word is transparent by definition, so it must not carry the
+   gradient underneath — background-clip:text would just show it through */
+.hero-type span.b{background-image:none;-webkit-text-fill-color:transparent}
+.hero-type:hover span{-webkit-text-fill-color:transparent}
+/* PRODUCT takes the red-into-ink wash; DESIGNER's outline answers in flat red,
+   so the two words carry the whole palette between them */
+.hero-type:hover span.b{-webkit-text-stroke-color:var(--accent)}
+
+/* ============================================================
+   WORK STRIP — the drifting marks. These rules were lost when the
+   index was added; without them .track is not a flex row, the
+   tiles have no size, and the badge SVGs fall back to a solid
+   black fill at full width.
+   ============================================================ */
+.strip{position:relative;overflow:hidden;border-block:1px solid var(--line);background:var(--tile)}
+.strip:before,.strip:after{content:'';position:absolute;top:0;bottom:0;
+  width:clamp(40px,9vw,150px);z-index:3;pointer-events:none}
+.strip:before{left:0;background:linear-gradient(90deg,var(--paper),rgba(243,239,231,0))}
+.strip:after{right:0;background:linear-gradient(270deg,var(--paper),rgba(243,239,231,0))}
+.track{display:flex;will-change:transform}
+.tile{
+  flex:0 0 auto;width:clamp(190px,19vw,268px);aspect-ratio:1;
+  border-right:1px solid var(--line-soft);position:relative;
+  display:grid;grid-template-rows:auto 1fr auto;gap:8px;
+  padding:14px 14px 13px;text-decoration:none;
+  pointer-events:auto;cursor:pointer;background:var(--tile);
+  transition:background .28s ease;
+}
+.tile:hover{background:#fff}
+
+/* the client is the headline of a portfolio tile, so it is legible at rest —
+   the disciplines are what the hover pays out */
+.tile-top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.brand{
+  font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:-.01em;
+  color:var(--ink-2);opacity:.62;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:opacity .3s ease,color .3s ease;
+}
+.brand img{height:15px;width:auto;max-width:104px;display:block;object-fit:contain}
+.tile:hover .brand{opacity:1;color:var(--ink)}
+.tile .yr{font-size:11.5px;color:var(--muted);opacity:.5;flex:0 0 auto;transition:opacity .3s}
+.tile:hover .yr{opacity:1}
+
+.wordmark{
+  align-self:center;justify-self:center;
+  font-family:var(--display);font-weight:600;color:var(--ink);opacity:.28;
+  text-align:center;padding-inline:4px;line-height:1;
+  transition:opacity .34s ease,transform .5s cubic-bezier(.22,1.2,.36,1);
+}
+.tile:hover .wordmark{opacity:1;transform:translateY(-4px)}
+
+.tile-foot{display:grid;gap:5px;justify-items:center;min-height:34px;align-content:end}
+.discs{
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 7px;
+  font-size:11px;color:var(--ink-2);text-align:center;
+  opacity:0;transform:translateY(7px);
+  transition:opacity .34s ease,transform .5s cubic-bezier(.22,1.2,.36,1);
+}
+.discs i{font-style:normal;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.discs svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.tile:hover .discs{opacity:1;transform:none}
+.tile .cta{
+  font-size:12px;color:var(--accent);opacity:0;transform:translateY(7px);
+  transition:opacity .3s ease,transform .5s cubic-bezier(.22,1.3,.36,1);
+}
+.tile:hover .cta{opacity:1;transform:translateY(0)}
+
+/* logo slots — a real mark drops straight in and the typographic stand-in
+   steps aside. Nothing else has to change. */
+.wordmark img{max-width:78%;max-height:56px;width:auto;height:auto;object-fit:contain;margin-inline:auto;display:block}
+.plate-img{
+  max-width:46%;max-height:54%;width:auto;height:auto;object-fit:contain;
+  opacity:.82;transition:opacity .4s ease;
+}
+.entry:hover .plate-img{opacity:1}
+
+.band{overflow:hidden;border-bottom:1px solid var(--line);padding:13px 0;background:var(--paper)}
+.band .track{gap:0}
+.band i{
+  font-style:normal;font-size:13px;color:var(--muted);
+  padding-inline:26px;white-space:nowrap;display:inline-flex;align-items:center;gap:26px;
+}
+.band i:after{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.55}
+
+/* ============================================================
+   FEATURED ENTRY — same stacked card as the others, only scaled
+   to its 24/9 frame: a wider measure and a slightly larger line,
+   so a longer sentence sits under the big picture without the
+   card turning into a different layout.
+   ============================================================ */
+.index li:first-child .entry-line{max-width:70ch;font-size:16.5px;line-height:1.62}
+
+/* The red→ink wash needs room to read as one gesture. On the big
+   hero words and the CTA it does; on a 26px project title it just
+   looks like the word is dirty halfway through. So the small titles
+   answer in flat bandana red instead. */
+.entry:hover .entry-title{-webkit-text-fill-color:var(--accent)}
+
+/* ============================================================
+   CV — the About link opens the résumé over the page. Same
+   paper, same two families, same eyebrow-and-rule rhythm: it
+   reads as another page of the site rather than a PDF viewer,
+   and it prints as-is.
+   ============================================================ */
+#cv{
+  position:fixed; inset:0; z-index:45;               /* under the nav, over her */
+  overflow-y:auto; overscroll-behavior:contain;
+  background:var(--paper);
+  opacity:0; visibility:hidden;
+  transition:opacity .34s ease, visibility 0s linear .34s;
+}
+#cv.open{opacity:1;visibility:visible;transition:opacity .34s ease}
+body.sheet-open{overflow:hidden}
+
+.cv-sheet{
+  max-width:1000px;margin-inline:auto;
+  padding:clamp(104px,14vh,164px) clamp(20px,5vw,72px) clamp(72px,10vh,120px);
+}
+/* each block arrives on its own spring, top to bottom */
+.cv-sheet > *{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .55s ease,transform .8s cubic-bezier(.22,1.14,.32,1);
+}
+#cv.open .cv-sheet > *{opacity:1;transform:none}
+#cv.open .cv-sheet > *:nth-child(2){transition-delay:.07s}
+#cv.open .cv-sheet > *:nth-child(3){transition-delay:.14s}
+#cv.open .cv-sheet > *:nth-child(4){transition-delay:.21s}
+#cv.open .cv-sheet > *:nth-child(5){transition-delay:.28s}
+
+.cv-name{
+  font-family:var(--display);font-weight:800;letter-spacing:-.045em;line-height:.92;
+  font-size:clamp(46px,7.4vw,104px);
+}
+.cv-role{margin-top:14px;font-size:16px;color:var(--ink-2)}
+.cv-intro{
+  margin-top:clamp(22px,3.4vh,34px);max-width:60ch;
+  font-size:clamp(16px,1.4vw,18.5px);line-height:1.65;color:var(--ink-2);
+}
+/* no rules under these — a hairline under every link is the tell that gives
+   a generated page away. They answer in red on hover instead. */
+.cv-meta{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:clamp(22px,3.4vh,34px);font-size:14.5px}
+.cv-meta a{color:var(--ink);text-decoration:none;transition:color .25s ease}
+.cv-meta a:hover{color:var(--accent)}
+
+.cv-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(26px,4vh,40px)}
+.cv-print{
+  cursor:pointer;display:inline-flex;align-items:center;gap:9px;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  font-family:var(--ui);font-size:14px;padding:12px 20px;border-radius:13px;
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1),background .28s ease,border-color .28s ease;
+}
+.cv-print:hover{transform:translateY(-2px);background:var(--accent);border-color:var(--accent)}
+.cv-print svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+
+.cv-block{
+  padding-top:clamp(42px,6vh,72px);margin-top:clamp(42px,6vh,72px);
+  border-top:1px solid var(--line);
+}
+.cv-block .block-h{margin-bottom:clamp(24px,3.6vh,38px)}
+.cv-skills{display:grid;gap:clamp(18px,2.6vh,26px)}
+.cv-skill-row{
+  display:grid;grid-template-columns:minmax(110px,.5fr) minmax(0,2.4fr);
+  gap:clamp(12px,3vw,44px);align-items:baseline;
+}
+.cv-skill-row > b{font-family:var(--ui);font-weight:400;font-size:13px;color:var(--muted)}
+.cv-chips{display:flex;flex-wrap:wrap;gap:8px}
+.cv-chips i{
+  font-style:normal;border:1px solid var(--line);border-radius:999px;padding:8px 15px;
+  font-size:13.5px;color:var(--ink-2);background:var(--paper-2);
+}
+.cv-end{text-align:center}
+.cv-end .big-cta{margin-top:0;font-size:clamp(38px,7vw,88px)}
+.cv-back{margin-top:clamp(30px,4.6vh,52px)}
+.cv-backlink{
+  border:0;background:none;cursor:pointer;font-family:var(--ui);font-size:15px;color:var(--muted);
+  transition:color .25s ease;
+}
+.cv-backlink:hover{color:var(--accent)}
+
+/* the way out: a pill clear of the nav on desktop, thumb-height on phones */
+.cv-close{
+  position:fixed;top:18px;right:clamp(14px,3vw,26px);z-index:52;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:9px 14px 9px 12px;border-radius:14px;border:1px solid var(--line);
+  background:rgba(248,246,241,.78);backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:0 6px 24px rgba(23,20,15,.06);
+  font-family:var(--ui);font-size:12.5px;color:var(--ink-2);
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .3s ease,transform .5s cubic-bezier(.34,1.4,.5,1),
+             background .25s ease,color .25s ease,border-color .25s ease,visibility 0s linear .3s;
+}
+body.sheet-open .cv-close{opacity:1;visibility:visible;transform:none;transition-delay:.12s,.12s,0s,0s,0s,0s}
+.cv-close:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cv-close svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+/* she comes with you into the CV: the stage rises above the sheet and the
+   rig pins her to the docked pose, so it is the same character in the same
+   corner rather than a second illustration */
+body.sheet-open #stage{z-index:46}
+
+@media (max-width:820px){
+  /* on phones she docks bottom-right, so the way out moves to the other side */
+  .cv-close{top:auto;bottom:calc(16px + env(safe-area-inset-bottom));left:16px;right:auto;padding:11px 16px 11px 14px}
+  .cv-skill-row{grid-template-columns:1fr;gap:9px}
+}
+
+/* ============================================================
+   CASE STUDY — a project card opens its own page over the site,
+   same mechanics as the CV sheet. Six sections, and the weight
+   sits on the decisions: what was chosen, what was left, and
+   what the discarded option would have cost.
+   ============================================================ */
+#case{
+  position:fixed; inset:0; z-index:45;
+  overflow-y:auto; overscroll-behavior:contain;
+  background:var(--paper);
+  opacity:0; visibility:hidden;
+  transition:opacity .34s ease, visibility 0s linear .34s;
+}
+#case.open{opacity:1;visibility:visible;transition:opacity .34s ease}
+.case-sheet{
+  max-width:1120px;margin-inline:auto;
+  padding:clamp(104px,14vh,164px) clamp(20px,5vw,72px) clamp(80px,11vh,140px);
+}
+.case-sheet > *{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .55s ease,transform .8s cubic-bezier(.22,1.14,.32,1);
+}
+#case.open .case-sheet > *{opacity:1;transform:none}
+#case.open .case-sheet > *:nth-child(2){transition-delay:.07s}
+#case.open .case-sheet > *:nth-child(3){transition-delay:.14s}
+#case.open .case-sheet > *:nth-child(4){transition-delay:.21s}
+#case.open .case-sheet > *:nth-child(5){transition-delay:.28s}
+#case.open .case-sheet > *:nth-child(6){transition-delay:.35s}
+
+.case-brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14.5px;color:var(--ink)}
+.case-brand em{font-style:normal;color:var(--muted);font-size:13px}
+.case-title{
+  font-family:var(--display);font-weight:800;letter-spacing:-.045em;line-height:.9;
+  font-size:clamp(52px,9vw,132px);margin-top:12px;
+}
+/* the one-sentence summary is the headline of the whole page, so it is set
+   in the display face rather than as another paragraph */
+.case-lede{
+  margin-top:clamp(22px,3.4vh,38px);max-width:24ch;
+  font-family:var(--display);font-weight:400;letter-spacing:-.03em;
+  font-size:clamp(23px,3.2vw,42px);line-height:1.14;
+}
+.case-lede em{font-style:normal;color:var(--accent)}
+.case-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(24px,3.6vh,38px)}
+.case-facts i{
+  font-style:normal;display:inline-flex;align-items:center;gap:7px;
+  padding:7px 13px;border-radius:10px;background:rgba(23,20,15,.045);
+  font-size:12.5px;color:var(--ink-2);
+}
+.case-facts svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+
+.case-block{
+  padding-top:clamp(52px,8vh,96px);margin-top:clamp(52px,8vh,96px);
+  border-top:1px solid var(--line);
+}
+.case-block .block-h{margin-bottom:clamp(22px,3.2vh,34px)}
+.case-body{max-width:66ch;font-size:clamp(16px,1.4vw,18px);line-height:1.68;color:var(--ink-2)}
+.case-body + .case-body{margin-top:1.1em}
+
+/* the differentiator: each fork as a card, chosen beside abandoned */
+.moves{display:grid;gap:clamp(14px,2.2vh,22px)}
+.move{background:var(--paper-2);border-radius:22px;padding:clamp(22px,3vw,36px)}
+.move-n{font-size:12.5px;color:var(--muted)}
+.move-h{
+  font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:1.1;
+  font-size:clamp(21px,2.4vw,32px);margin-top:9px;max-width:30ch;
+}
+.move-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.8vw,44px);margin-top:clamp(20px,2.6vh,30px)}
+.move-col b{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-bottom:9px}
+.move-col p{font-size:15px;line-height:1.62;color:var(--ink-2)}
+.move-col.picked b{color:var(--accent)}
+.move-col.picked p{color:var(--ink)}
+
+/* screen slots — a plate until the export lands, never an empty hole */
+.shots{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));
+  gap:clamp(20px,2.8vw,36px);
+}
+.shot-frame{
+  aspect-ratio:16/10;border-radius:18px;overflow:hidden;display:grid;place-items:center;
+  background:linear-gradient(160deg,#FBFAF7,#EFEBE3);border:1px solid var(--line);
+}
+.shot.tall .shot-frame{aspect-ratio:9/16}
+.shot-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.shot-slot{font-family:var(--display);font-size:13px;color:var(--muted);opacity:.65;padding:0 16px;text-align:center}
+.shot-cap{margin-top:12px;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+.shot-cap b{
+  display:block;font-family:var(--display);font-weight:800;font-size:15.5px;
+  letter-spacing:-.02em;color:var(--ink);margin-bottom:5px;
+}
+.shots.wide{grid-template-columns:1fr}          /* one screen, full measure */
+.shots.wide .shot-cap{max-width:62ch}
+.case-block .shots{margin-top:clamp(24px,3.4vh,36px)}
+.case-block .shots + .case-body{margin-top:clamp(36px,5vh,58px)}
+
+/* the timing ladder — her own numbers, drawn to scale: the bar is how long
+   the assistant holds its tongue before it earns the right to speak */
+.ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.6vw,36px);margin-top:clamp(22px,3vh,32px)}
+.rung b{display:block;font-family:var(--display);font-weight:800;letter-spacing:-.04em;
+  font-size:clamp(26px,3.2vw,42px);line-height:1}
+.rung i{font-style:normal;display:block;margin-top:7px;font-size:12.5px;color:var(--muted)}
+.rung .bar{position:relative;height:3px;border-radius:2px;background:rgba(23,20,15,.10);margin:14px 0 13px;overflow:hidden}
+.rung .bar span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
+.rung p{font-size:14px;line-height:1.55;color:var(--ink-2)}
+@media (max-width:820px){ .ladder{grid-template-columns:1fr;gap:20px} }
+
+.case-end{margin-top:clamp(56px,9vh,110px);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.case-next{
+  cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  font-family:var(--ui);font-size:14px;padding:13px 22px;border-radius:13px;
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1),background .28s ease,border-color .28s ease;
+}
+.case-next:hover{transform:translateY(-2px);background:var(--accent);border-color:var(--accent)}
+.case-back{
+  cursor:pointer;border:0;background:none;font-family:var(--ui);font-size:15px;color:var(--muted);
+  padding:13px 6px;transition:color .25s ease;
+}
+.case-back:hover{color:var(--accent)}
+
+/* anything Elif still has to write shows as a prompt, so a draft can never
+   be mistaken for finished copy */
+.todo{color:var(--muted)}
+html[lang="tr"] .todo:before{content:'taslak'}
+.todo:before{
+  content:'draft';display:inline-block;margin-right:10px;padding:3px 9px;border-radius:8px;
+  background:rgba(214,52,42,.09);color:var(--accent);font-size:11.5px;vertical-align:2px;
+}
+@media (max-width:820px){ .move-cols{grid-template-columns:1fr;gap:20px} }
+
+/* Save as PDF — the sheet is the document, so printing drops
+   everything that belongs to the screen and keeps the paper. */
+@media print{
+  .grain,.glow,#stage,nav,main,#case,.cv-close,.cv-actions{display:none !important}
+  body{background:#fff;overflow:visible}
+  #cv{position:static;opacity:1 !important;visibility:visible !important;overflow:visible;background:#fff}
+  .cv-sheet{max-width:none;padding:0}
+  .cv-sheet > *{opacity:1 !important;transform:none !important}
+  .cv-block{border-color:rgba(0,0,0,.15)}
+  .exp-row,.cv-skill-row{break-inside:avoid}
+  .cv-end{display:none}
+}
+</style>
+
+<div class="grain"></div>
+<div class="glow" id="glow"></div>
+
+<nav>
+  <span class="mark">elif<i>.</i></span>
+  <a href="#work" data-i18n="nav_work">Work</a>
+  <a href="#cv" id="navAbout" data-i18n="nav_about">About</a>
+  <a href="#contact" data-i18n="nav_contact">Contact</a>
+  <span class="lang"><button data-lang="en" class="on">EN</button><button data-lang="tr">TR</button></span>
+</nav>
+
+<!-- ============================================================
+     CHARACTER STAGE
+     SWAP POINT: when the 3D render is ready, replace everything
+     inside <div id="char"> with  <img src="elif-3d.png">  (or a
+     <canvas> for a GLB). The rig below — dock-on-scroll, cursor
+     parallax, blink, breathe, talk — keeps working; only the
+     eye/mouth tracking needs the SVG.
+     ============================================================ -->
+<div id="stage">
+  <div id="char">
+    <img id="charImg" src="data:image/webp;base64,{{IMG_BUST}}" alt="Elif Uysal" draggable="false">
+  </div>
+
+  <div id="say">
+    <div class="say-card">
+      <div class="say-ico" id="sayIco"></div>
+      <div class="say-txt" id="sayTxt"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section id="hero" class="pad">
+    <div class="hero-type">
+      <span data-i18n="hero_1">PRODUCT</span>
+      <span class="b" data-i18n="hero_2">DESIGNER</span>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about" class="pad"><div class="col">
+    <div class="eyebrow rv" data-i18n="about_eyebrow">Who am I?</div>
+    <p class="statement" id="statement" data-i18n="about_statement">I studied industrial design. I still design like the thing has <em>weight</em>.</p>
+    <div class="stats rv">
+      <div class="stat"><b>79</b><s data-i18n="s1">screens shipped</s></div>
+      <div class="stat"><b>04</b><s data-i18n="s2">disciplines</s></div>
+      <div class="stat"><b>5.3k</b><s data-i18n="s3">layers in one file</s></div>
+      <div class="stat"><b>TR/EN</b><s data-i18n="s4">working languages</s></div>
+    </div>
+  </div>
+  </section>
+
+  <!-- ================= WORK ================= -->
+  <section id="work">
+    <div class="pad strip-head rv">
+      <h2 data-i18n="work_h">My previous works</h2>
+    </div>
+    <div class="strip" id="strip"><div class="track" id="track"></div></div>
+    <div class="band"><div class="track" id="band"></div></div>
+    <div class="pad"><ol class="index" id="index"></ol></div>
+  </section>
+
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact" class="pad">
+    <div class="eyebrow rv" data-i18n="c_eyebrow">02 — End of the level</div>
+    <a class="big-cta rv" href="mailto:elifbeyzauysal01@gmail.com" data-i18n="cta">Let's talk →</a>
+    <div class="foot">
+      <span>© 2026 Elif Uysal</span>
+      <span><a href="#">LinkedIn</a> &nbsp; <a href="#">Behance</a> &nbsp; <a href="#">Dribbble</a></span>
+      <span data-i18n="foot_note">Built as a prototype — motion first</span>
+    </div>
+  </section>
+</main>
+
+<!-- ================= CV =================
+     Opens over the page from the About link. Filled by buildCV()
+     so it follows the EN/TR toggle like everything else. -->
+<div id="cv" role="dialog" aria-modal="true" aria-hidden="true" aria-label="CV">
+  <div class="cv-sheet" id="cvSheet"></div>
+</div>
+
+<!-- ================= CASE STUDY =================
+     One sheet, filled per project by buildCase(). -->
+<div id="case" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Case study">
+  <div class="case-sheet" id="caseSheet"></div>
+</div>
+<button class="cv-close" id="cvClose" type="button">
+  <svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+  <span id="cvCloseLabel">Close</span>
+</button>
+
+<script>
+/* =============================================================
+   DATA
+   ⚠️ Elif: confirm / prune this list — pulled from what I know
+   of your work. `mark` is a placeholder for the real logo.
+   ============================================================= */
+/* Two logo slots per project, both optional:
+     logo       → the project's own mark (ALTI, Whallet, Cursor)
+     clientLogo → the company it was made for (Commencis, Jotform, THY, base360)
+   Leave one null and it falls back to type — drop in a file path or a
+   data: URI and the image takes over everywhere that project appears.
+   `disc` is a list now: one project can be service + UI/UX + product at once. */
+const PROJECTS = [
+  {key:'alti',    mark:'ALTI',              style:'letter-spacing:.26em;font-size:21px;font-weight:800',
+   logo:null,      /* ← Elif: ALTI logosu */        client:'Commencis',        clientLogo:null,
+   year:'2026', note:'grad', disc:['service','uiux','product']},
+
+  {key:'cursor',  mark:'Cursor Assistant',    style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
+   logo:null,      /* ← Elif: proje logosu */       client:'Personal',         clientLogo:null,
+   year:'2026', disc:['ai','product','uiux']},
+
+  {key:'chatbot', mark:'Chatbot Dashboard', style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
+   logo:null,                                       client:'Jotform',          clientLogo:null,  /* ← Elif: Jotform logosu */
+   year:'2025', disc:['web','product','ai']},
+
+  {key:'thy',     mark:'Remote Controller', style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
+   logo:null,                                       client:'Turkish Airlines', clientLogo:null,  /* ← Elif: THY logosu */
+   year:'2025', disc:['uiux']},
+
+  {key:'whallet', mark:'Whallet',           style:'font-size:24px;font-weight:800;letter-spacing:-.02em',
+   logo:null,      /* ← Elif: Whallet logosu */     client:'Whallet',          clientLogo:null,
+   year:'—',    disc:['web3','product','uiux']},
+
+  {key:'base360', mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
+   logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
+   year:'—',    disc:['web','uiux']},
+
+  {key:'shutter', mark:'Shutter Echoes',    style:'font-size:19px;font-weight:800;letter-spacing:.02em',
+   logo:null,                                       client:'Personal',         clientLogo:null,
+   year:'—',    disc:['game','gameui']},
+];
+
+/* Lucide-style line icons — concrete, never emoji */
+const ICO = {
+  hand:'<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>',
+  scroll:'<rect x="7" y="2" width="10" height="20" rx="5"/><path d="M12 6v3"/><path d="M9 19l3 3 3-3"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  send:'<path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-8-8-4z"/>',
+  phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10.5 18.5h3"/>',
+  chart:'<path d="M3 20h18"/><rect x="5" y="11" width="3.5" height="6" rx="1"/><rect x="10.5" y="6" width="3.5" height="11" rx="1"/><rect x="16" y="13" width="3.5" height="4" rx="1"/>',
+  tag:'<path d="M3 11V4a1 1 0 0 1 1-1h7l9 9-8 8z"/><circle cx="7.5" cy="7.5" r="1.4"/>',
+  cursor:'<path d="M5 3l6 17 2.5-6.5L20 11z"/>',
+  layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+  monitor:'<rect x="2.5" y="4" width="19" height="12" rx="2"/><path d="M9 20h6"/><path d="M12 16v4"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+  flask:'<path d="M9 3h6"/><path d="M10 3v6l-5.2 9A2 2 0 0 0 6.6 21h10.8a2 2 0 0 0 1.8-3L14 9V3"/><path d="M7.5 15h9"/>',
+  gamepad:'<rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.8" r="1"/><circle cx="18.4" cy="14" r="1"/>',
+  ruler:'<rect x="2" y="8" width="20" height="8" rx="2" transform="rotate(-8 12 12)"/><path d="M7 9.5v2.5M11 8.8v3.6M15 8.2v2.5M19 7.6v3.6"/>',
+  route:'<path d="M4 19h9a4 4 0 0 0 0-8H8a4 4 0 0 1 0-8h7"/><path d="M16.5 1.5L19.5 3l-3 1.5"/>',
+  wallet:'<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H17v2.5"/><rect x="3" y="7.5" width="18" height="12" rx="2.5"/><path d="M15.5 13.5H19"/>',
+  hud:'<rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M5.5 8h5M5.5 10.5h3"/><path d="M14.5 16h4"/>',
+  download:'<path d="M12 3.5v10.5"/><path d="M8 10.5l4 4 4-4"/><path d="M4.5 20h15"/>',
+};
+const DISC_ICON = {service:'route', uiux:'cursor', product:'layers', web:'monitor',
+                   app:'phone', ai:'sparkle', web3:'wallet', game:'gamepad',
+                   gameui:'hud', concept:'flask'};
+const icoSvg = n => `<svg viewBox="0 0 24 24">${ICO[n]||ICO.grid}</svg>`;
+
+/* logo slot → image if there is one, type if there isn't */
+const brandMark = p => p.clientLogo
+  ? `<span class="brand"><img src="${p.clientLogo}" alt="${p.client}"></span>`
+  : `<span class="brand">${p.client}</span>`;
+const projectMark = p => p.logo ? `<img src="${p.logo}" alt="${p.mark}">` : p.mark;
+
+/* i18n */
+const T = {
+  en:{
+    nav_work:'Work', nav_about:'About', nav_contact:'Contact',
+    hero_1:'PRODUCT', hero_2:'DESIGNER',
+    avail:'Available for work — 2026', loc:'Ankara, TR · ind. design → product',
+    work_h:'My previous works', work_p:"Hover a tile. She'll tell you what it was.",
+    about_eyebrow:'Who am I?',
+    about_statement:'I studied industrial design. I still design like the thing has <em>weight</em>.',
+    band:['product design','prototyping','design systems','motion','service design','game design','industrial design','ui/ux'],
+    s1:'screens shipped', s2:'disciplines', s3:'layers in one file', s4:'working languages',
+    c_eyebrow:'03 — End of the level', cta:"Let's talk →", foot_note:'Built as a prototype — motion first',
+    lines:{
+      hero1:{i:'hand',   t:"Hey. I'm Elif — that's me standing there."},
+      hero2:{i:'scroll', t:"Scroll whenever you're ready. I'll come with you."},
+      work: {i:'grid',   t:"These are the ones I'd put in front of a hiring manager first."},
+      about:{i:'compass',t:"I still think about the sleepless nights that go into making a product."},
+      end:  {i:'send',   t:"You made it to the end of the level. Say hi?"},
+      cv1:  {i:'hand',   t:"Haha, that's me! The paper version, anyway."},
+      cv2:  {i:'download',t:"Want it as a PDF? The button is right up there."},
+      soon: {i:'flask',   t:"That one is still being written. Cursor is the page that's ready."},
+    },
+    chips:{work:'Show me the work', who:'Who are you?'},
+    proj:{
+      /* the featured card carries a full-width frame, so this one gets a
+         longer line than the rest — the disciplines stay out of it, they
+         are already listed as tags underneath */
+      alti:    {i:'compass', t:'My graduation project, made with Commencis — a hybrid physical–digital system that gets people exploring the history of the city they live in. Five flows and 79 screens, from the object on the street to the app in your hand.'},
+      cursor:  {i:'cursor',  t:'An e-commerce assistant that speaks from the cursor instead of a chat window.'},
+      chatbot: {i:'chart',   t:'A chatbot analytics dashboard for Jotform, built with a team of three — design, frontend, backend.'},
+      thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved."},
+      whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
+      base360: {i:'monitor', t:'A full website redesign for base360.'},
+      shutter: {i:'gamepad', t:'Game design and the game UI — both mine.'},
+    },
+    notes:{grad:'Graduation project'},
+    cta_tile:'View case →',
+    disc:{
+      service:{s:'Service', l:'Service design'},
+      uiux:   {s:'UI/UX',   l:'UI/UX design'},
+      product:{s:'Product', l:'Product design'},
+      web:    {s:'Web',     l:'Web'},
+      app:    {s:'App',     l:'Mobile app'},
+      ai:     {s:'AI UX',   l:'AI UX'},
+      web3:   {s:'Web3',    l:'Web3'},
+      game:   {s:'Game',    l:'Game design'},
+      gameui: {s:'Game UI', l:'Game UI'},
+    },
+  },
+  tr:{
+    nav_work:'İşler', nav_about:'Hakkında', nav_contact:'İletişim',
+    hero_1:'ÜRÜN', hero_2:'TASARIMCISI',
+    avail:'İşe açığım — 2026', loc:'Ankara, TR · end. tasarım → ürün',
+    work_h:'Önceki işlerim', work_p:'Bir karonun üstüne gel. Ne olduğunu o anlatsın.',
+    about_eyebrow:'Ben kimim?',
+    about_statement:'Endüstriyel tasarım okudum. Hâlâ nesnenin <em>ağırlığı</em> varmış gibi tasarlıyorum.',
+    band:['ürün tasarımı','prototipleme','tasarım sistemi','motion','servis tasarımı','oyun tasarımı','endüstriyel tasarım','ui/ux'],
+    s1:'teslim edilen ekran', s2:'disiplin', s3:'tek dosyada katman', s4:'çalışma dili',
+    c_eyebrow:'03 — Bölüm sonu', cta:'Konuşalım →', foot_note:'Prototip olarak kuruldu — önce hareket',
+    lines:{
+      hero1:{i:'hand',   t:'Selam. Ben Elif — şurada duran benim.'},
+      hero2:{i:'scroll', t:'Hazır olunca kaydır. Ben de seninle geliyorum.'},
+      work: {i:'grid',   t:'Bunlar bir görüşmede ilk göstereceklerim.'},
+      about:{i:'compass',t:'Bir ürün ortaya çıksın diye geçirilen uykusuz geceleri hâlâ düşünüyorum.'},
+      end:  {i:'send',   t:'Bölümün sonuna geldin. Merhaba der misin?'},
+      cv1:  {i:'hand',   t:'Haha, bu benim! Kâğıt hâlim yani.'},
+      cv2:  {i:'download',t:'PDF olarak istersen buton hemen yukarıda.'},
+      soon: {i:'flask',   t:'O sayfa daha yazılıyor. Hazır olan Cursor.'},
+    },
+    chips:{work:'İşleri göster', who:'Sen kimsin?'},
+    proj:{
+      alti:    {i:'compass', t:'Commencis ile yaptığım bitirme projem — insanları yaşadıkları şehrin tarihini keşfetmeye iten hibrit fiziksel–dijital bir sistem. Sokaktaki nesneden elindeki uygulamaya, beş akış ve 79 ekran.'},
+      cursor:  {i:'cursor',  t:'Sohbet penceresinden değil, imleçten konuşan bir e-ticaret asistanı.'},
+      chatbot: {i:'chart',   t:'Jotform için chatbot analitik paneli; tasarım, frontend ve backend’den oluşan üç kişilik ekiple.'},
+      thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı.'},
+      whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
+      base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı.'},
+      shutter: {i:'gamepad', t:'Oyun tasarımı ve oyun arayüzü — ikisi de bana ait.'},
+    },
+    notes:{grad:'Mezuniyet projesi'},
+    cta_tile:'Vakayı gör →',
+    disc:{
+      service:{s:'Servis', l:'Servis tasarımı'},
+      uiux:   {s:'UI/UX',  l:'UI/UX tasarımı'},
+      product:{s:'Ürün',   l:'Ürün tasarımı'},
+      web:    {s:'Web',    l:'Web'},
+      app:    {s:'Mobil',  l:'Mobil uygulama'},
+      ai:     {s:'AI UX',  l:'AI UX'},
+      web3:   {s:'Web3',   l:'Web3'},
+      game:   {s:'Oyun',   l:'Oyun tasarımı'},
+      gameui: {s:'Oyun UI',l:'Oyun arayüzü'},
+    },
+  }
+};
+/* =============================================================
+   CV — straight off the résumé, both languages, nothing invented.
+   ============================================================= */
+const CV = {
+  en:{
+    role:'Product Designer', place:'Türkiye',
+    intro:'I’m drawn to the small decisions that make an interface feel clear and easy to use. I usually start by listening, asking questions, and understanding the people behind the product before jumping into design. I enjoy working closely with developers and improving ideas through iteration. And yes, I’m probably the person who will notice if a button is two pixels off — not because it has to be perfect, but because those small things tend to matter more than they seem.',
+    print:'Save as PDF', close:'Close', back:'← Back to the work',
+    skills_h:'Skills',
+    skills:[
+      {label:'Design',      items:['Figma','Design systems','Prototyping','Usability testing','Responsive design']},
+      {label:'Adobe',       items:['Photoshop','After Effects','Illustrator','XD']},
+      {label:'3D & drawing',items:['Procreate','Fusion 360','Rhino']},
+    ],
+    exp_h:'Experience',
+    exp:[
+      {org:'Jotform', when:'Nov 2025 — Jun 2026', role:'UI/UX Design Support Engineer', what:[
+        'Designed and optimised landing and migration pages against Jotform’s brand identity and UX standards, improving clarity, visual consistency and engagement.',
+        'Translated product and marketing requirements into scalable interface designs, working with developers all the way through implementation.',
+        'Built high-fidelity prototypes and specifications in Figma, delivering developer-ready assets and iterating on Head of Design feedback.']},
+      {org:'Turkish Airlines', when:'Aug — Sep 2025', role:'UI/UX Design Intern', what:[
+        'Led the proof of concept for migrating the existing Adobe Photoshop design system into Figma.',
+        'Redesigned the Business section of the in-flight control device.']},
+      {org:'Jotform', when:'Jul — Aug 2025', role:'UI/UX Design Intern', what:[
+        'Designed an analytics dashboard in a cross-functional team of three — design, frontend, backend — leading the UI/UX and the data visualisation.']},
+      {org:'Coca-Cola', when:'Jul — Aug 2023', role:'Production Intern', what:[
+        'Documented bottling line processes, supported deviation tracking for out-of-spec products and helped the production and quality teams resolve operational issues.']},
+    ],
+    edu_h:'Education',
+    edu:[
+      {org:'Middle East Technical University', when:'Aug 2020 — Jun 2026', role:'BA, Industrial Design'},
+      {org:'Commencis', when:'Feb — Jun 2026', role:'Graduation project', what:[
+        '“ALTI” — a hybrid physical–digital system that gets people exploring the history of the city they live in through interactive, exploration-based discovery.']},
+    ],
+  },
+  tr:{
+    role:'Ürün Tasarımcısı', place:'Türkiye',
+    intro:'Bir arayüzü anlaşılır ve kullanımı kolay kılan küçük kararlar ilgimi çekiyor. Genelde önce dinleyerek, sorular sorarak ve ürünün arkasındaki insanları anlayarak başlıyorum; tasarıma sonra geçiyorum. Geliştiricilerle yakın çalışmayı ve fikirleri iterasyonla iyileştirmeyi seviyorum. Ve evet, bir buton iki piksel kaymışsa muhtemelen fark eden kişi benim — mükemmel olması gerektiği için değil, o küçük şeyler göründüğünden daha çok şey ifade ettiği için.',
+    print:'PDF olarak kaydet', close:'Kapat', back:'← İşlere dön',
+    skills_h:'Neler kullanıyorum',
+    skills:[
+      {label:'Tasarım', items:['Figma','Tasarım sistemi','Prototipleme','Kullanılabilirlik testi','Responsive tasarım']},
+      {label:'Adobe',   items:['Photoshop','After Effects','Illustrator','XD']},
+      {label:'3B & çizim', items:['Procreate','Fusion 360','Rhino']},
+    ],
+    exp_h:'Deneyim',
+    exp:[
+      {org:'Jotform', when:'Kas 2025 — Haz 2026', role:'UI/UX Design Support Engineer', what:[
+        'Jotform’un marka kimliği ve UX standartlarına göre landing ve migration sayfaları tasarladım; netliği, görsel tutarlılığı ve etkileşimi artırdım.',
+        'Ürün ve pazarlama gereksinimlerini ölçeklenebilir arayüzlere çevirdim, geliştiricilerle uygulamaya kadar birlikte çalıştım.',
+        'Figma’da yüksek sadakatli prototip ve spec ürettim, Head of Design geri bildirimiyle iterasyon yaptım.']},
+      {org:'Türk Hava Yolları', when:'Ağu — Eyl 2025', role:'UI/UX Tasarım Stajyeri', what:[
+        'Adobe Photoshop’taki mevcut tasarım sisteminin Figma’ya taşınması için PoC’yi yürüttüm.',
+        'Uçak içi kontrol cihazının Business bölümünü yeniden tasarladım.']},
+      {org:'Jotform', when:'Tem — Ağu 2025', role:'UI/UX Tasarım Stajyeri', what:[
+        'Üç kişilik çapraz fonksiyonlu ekipte (tasarım, frontend, backend) analitik paneli tasarladım; UI/UX ve veri görselleştirmesini yürüttüm.']},
+      {org:'Coca-Cola', when:'Tem — Ağu 2023', role:'Üretim Stajyeri', what:[
+        'Şişeleme hattı süreçlerini belgeledim, spec dışı ürünler için sapma takibini destekledim, üretim ve kalite ekiplerine operasyonel sorunlarda destek verdim.']},
+    ],
+    edu_h:'Eğitim',
+    edu:[
+      {org:'Orta Doğu Teknik Üniversitesi', when:'Ağu 2020 — Haz 2026', role:'Endüstriyel Tasarım, Lisans'},
+      {org:'Commencis', when:'Şub — Haz 2026', role:'Bitirme projesi', what:[
+        '“ALTI” — insanları yaşadıkları şehrin tarihini keşif temelli, etkileşimli bir deneyimle gezmeye iten hibrit fiziksel–dijital bir sistem.']},
+    ],
+  }
+};
+
+let L = 'en';
+const t = () => T[L];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* =============================================================
+   BUILD: strip + band
+   ============================================================= */
+const track = document.getElementById('track');
+const band  = document.getElementById('band');
+
+function buildStrip(){
+  track.innerHTML = '';
+  // rendered twice so the loop is seamless
+  for(let r=0;r<2;r++) PROJECTS.forEach(p=>{
+    const a = document.createElement('a');
+    a.className='tile'; a.href='#'; a.dataset.key=p.key;
+    a.innerHTML =
+      `<span class="tile-top">${brandMark(p)}<span class="yr">${p.year}</span></span>`+
+      `<span class="wordmark" style="${p.style}">${projectMark(p)}</span>`+
+      `<span class="tile-foot">`+
+        `<span class="discs">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].s}</i>`).join('')}</span>`+
+        `<span class="cta">${t().cta_tile}</span>`+
+      `</span>`;
+    a.addEventListener('mouseenter',()=>{ stripSpeed=.12; sayProject(p.key); });
+    a.addEventListener('mouseleave',()=>{ stripSpeed=1; });
+    a.addEventListener('click',e=>{ e.preventDefault(); openCase(p.key); });
+    track.appendChild(a);
+  });
+}
+function buildBand(){
+  band.innerHTML='';
+  for(let r=0;r<3;r++) t().band.forEach(w=>{
+    const i=document.createElement('i'); i.textContent=w; band.appendChild(i);
+  });
+}
+function buildIndex(){
+  const ol = document.getElementById('index');
+  ol.innerHTML = '';
+  PROJECTS.forEach(p=>{
+    const li = document.createElement('li');
+    const a  = document.createElement('a');
+    a.className='entry rv'; a.href='#'; a.dataset.key=p.key;
+    const line = t().proj[p.key] ? t().proj[p.key].t : '';
+    // no export yet? the slot shows a typographic plate rather than a hole
+    const media = p.logo
+      ? `<img class="plate-img" src="${p.logo}" alt="${p.mark}">`
+      : `<span class="plate" style="${p.style}">${p.mark}</span>`;
+    const note = p.note ? `<span class="entry-note">${t().notes[p.note]}</span>` : '';
+    a.innerHTML =
+      `<span class="entry-media">${media}</span>`+
+      `<span class="entry-body">`+
+        `<span class="entry-brand">${brandMark(p)}<em class="entry-year">${p.year}</em>${note}</span>`+
+        `<span class="entry-title">${p.mark}</span>`+
+        `<span class="entry-line">${line}</span>`+
+        `<span class="entry-tags">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].l}</i>`).join('')}</span>`+
+      `</span>`+
+      `<span class="entry-go">${t().cta_tile}</span>`;
+    a.addEventListener('mouseenter',()=>sayProject(p.key));
+    a.addEventListener('click',e=>{ e.preventDefault(); openCase(p.key); });
+    li.appendChild(a); ol.appendChild(li);
+    rio.observe(a);
+  });
+}
+
+/* =============================================================
+   DIALOGUE — typewriter + icon cross-fade (icon changes BEFORE
+   the text starts typing) + mouth movement while typing
+   ============================================================= */
+const sayEl=document.getElementById('say'), txtEl=document.getElementById('sayTxt'),
+      icoEl=document.getElementById('sayIco'), chipsEl=document.getElementById('chips');
+let typing=false, typeTimer=null, currentIco='';
+
+function setIcon(name){
+  if(name===currentIco) return;
+  currentIco=name;
+  const old=icoEl.querySelector('svg:not(.out)');
+  if(old){ old.classList.add('out'); setTimeout(()=>old.remove(),520); }
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 24 24'); s.innerHTML=ICO[name]||ICO.grid; s.classList.add('in-pre');
+  icoEl.appendChild(s);
+  const reveal=()=>s.classList.remove('in-pre');
+  requestAnimationFrame(()=>requestAnimationFrame(reveal));
+  setTimeout(reveal,60); // rAF is throttled when the tab is hidden — don't strand the icon
+}
+
+function say(icon,text,delay=0){
+  clearTimeout(typeTimer);
+  setIcon(icon);
+  sayEl.classList.add('show');
+  const start=()=>{
+    typing=true; let i=0;
+    txtEl.innerHTML='<span class="caret"></span>';
+    const step=()=>{
+      i++;
+      txtEl.innerHTML = text.slice(0,i) + (i<text.length?'<span class="caret"></span>':'');
+      if(i<text.length) typeTimer=setTimeout(step, 16+Math.random()*22);
+      else typing=false;
+    };
+    if(RM){ txtEl.textContent=text; typing=false; return; }
+    step();
+  };
+  // 180ms head start so the icon lands first — then she "speaks"
+  typeTimer=setTimeout(start, delay+180);
+}
+
+function sayLine(k){ const l=t().lines[k]; if(l) say(l.i,l.t); }
+function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }
+
+function renderChips(list){
+  chipsEl.innerHTML='';
+  list.forEach(c=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=c.label;
+    b.onclick=c.on; chipsEl.appendChild(b);
+  });
+  cardW=0; // re-measure
+}
+
+/* =============================================================
+   RIG — one rAF loop drives everything
+   ============================================================= */
+const charEl=document.getElementById('char');
+const charImg=document.getElementById('charImg');
+const glow=document.getElementById('glow');
+const cardEl=document.querySelector('.say-card');
+let cardW=0;
+
+const CW=720, CH=713;
+let mx=.5, my=.5, hx=0, hy=0;                   // cursor + lerped parallax offset
+let stripX=0, bandX=0, stripSpeed=1;
+let dockP=0, dockPLerp=0;                       // 0 = hero pose, 1 = docked corner
+let last=performance.now();
+
+addEventListener('pointermove',e=>{ mx=e.clientX/innerWidth; my=e.clientY/innerHeight; },{passive:true});
+
+function pose(){
+  const vw=innerWidth, vh=innerHeight, mobile=vw<820;
+  // she rises from the bottom edge and stops below the first word — the
+  // headline is the statement, she is not allowed to sit on top of it
+  const heroH = mobile ? Math.min(vh*.30,260) : Math.min(vh*.40, 380);
+  const dockH = mobile ? 92 : 124;
+  const heroS = heroH/CH, dockS = dockH/CH;
+  return {
+    hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
+    // she docks bottom-right, where help lives — and out of the footer's way
+    dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
+    mobile
+  };
+}
+
+function tick(now){
+  const dt=Math.min(34, now-last); last=now;
+  const k=1-Math.pow(.001, dt/1000);            // frame-rate independent lerp
+
+  /* ---- dock progress from scroll (pinned while the CV is open) ---- */
+  const p=(cvOpen||caseOpen) ? 1 : Math.min(1, Math.max(0, scrollY/(innerHeight*.72)));
+  dockP = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; // easeInOutQuad
+  dockPLerp += (dockP-dockPLerp)*k*.9;
+
+  const P=pose();
+  const x=P.hero.x+(P.dock.x-P.hero.x)*dockPLerp;
+  const y=P.hero.y+(P.dock.y-P.hero.y)*dockPLerp;
+  const s=P.hero.s+(P.dock.s-P.hero.s)*dockPLerp;
+  charEl.style.transform=`translate3d(${(x-CW/2).toFixed(1)}px,${(y-CH).toFixed(1)}px,0) scale(${s.toFixed(4)})`;
+  glow.style.opacity = (1-dockPLerp*.85).toFixed(3);
+
+  /* ---- dialogue follows her ---- */
+  if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
+  let sx,sy;
+  const sayH=sayEl.offsetHeight, half=(CW*s)/2;
+  if(dockPLerp>.5){
+    // docked bottom-right: the card opens to her left, like a helper would
+    sx = x - half - cardW - 14;
+    sy = y - CH*s*.92;
+    sayEl.classList.add('flip');
+  }else{
+    sx = x + half + (P.mobile?4:18);
+    sy = y - CH*s*.78;
+    sayEl.classList.remove('flip');
+  }
+  sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));
+  sy=Math.max(74, Math.min(sy, innerHeight-sayH-16));
+  sayEl.style.transform=`translate3d(${sx.toFixed(1)}px,${sy.toFixed(1)}px,0)`;
+
+  /* ---- she is a flat illustration now, so the life comes from the whole
+         figure: parallax lean, a breath, and a small nod while she types.
+         (Blink and mouth shapes went with the SVG — they need layers.) ---- */
+  const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);
+  hx+=(tx-hx)*k*.55; hy+=(ty-hy)*k*.55;
+  const br  = Math.sin(now/1450)*1.7;                        // breathe
+  const nod = (typing && !RM) ? Math.sin(now/150)*1.1 : 0;   // talking
+  charImg.style.transform =
+    `translate3d(${hx.toFixed(2)}px, ${(hy+br+nod).toFixed(2)}px, 0)`+
+    ` rotate(${(hx*.06).toFixed(2)}deg) scale(${(1+br*.0016).toFixed(4)})`;
+
+  /* ---- strips drift ---- */
+  if(!RM){
+    stripX -= (dt/1000)*34*stripSpeed;
+    const half=track.scrollWidth/2;
+    if(half>0 && -stripX>=half) stripX+=half;
+    track.style.transform=`translate3d(${stripX.toFixed(1)}px,0,0)`;
+
+    bandX += (dt/1000)*22;
+    const bhalf=band.scrollWidth/3;
+    if(bhalf>0 && bandX>=bhalf) bandX-=bhalf;
+    band.style.transform=`translate3d(${(-bhalf+bandX).toFixed(1)}px,0,0)`;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* =============================================================
+   SCROLL STATE MACHINE — which line she's on
+   ============================================================= */
+let zone='';
+function setZone(z){
+  if(z===zone) return; zone=z;
+  if(z==='work'){ sayLine('work'); renderChips([]); }
+  if(z==='about'){ sayLine('about'); renderChips([]); }
+  if(z==='contact'){ sayLine('end');
+    renderChips([{label:t().cta, on:()=>location.href='mailto:elifbeyzauysal01@gmail.com'}]); }
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) setZone(e.target.id); }),
+  {rootMargin:'-45% 0px -45% 0px'});
+['work','about','contact'].forEach(id=>io.observe(document.getElementById(id)));
+
+/* reveal-on-scroll */
+const rio=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target);} }),
+  {rootMargin:'0px 0px -12% 0px'});
+document.querySelectorAll('.rv').forEach(el=>rio.observe(el));
+
+/* word-by-word statement reveal */
+function splitStatement(){
+  const el=document.getElementById('statement');
+  const html=t().about_statement;
+  el.innerHTML=html;
+  const walk=n=>{
+    [...n.childNodes].forEach(c=>{
+      if(c.nodeType===3){
+        const frag=document.createDocumentFragment();
+        c.textContent.split(/(\s+)/).forEach(w=>{
+          if(!w.trim()){ frag.appendChild(document.createTextNode(w)); return; }
+          const s=document.createElement('w'); s.textContent=w; frag.appendChild(s);
+        });
+        c.replaceWith(frag);
+      } else if(c.nodeType===1) walk(c);
+    });
+  };
+  walk(el);
+  [...el.querySelectorAll('w')].forEach((w,i)=>w.style.transitionDelay=(i*42)+'ms');
+  const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ el.classList.add('in'); o.disconnect(); } }),
+    {rootMargin:'0px 0px -18% 0px'});
+  o.observe(el);
+}
+
+/* =============================================================
+   CV — the About link opens it over the page. The nav stays on
+   top of the sheet, so Work / Contact / EN-TR keep working and
+   About toggles it back shut.
+   ============================================================= */
+const cvEl=document.getElementById('cv'), cvSheet=document.getElementById('cvSheet'),
+      cvCloseBtn=document.getElementById('cvClose'), navAbout=document.getElementById('navAbout');
+let cvOpen=false;
+
+const cvRow = e =>
+  `<li class="exp-row">`+
+    `<div class="exp-when"><b>${e.org}</b>${e.when}</div>`+
+    `<div><p class="exp-role">${e.role}</p>`+
+      (e.what ? `<ul class="exp-what">${e.what.map(w=>`<li>${w}</li>`).join('')}</ul>` : '')+
+    `</div>`+
+  `</li>`;
+
+function buildCV(){
+  const c=CV[L];
+  cvSheet.innerHTML =
+    `<header class="cv-head">`+
+      `<h1 class="cv-name">Elif Uysal</h1>`+
+      `<p class="cv-role">${c.role} · ${c.place}</p>`+
+      `<p class="cv-intro">${c.intro}</p>`+
+      `<div class="cv-meta">`+
+        `<a href="mailto:elifbeyzauysal01@gmail.com">elifbeyzauysal01@gmail.com</a>`+
+        `<a href="#">Behance</a><a href="#">LinkedIn</a>`+
+      `</div>`+
+      `<div class="cv-actions"><button class="cv-print" type="button">${icoSvg('download')}${c.print}</button></div>`+
+    `</header>`+
+    `<section class="cv-block"><h2 class="block-h">${c.skills_h}</h2>`+
+      `<div class="cv-skills">${c.skills.map(g=>
+        `<div class="cv-skill-row"><b>${g.label}</b>`+
+        `<span class="cv-chips">${g.items.map(i=>`<i>${i}</i>`).join('')}</span></div>`).join('')}</div>`+
+    `</section>`+
+    `<section class="cv-block"><h2 class="block-h">${c.exp_h}</h2>`+
+      `<ol class="exp">${c.exp.map(cvRow).join('')}</ol></section>`+
+    `<section class="cv-block"><h2 class="block-h">${c.edu_h}</h2>`+
+      `<ol class="exp">${c.edu.map(cvRow).join('')}</ol></section>`+
+    `<section class="cv-block cv-end">`+
+      `<a class="big-cta" href="mailto:elifbeyzauysal01@gmail.com">${t().cta}</a>`+
+      `<p class="cv-back"><button class="cv-backlink" type="button">${c.back}</button></p>`+
+    `</section>`;
+  document.getElementById('cvCloseLabel').textContent=c.close;
+  cvSheet.querySelector('.cv-print').onclick=()=>window.print();
+  cvSheet.querySelector('.cv-backlink').onclick=()=>closeCV();
+  cvSheet.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+}
+
+/* she stays in the corner and comments on her own CV — the rig pins her to
+   the docked pose while this is open (see tick), so it is one character
+   walking into the page, not a cameo */
+let cvLineTimer=null;
+function cvLines(){
+  clearTimeout(cvLineTimer);
+  sayLine('cv1'); renderChips([]);
+  cvLineTimer=setTimeout(()=>{ if(cvOpen) sayLine('cv2'); }, 4200);
+}
+function resumeLine(){
+  if(scrollY<innerHeight*.6){ sayLine('hero1'); return; }
+  if(zone) sayLine(zone==='contact'?'end':zone);
+}
+
+function openCV(){
+  if(cvOpen) return;
+  closeCase();
+  cvOpen=true; buildCV();
+  cvEl.scrollTop=0;
+  document.body.classList.add('cv-open','sheet-open');
+  cvEl.setAttribute('aria-hidden','false');
+  navAbout.setAttribute('aria-current','page');
+  cvLines();
+  // the class lands on the next frame so the blocks animate in rather
+  // than appearing already settled
+  requestAnimationFrame(()=>cvEl.classList.add('open'));
+}
+function closeCV(){
+  if(!cvOpen) return;
+  cvOpen=false;
+  clearTimeout(cvLineTimer);
+  cvEl.classList.remove('open');
+  document.body.classList.remove('cv-open','sheet-open');
+  cvEl.setAttribute('aria-hidden','true');
+  navAbout.removeAttribute('aria-current');
+  navAbout.focus({preventScroll:true});
+  resumeLine();
+}
+navAbout.addEventListener('click',e=>{ e.preventDefault(); cvOpen ? closeCV() : openCV(); });
+cvCloseBtn.addEventListener('click',closeCV);
+addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeCV(); closeCase(); } });
+
+/* =============================================================
+   CASE STUDY — six sections, in Elif's own order. Anything she
+   has not written yet renders as the question it answers, marked
+   as a draft, so an unfinished page can never read as a claim.
+   ============================================================= */
+const CASE_UI = {
+  en:{
+    s:['The problem','Research','Decision moments','The solution','Result'],
+    p:['Where was the gap, and how did you notice it — which observation, which data, which conversation?',
+       'What are the others doing, and not doing? What did you assume going in, and how did you check it?',
+       'Every fork as: I chose A because ___, and B carried this risk.',
+       'The screens and the flow — one line under each: which problem this screen solves.',
+       'What happened, plus one honest "today I would do this differently".'],
+    picked:'What I chose', left:'What I left', risk:'and the risk it carried',
+    mp:['I chose this because …','…and this is what that choice could have cost.'],
+    slot:'screen', cap:'what this screen solves',
+    back:'← Back to the work', next:'Next project →',
+  },
+  tr:{
+    s:['Problem','Araştırma','Karar anları','Çözüm','Sonuç'],
+    p:['Boşluk neredeydi, bunu nasıl fark ettin — hangi gözlem, hangi veri, hangi sohbet?',
+       'Diğerleri ne yapıyor, ne yapmıyor? Varsayımın neydi, nasıl doğruladın?',
+       'Her çatal şöyle: A’yı seçtim çünkü ___, B’nin şu riski vardı.',
+       'Ekranlar ve akış — her birinin altında tek satır: bu ekran hangi problemi çözüyor.',
+       'Ne oldu, artı dürüst bir "bugün olsa şunu farklı yapardım".'],
+    picked:'Seçtiğim', left:'Bıraktığım', risk:'ve taşıdığı risk',
+    mp:['Bunu seçtim çünkü …','…ve bu seçim şunu göze almak demekti.'],
+    slot:'ekran', cap:'bu ekran neyi çözüyor',
+    back:'← İşlere dön', next:'Sonraki proje →',
+  }
+};
+
+/* Screens exported from Elif's Figma board (Chatbot Redesign, node 98:8006)
+   and inlined by build.py — the CSP blocks every external host. */
+const A = {
+  hero:'{{ASSET:case/hero.webp}}',
+  bubble:'{{ASSET:case/b1.webp}}', modal:'{{ASSET:case/b2.webp}}', asks:'{{ASSET:case/b3.webp}}',
+  s1:'{{ASSET:case/s1.webp}}', s2:'{{ASSET:case/s2.webp}}', s3:'{{ASSET:case/s3.webp}}',
+  s4:'{{ASSET:case/s4.webp}}', s5:'{{ASSET:case/s5.webp}}', s6:'{{ASSET:case/s6.webp}}',
+};
+
+/* Real content only — every word here is Elif's own, off the board. What she
+   has not written yet stays a `todo` prompt rather than a claim I invented. */
+const CASES = {
+  cursor:{
+    facts:['ai','product','uiux'],
+    en:{
+      titles:['The problem','The gap','Decision moments','The solution','Where it stands'],
+      lede:'An assistant that speaks up when you need it. Not from a window — <em>from the cursor</em>.',
+      blocks:[
+        [ {p:'The current design is not natural.'},
+          {shots:[
+            {img:A.bubble, h:'The corner bubble', cap:'Invisible until something goes wrong. You open it to complain, not to explore.'},
+            {img:A.modal,  h:'The centre modal',  cap:'Announces discovery — by covering the catalogue it is supposed to help you browse.'}]},
+          {p:'And it asks what the screen already knows.'},
+          {shots:[{img:A.asks, wide:true, cap:'Six minutes on the site, four cuts viewed, one size touched and abandoned. The box opens and asks how it can help.'}]} ],
+        [ {p:'Keep the discovery promise, drop the real estate. Answer behaviour instead of position.'},
+          {todo:'Which stores did you look at, what did you assume going in, and how did you check it?'} ],
+        [],
+        [ {p:'Let the cursor speak when needed — it understands you, then answers you.'},
+          {shots:[{img:A.hero, wide:true, cap:'The storefront the assistant lives in. No panel is reserved for it.'}]},
+          {shots:[
+            {img:A.s1, h:'Describe it, don’t name it', cap:'You don’t need the word for the cut. Say it in your own words and the grid narrows to it.'},
+            {img:A.s2, h:'It speaks from the cursor',  cap:'One line at the tip of the arrow, and Enter if you want more.'},
+            {img:A.s3, h:'The answer is a picture',    cap:'Asked about another colour, it doesn’t list swatches. It swaps the photograph so you see the garment you asked about.'},
+            {img:A.s4, h:'Every guess is deletable',   cap:'What it understood becomes chips you can switch off. Close one and the grid reopens.'},
+            {img:A.s5, h:'It shows, then offers',      cap:'It answers with the pieces themselves and leaves the other routes visible, instead of asking which one you meant.'},
+            {img:A.s6, h:'The fact you’d have asked for', cap:'It leads with what it knows: one left in your size, and whether the basket still makes tomorrow’s delivery.'}]} ],
+        [ {p:'Published as a case study on Behance.'},
+          {todo:'And one honest line: what would you do differently if you started it today?'} ],
+      ],
+      moves:[
+        {h:'It speaks from the cursor',
+         picked:'No panel, no bubble in the corner. One line at the tip of the arrow, and Enter if you want more.',
+         left:'The corner bubble — invisible until something goes wrong, opened to complain rather than to explore. And the centre modal, which announces discovery by covering the catalogue it is supposed to help you browse.'},
+        {h:'The more it knows, the sooner it speaks',
+         picked:'The wait is tied to certainty: 2.8s on context alone, 1.5s once behaviour is in, 0.7s when memory agrees.',
+         ladder:[
+           {t:'2.8s', h:'Context only', p:'It knows what you are looking at. Nothing more, so it waits longest.'},
+           {t:'1.5s', h:'+ Behaviour',  p:'You cycled the photos, touched a size chip and pulled back.'},
+           {t:'0.7s', h:'+ Memory',     p:'Your size against low stock, a colour you keep returning to.'}]},
+        {h:'Every guess is deletable',
+         picked:'What it understood becomes chips you can switch off. Close one and the grid reopens — no dead end, no starting over.'},
+        {h:'The answer is a picture',
+         picked:'Asked about another colour, it doesn’t list swatches. It swaps the photograph so you see the garment you asked about.'},
+      ],
+    },
+    tr:{
+      titles:['Problem','Boşluk','Karar anları','Çözüm','Nerede duruyor'],
+      lede:'İhtiyacın olduğunda konuşan bir asistan. Bir pencereden değil — <em>imleçten</em>.',
+      blocks:[
+        [ {p:'Bugünkü tasarım doğal değil.'},
+          {shots:[
+            {img:A.bubble, h:'Köşedeki balon', cap:'Bir şey ters gidene kadar görünmez. Onu keşfetmek için değil, şikâyet etmek için açarsın.'},
+            {img:A.modal,  h:'Ortadaki modal', cap:'Keşfi duyurur — hem de gezmene yardım edeceği kataloğun üstünü kapatarak.'}]},
+          {p:'Üstelik ekranın zaten bildiğini sorar.'},
+          {shots:[{img:A.asks, wide:true, cap:'Sitede altı dakika, dört farklı kalıp, dokunulup bırakılmış bir beden. Kutu açılıp “nasıl yardımcı olabilirim” diye soruyor.'}]} ],
+        [ {p:'Keşif vaadini koru, kapladığı yeri bırak. Konuma değil, davranışa cevap ver.'},
+          {todo:'Hangi mağazalara baktın, işin başında varsayımın neydi, nasıl doğruladın?'} ],
+        [],
+        [ {p:'Gerektiğinde imleç konuşsun — önce seni anlasın, sonra cevap versin.'},
+          {shots:[{img:A.hero, wide:true, cap:'Asistanın içinde yaşadığı vitrin. Ona ayrılmış bir panel yok.'}]},
+          {shots:[
+            {img:A.s1, h:'Adını değil, tarifini söyle', cap:'Kalıbın adını bilmen gerekmiyor. Kendi cümlenle söyle, ızgara ona daralsın.'},
+            {img:A.s2, h:'İmleçten konuşur',            cap:'Okun ucunda tek satır; daha fazlası için Enter.'},
+            {img:A.s3, h:'Cevap bir fotoğraf',          cap:'Başka rengi var mı dediğinde renk kutucukları dizmez. Fotoğrafı değiştirir, sorduğun ürünü görürsün.'},
+            {img:A.s4, h:'Her tahmin silinebilir',      cap:'Anladığı şey kapatılabilir çiplere dönüşür. Birini kapat, ızgara yeniden açılır.'},
+            {img:A.s5, h:'Önce gösterir, sonra önerir', cap:'“Hangisini demek istedin” diye sormak yerine ürünlerin kendisiyle cevaplar, diğer yolları da açık bırakır.'},
+            {img:A.s6, h:'Zaten soracağın bilgi',       cap:'Bildiğiyle başlar: bedeninden bir tane kalmış ve sepet yarınki teslimata yetişiyor mu.'}]} ],
+        [ {p:'Behance’te case study olarak yayında.'},
+          {todo:'Bir de dürüst tek cümle: bugün baştan başlasan neyi farklı yapardın?'} ],
+      ],
+      moves:[
+        {h:'İmleçten konuşuyor',
+         picked:'Panel yok, köşede balon yok. Okun ucunda tek satır, fazlasını istersen Enter.',
+         left:'Köşedeki balon — bir şey ters gidene kadar görünmez, keşif için değil şikâyet için açılır. Ve ortadaki modal: gezmene yardım edeceği kataloğun üstünü kapatarak keşfi duyurur.'},
+        {h:'Ne kadar çok bilirse o kadar erken konuşur',
+         picked:'Bekleme süresi kesinliğe bağlı: yalnız bağlamla 2.8sn, davranış eklenince 1.5sn, hafıza da onaylayınca 0.7sn.',
+         ladder:[
+           {t:'2.8s', h:'Yalnızca bağlam', p:'Neye baktığını biliyor. Fazlası yok, o yüzden en uzun o bekliyor.'},
+           {t:'1.5s', h:'+ Davranış',      p:'Fotoğrafları çevirdin, bir beden çipine dokunup geri çekildin.'},
+           {t:'0.7s', h:'+ Hafıza',        p:'Bedenin azalan stokla karşılaşıyor, dönüp durduğun bir renk var.'}]},
+        {h:'Her tahmin silinebilir',
+         picked:'Anladığı şey kapatabileceğin çiplere dönüşür. Birini kapat, ızgara yeniden açılır — çıkmaz sokak yok, baştan başlamak yok.'},
+        {h:'Cevap bir fotoğraf',
+         picked:'Başka rengi var mı diye sorduğunda renk kutucukları dizmez. Fotoğrafı değiştirir, sorduğun ürünü görürsün.'},
+      ],
+    },
+  }
+};
+
+const caseEl=document.getElementById('case'), caseSheet=document.getElementById('caseSheet');
+let caseOpen=false, caseKey=null;
+
+const todo = txt => `<p class="case-body todo">${txt}</p>`;
+
+/* one part of a section: a paragraph, a screen row, the timing ladder, or a
+   question Elif has still to answer */
+function casePart(part,u){
+  if(part.p)    return `<p class="case-body">${part.p}</p>`;
+  if(part.todo) return todo(part.todo);
+  if(part.shots) return `<div class="shots${part.shots[0]&&part.shots[0].wide?' wide':''}">${part.shots.map(s=>
+      `<figure class="shot">`+
+        `<div class="shot-frame">${s.img?`<img src="${s.img}" alt="" loading="lazy">`:`<span class="shot-slot">${u.slot}</span>`}</div>`+
+        `<figcaption class="shot-cap${(s.cap||s.h)?'':' todo'}">`+
+          (s.h?`<b>${s.h}</b>`:'')+(s.cap||(s.h?'':u.cap))+
+        `</figcaption>`+
+      `</figure>`).join('')}</div>`;
+  return '';
+}
+const ladderHTML = rows => `<div class="ladder">${rows.map(r=>
+  `<div class="rung"><b>${r.t}</b><i>${r.h}</i>`+
+    `<div class="bar"><span style="width:${Math.round(parseFloat(r.t)/2.8*100)}%"></span></div>`+
+    `<p>${r.p}</p></div>`).join('')}</div>`;
+
+function buildCase(key){
+  const p = PROJECTS.find(x=>x.key===key); if(!p) return;
+  const u = CASE_UI[L], c = CASES[key], d = c[L];
+  const head = i => (d.titles && d.titles[i]) || u.s[i];
+  const blocks = (i,extra='') =>
+    `<section class="case-block"><h2 class="block-h">${head(i)}</h2>`+
+    ((d.blocks[i]&&d.blocks[i].length) ? d.blocks[i].map(x=>casePart(x,u)).join('') : todo(u.p[i]))+
+    extra+`</section>`;
+
+  const moves = `<div class="moves">${d.moves.map((m,i)=>
+    `<div class="move">`+
+      `<div class="move-n">${String(i+1).padStart(2,'0')}</div>`+
+      `<h3 class="move-h">${m.h || ''}</h3>`+
+      `<div class="move-cols">`+
+        `<div class="move-col picked"><b>${u.picked}</b>`+
+          (m.picked?`<p>${m.picked}</p>`:`<p class="todo">${u.mp[0]}</p>`)+`</div>`+
+        `<div class="move-col"><b>${u.left} — ${u.risk}</b>`+
+          (m.left?`<p>${m.left}</p>`:`<p class="todo">${u.mp[1]}</p>`)+`</div>`+
+      `</div>`+
+      (m.ladder?ladderHTML(m.ladder):'')+
+    `</div>`).join('')}</div>`;
+
+  caseSheet.innerHTML =
+    `<header>`+
+      `<div class="case-brand">${brandMark(p)}<em>${p.year}</em>`+
+        (p.note?`<span class="entry-note">${t().notes[p.note]}</span>`:'')+`</div>`+
+      `<h1 class="case-title">${p.mark}</h1>`+
+      (d.lede ? `<p class="case-lede">${d.lede}</p>` : `<p class="case-lede todo">${t().proj[key]?t().proj[key].t:''}</p>`)+
+      `<div class="case-facts">${c.facts.map(f=>`<i>${icoSvg(DISC_ICON[f])}${t().disc[f].l}</i>`).join('')}</div>`+
+    `</header>`+
+    blocks(0)+blocks(1)+
+    `<section class="case-block"><h2 class="block-h">${head(2)}</h2>`+
+      (d.moves.some(m=>m.picked)?'':todo(u.p[2]))+moves+`</section>`+
+    blocks(3)+
+    blocks(4)+
+    `<div class="case-end">`+
+      `<button class="case-next" type="button">${u.next}</button>`+
+      `<button class="case-back" type="button">${u.back}</button>`+
+    `</div>`;
+
+  caseSheet.querySelector('.case-back').onclick=()=>closeCase();
+  caseSheet.querySelector('.case-next').onclick=()=>{
+    const keys=Object.keys(CASES); const n=keys[(keys.indexOf(key)+1)%keys.length];
+    n===key ? closeCase() : openCase(n);
+  };
+}
+
+function openCase(key){
+  if(!CASES[key]){ sayLine('soon'); return; }   // that page is not written yet
+  closeCV();
+  caseKey=key; buildCase(key);
+  caseOpen=true; caseEl.scrollTop=0;
+  document.body.classList.add('case-open','sheet-open');
+  caseEl.setAttribute('aria-hidden','false');
+  sayProject(key); renderChips([]);
+  requestAnimationFrame(()=>caseEl.classList.add('open'));
+}
+function closeCase(){
+  if(!caseOpen) return;
+  caseOpen=false; caseKey=null;
+  caseEl.classList.remove('open');
+  document.body.classList.remove('case-open','sheet-open');
+  caseEl.setAttribute('aria-hidden','true');
+  resumeLine();
+}
+
+/* =============================================================
+   LANGUAGE
+   ============================================================= */
+function applyLang(){
+  document.documentElement.lang=L;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.dataset.i18n; if(t()[k]!==undefined) el.innerHTML=t()[k];
+  });
+  buildStrip(); buildBand(); buildIndex(); splitStatement();
+  if(caseOpen){ buildCase(caseKey); sayProject(caseKey); return; }
+  if(cvOpen){ buildCV(); cvLines(); return; }   // the sheet is open — swap it in place
+  zone=''; // force the current line to re-say itself in the new language
+  const y=scrollY;
+  if(y<innerHeight*.6){ sayLine('hero1'); setTimeout(()=>{ if(scrollY<innerHeight*.6) sayLine('hero2'); },3600);
+    renderChips([
+      {label:t().chips.work, on:()=>document.getElementById('work').scrollIntoView({behavior:'smooth'})},
+      {label:t().chips.who,  on:()=>document.getElementById('about').scrollIntoView({behavior:'smooth'})},
+    ]);
+  }
+}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.lang button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); L=b.dataset.lang; applyLang();
+});
+
+/* nav + placeholder footer links: scroll in place instead of writing a hash
+   into the host URL (this page is a single self-contained artifact) */
+document.querySelectorAll('nav a[href^="#"], .foot a[href="#"]').forEach(a=>{
+  if(a.id==='navAbout') return;                 // that one opens the CV instead
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    closeCV(); closeCase();                     // leaving a sheet for a section
+    const id=a.getAttribute('href').slice(1);
+    const el=id && document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:RM?'auto':'smooth'});
+  });
+});
+
+/* =============================================================
+   BOOT
+   ============================================================= */
+document.documentElement.lang=L;
+buildStrip(); buildBand(); buildIndex(); splitStatement();
+requestAnimationFrame(tick);
+setTimeout(()=>{
+  sayLine('hero1');
+  renderChips([
+    {label:t().chips.work, on:()=>document.getElementById('work').scrollIntoView({behavior:'smooth'})},
+    {label:t().chips.who,  on:()=>document.getElementById('about').scrollIntoView({behavior:'smooth'})},
+  ]);
+}, 700);
+setTimeout(()=>{ if(scrollY<innerHeight*.6) sayLine('hero2'); }, 4600);
+addEventListener('resize',()=>{ stripX=0; cardW=0; });
+</script>
