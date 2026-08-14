@@ -57,6 +57,28 @@ a real site. Output is committed; re-run when the prototype changes.
 Both are full-screen sheets over the site rather than separate pages. EN/TR
 throughout.
 
+## Addresses
+
+The sheets are what people come for, so they have their own URLs — `/cv/` and
+`/case/cursor/`. `build.py` writes a real file at each one (the same page, told
+on `<body data-open>` which sheet to open), so a shared link survives a cold
+load and there is no redirect flash; in the browser they are `pushState`, so
+Back closes a sheet instead of leaving the site. `404.html` catches the rest.
+
+Turned off in the Artifact build — that URL belongs to the host. Asset paths are
+root-relative for the same reason the routes exist: one page body is served from
+three depths.
+
+Add a route: append it to `ROUTE_PAGES` in `build.py`.
+
+## Analytics
+
+**Cloudflare Web Analytics**, cookieless, so the site needs no consent banner.
+The beacon is in `build.py` (and `build_demo.py`); the token in it is a public
+site tag, not a secret. It follows the History API, which is what makes the
+routes above worth having — `/case/cursor/` reads as its own page rather than as
+one more hit on the home page.
+
 The Cursor Assistant case keeps the art direction of Elif's own board — near
 black, the coral→pink ramp, heavy uppercase headings — and alternates centred
 and left-aligned on purpose: centred where the page states something in its own

@@ -58,11 +58,19 @@ def linked(m):
     rel = m.group(1)                       # e.g. case/s1.webp
     if not os.path.exists(os.path.join(HERE, 'assets', rel)):
         sys.exit(f'asset missing: assets/{rel}')
-    return f'assets/{rel}'
+    # root-relative, not relative: the same markup is served from /, /cv/ and
+    # /case/cursor/, and a relative path would look for the screens inside the
+    # route folder. Ties the site to the domain root, which is where it lives.
+    return f'/assets/{rel}'
 
 
 artifact_html, n = re.subn(r'\{\{ASSET:([^}]+)\}\}', inline, html)
 html, _ = re.subn(r'\{\{ASSET:([^}]+)\}\}', linked, html)
+
+# The sheets get real addresses on the hosted copy (see ROUTES in the template).
+# In the Artifact the URL belongs to the host, so the whole thing stays off.
+artifact_html = artifact_html.replace('{{ROUTES}}', 'false')
+html = html.replace('{{ROUTES}}', 'true')
 
 os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
 artifact = os.path.join(ROOT, 'dist', 'portfolio-artifact.html')
@@ -84,23 +92,59 @@ FAVICON = ('data:image/svg+xml,'
            "%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E")
 DESC = ('Elif Uysal — product designer. Selected work, the CV, '
         'and the Cursor Assistant case study.')
-page = (
-    '<!doctype html>\n<html lang="en">\n<head>\n'
-    '<meta charset="utf-8">\n'
-    '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-    '<title>Elif Uysal — Product Designer</title>\n'
-    f'<meta name="description" content="{DESC}">\n'
-    '<meta property="og:title" content="Elif Uysal — Product Designer">\n'
-    f'<meta property="og:description" content="{DESC}">\n'
-    '<meta property="og:type" content="website">\n'
-    f'<link rel="icon" href="{FAVICON}">\n'
-    '<style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}</style>\n'
-    '</head>\n<body>\n' + html + '\n</body>\n</html>\n')
+
+# Cloudflare Web Analytics. The token is a public site tag, not a secret — it
+# ships in every visitor's page source. Cookieless, so the site needs no consent
+# banner, and it follows the History API, which is what makes the routes below
+# worth having: /case/cursor shows up as its own page rather than as one more
+# hit on the home page.
+BEACON = ("<script defer src='https://static.cloudflareinsights.com/beacon.min.js' "
+          "data-cf-beacon='{\"token\": \"589b26a9898440e583a7272ff182a1e4\"}'></script>")
+
+
+def wrap(body, title, desc, open_attr='', canonical='/'):
+    return (
+        '<!doctype html>\n<html lang="en">\n<head>\n'
+        '<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f'<title>{title}</title>\n'
+        f'<meta name="description" content="{desc}">\n'
+        f'<meta property="og:title" content="{title}">\n'
+        f'<meta property="og:description" content="{desc}">\n'
+        '<meta property="og:type" content="website">\n'
+        f'<link rel="canonical" href="https://elifbeyzauysal.com{canonical}">\n'
+        f'<link rel="icon" href="{FAVICON}">\n'
+        '<style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}</style>\n'
+        f'{BEACON}\n'
+        f'</head>\n<body{open_attr}>\n' + body + '\n</body>\n</html>\n')
+
 
 index = os.path.join(ROOT, 'index.html')
-open(index, 'w', encoding='utf-8').write(page)
+open(index, 'w', encoding='utf-8').write(
+    wrap(html, 'Elif Uysal — Product Designer', DESC))
+
+# One real file per sheet address, so a shared link survives a cold load: the
+# same page, told on <body> which sheet to open. A 404.html catches the rest —
+# GitHub Pages serves it for anything unknown, and it walks people home rather
+# than leaving them on GitHub's own error page.
+ROUTE_PAGES = [
+    ('case/cursor', 'case:cursor', 'Cursor Assistant — Elif Uysal',
+     'An assistant that speaks up when you need it. Not from a window — from '
+     'the cursor. A case study by Elif Uysal.'),
+    ('cv', 'cv', 'CV — Elif Uysal',
+     'Elif Uysal — product designer. Experience, education and what she works with.'),
+]
+for path, opens, title, desc in ROUTE_PAGES:
+    d = os.path.join(ROOT, path)
+    os.makedirs(d, exist_ok=True)
+    open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(
+        wrap(html, title, desc, f' data-open="{opens}"', f'/{path}/'))
+
+open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8').write(
+    wrap(html, 'Elif Uysal — Product Designer', DESC))
 
 shot = sum(os.path.getsize(os.path.join(dst, f)) for f in os.listdir(dst))
-print(f'index.html                   {len(page.encode())/1024:.0f} KB'
+print(f'index.html                   {os.path.getsize(index)/1024:.0f} KB'
       f'  + assets/case {shot/1024:.0f} KB ({n} screens)')
+print('routes                       ' + ', '.join('/%s/' % p for p, *_ in ROUTE_PAGES) + ', 404.html')
 print(f'dist/portfolio-artifact.html {len(artifact_html.encode())/1024:.0f} KB  (screens inlined at full resolution)')

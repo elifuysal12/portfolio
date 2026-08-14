@@ -1257,7 +1257,8 @@ function buildIndex(){
   PROJECTS.forEach(p=>{
     const li = document.createElement('li');
     const a  = document.createElement('a');
-    a.className='entry rv'; a.href='#'; a.dataset.key=p.key;
+    a.className='entry rv'; a.dataset.key=p.key;
+    a.href = (ROUTES && CASES[p.key]) ? `/case/${p.key}/` : '#';
     const line = t().proj[p.key] ? t().proj[p.key].t : '';
     // no export yet? the slot shows a typographic plate rather than a hole
     const media = p.logo
@@ -1544,6 +1545,7 @@ function openCV(){
   // the class lands on the next frame so the blocks animate in rather
   // than appearing already settled
   requestAnimationFrame(()=>cvEl.classList.add('open'));
+  syncRoute();
 }
 function closeCV(){
   if(!cvOpen) return;
@@ -1555,10 +1557,52 @@ function closeCV(){
   navAbout.removeAttribute('aria-current');
   navAbout.focus({preventScroll:true});
   resumeLine();
+  syncRoute();
 }
 navAbout.addEventListener('click',e=>{ e.preventDefault(); cvOpen ? closeCV() : openCV(); });
-cvCloseBtn.addEventListener('click',closeCV);
+/* one pill for both sheets — it used to call closeCV alone, so pressing Close
+   on a case study did nothing at all */
+cvCloseBtn.addEventListener('click',()=>{ closeCV(); closeCase(); });
 addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeCV(); closeCase(); } });
+
+/* =============================================================
+   ROUTES — the sheets are the pages people actually come for, so
+   they get addresses: /case/cursor/, /cv/. Three things follow.
+   The Back button closes a sheet instead of leaving the site, a
+   case study can be linked to directly (build.py writes a real
+   file at each address, so the link survives a cold load), and
+   analytics can tell "opened the Cursor case" from "landed".
+   Off in the Artifact build: that URL belongs to the host.
+   ============================================================= */
+const ROUTES = {{ROUTES}};
+let routing = false, routeQueued = false;
+
+const routeNow = () => {
+  const key  = caseOpen && caseKey;
+  const path = key ? `/case/${key}/` : cvOpen ? '/cv/' : '/';
+  const p    = key && PROJECTS.find(x=>x.key===key);
+  document.title = p ? `${p.mark} — Elif Uysal`
+                : cvOpen ? `CV — Elif Uysal`
+                : 'Elif Uysal — Product Designer';
+  if(location.pathname !== path) history.pushState({sheet:path},'',path);
+};
+/* opening a case closes the CV on its way in, so state settles a beat after
+   the call that changed it — one microtask later there is a single answer */
+function syncRoute(){
+  if(!ROUTES || routing || routeQueued) return;
+  routeQueued = true;
+  queueMicrotask(()=>{ routeQueued = false; routeNow(); });
+}
+
+function applyRoute(path){
+  routing = true;
+  const m = path.match(/^\/case\/([a-z0-9-]+)\/?$/);
+  if(m && CASES[m[1]]){ closeCV(); if(caseKey !== m[1]) openCase(m[1]); }
+  else if(/^\/cv\/?$/.test(path)){ closeCase(); openCV(); }
+  else { closeCase(); closeCV(); }
+  routing = false;
+}
+/* wired up in BOOT — CASES and the case sheet are declared further down */
 
 /* =============================================================
    CASE STUDY — six sections, in Elif's own order. Anything she
@@ -1877,6 +1921,7 @@ function openCase(key){
      and #stage is hidden for the duration (see body.case-open) */
   renderChips([]);
   requestAnimationFrame(()=>caseEl.classList.add('open'));
+  syncRoute();
 }
 function closeCase(){
   if(!caseOpen) return;
@@ -1885,6 +1930,7 @@ function closeCase(){
   document.body.classList.remove('case-open','sheet-open');
   caseEl.setAttribute('aria-hidden','true');
   resumeLine();
+  syncRoute();
 }
 
 /* =============================================================
@@ -1940,4 +1986,15 @@ setTimeout(()=>{
 }, 700);
 setTimeout(()=>{ if(scrollY<innerHeight*.6) sayLine('hero2'); }, 4600);
 addEventListener('resize',()=>{ stripX=0; cardW=0; });
+
+/* routes come last: applyRoute reaches for CASES and the sheets, which are
+   declared above this line but only initialised once the script has run */
+if(ROUTES){
+  addEventListener('popstate',()=>{ applyRoute(location.pathname); routeNow(); });
+  /* landed straight on a sheet's address — build.py stamps which one on <body>,
+     so the page opens there with no redirect and no flash of the home page */
+  const entry = document.body.dataset.open;
+  if(entry) applyRoute(entry === 'cv' ? '/cv/' : `/case/${entry.slice(5)}/`);
+  routeNow();
+}
 </script>
