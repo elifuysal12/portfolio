@@ -119,6 +119,11 @@ def wrap(body, title, desc, open_attr='', canonical='/'):
         f'</head>\n<body{open_attr}>\n' + body + '\n</body>\n</html>\n')
 
 
+# the template opens with a <title> because the Artifact host supplies the head
+# and that is the only way to name the tab there. Here the head is ours, and a
+# second title in the body is one a crawler could pick over the right one.
+html = html.replace('<title>Elif Uysal — Product Designer</title>\n', '', 1)
+
 index = os.path.join(ROOT, 'index.html')
 open(index, 'w', encoding='utf-8').write(
     wrap(html, 'Elif Uysal — Product Designer', DESC))
