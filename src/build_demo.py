@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build the Cursor Assistant demo into ../demo/, served from Elif's own domain.
+"""Build the Cursor Assistant demo into ../demo/nore/, on Elif's own domain.
+
+Every runnable prototype gets its own room under /demo, named after the shop it
+is set in — /demo/nore here, /demo/mekik when that one goes up — so the address
+says which demo it is rather than which one happened to be built first.
 
 The prototype lives in its own project (`~/Projects/mavi-cursor-chat`, the NORE
 discovery-cursor). It ships in two flavours there: a local one that pulls its
@@ -20,7 +24,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SRC = os.path.abspath(sys.argv[1] if len(sys.argv) > 1
                       else os.path.join(ROOT, '..', 'mavi-cursor-chat'))
-OUT = os.path.join(ROOT, 'demo')
+OUT = os.path.join(ROOT, 'demo', 'nore')
+# what the tab says: the prototype's own title names the shop, which tells a
+# visitor arriving from the case study nothing about which project this is
+TITLE = 'Cursor Assistant — NORE demo · Elif Beyza Uysal'
 
 if not os.path.isdir(SRC):
     sys.exit(f'prototype not found: {SRC}')
@@ -47,6 +54,7 @@ for p in sorted(used):
                     os.path.join(OUT, 'img', p + '.jpg'))
 
 # one file, so the demo is a single request plus its photographs
+html = re.sub(r'<title>.*?</title>', f'<title>{TITLE}</title>', html, count=1, flags=re.S)
 html = html.replace('<link rel="stylesheet" href="style.css">', '<style>\n' + css + '\n</style>')
 html = re.sub(r'<script src="(data|answers|cursor)\.js"></script>\s*', '', html)
 html = html.replace('</body>', '<script>\n' + '\n'.join([data, answers, cursor]) + '\n</script>\n</body>')
@@ -54,4 +62,5 @@ html = html.replace('</body>', '<script>\n' + '\n'.join([data, answers, cursor])
 page = os.path.join(OUT, 'index.html')
 open(page, 'w', encoding='utf-8').write(html)
 shot = sum(os.path.getsize(os.path.join(OUT, 'img', f)) for f in os.listdir(os.path.join(OUT, 'img')))
-print(f'demo/index.html  {len(html.encode())/1024:.0f} KB  + img {shot/1024:.0f} KB ({len(used)} photos)')
+print(f'{os.path.relpath(page, ROOT)}  {len(html.encode())/1024:.0f} KB'
+      f'  + img {shot/1024:.0f} KB ({len(used)} photos)')

@@ -30,19 +30,21 @@ The hover loop (`case/hover.webp`) is an **animated WebP**, rebuilt from
 `../nore-hover-gif` — same frames as the GIF on the Behance board, full colour
 at a seventh of the bytes.
 
-## The demo
+## The demos
 
-`/demo` is the Cursor Assistant prototype, running on this domain instead of
-the Artifact it was first published to, so *See demo* keeps people on the site.
+Runnable prototypes live under `/demo`, one room each, named after the shop
+they are set in: **`/demo/nore`** is the Cursor Assistant prototype today, and
+`/demo/mekik` can move in beside it. They run on this domain rather than on the
+Artifacts they were first published to, so *See demo* keeps people on the site.
 
 ```bash
 python3 src/build_demo.py            # reads ../mavi-cursor-chat
 ```
 
-It inlines the prototype's CSS/JS and copies its photographs into `demo/img/`
-as plain files — the prototype's own builds either hotlink Unsplash or base64
-everything, and neither belongs on a real site. Output is committed; re-run
-when the prototype changes.
+It inlines the prototype's CSS/JS, retitles the page after the *project* rather
+than the shop, and copies the photographs in as plain files — the prototype's
+own builds either hotlink Unsplash or base64 everything, and neither belongs on
+a real site. Output is committed; re-run when the prototype changes.
 
 ## Structure
 
