@@ -9,7 +9,7 @@ Two outputs, same HTML body:
 Everything is inlined as data: URIs — fonts, the character, the case screens —
 so the site is a single file with no external requests.
 """
-import base64, mimetypes, os, re, sys
+import base64, mimetypes, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -29,21 +29,50 @@ for k, v in SUB.items():
         sys.exit(f'placeholder missing: {k}')
     html = html.replace(k, v)
 
-# {{ASSET:case/s1.webp}} → a full data: URI, so a new screen only needs
-# dropping into src/assets and referencing by path
-def asset(m):
+# {{ASSET:case/s1.webp}} resolves differently per output:
+#
+#   the hosted site  → a real file under assets/, copied next to index.html.
+#     Case screens are 4× Figma exports; inlining them would put a megabyte of
+#     base64 in front of the first paint for a page most visitors never open.
+#     As files they are lazy, cacheable, and can stay at full resolution.
+#
+#   the Artifact copy → a data: URI, because the Artifact CSP blocks every
+#     external host. Those come from assets/case/sm/, the compact re-encode,
+#     to stay under the share-size ceiling.
+SM = os.path.join(HERE, 'assets', 'case', 'sm')
+
+
+def inline(m):
     rel = os.path.join('assets', m.group(1))
-    path = os.path.join(HERE, rel)
+    small = os.path.join(SM, os.path.basename(m.group(1)))
+    path = small if os.path.exists(small) else os.path.join(HERE, rel)
     if not os.path.exists(path):
         sys.exit(f'asset missing: {rel}')
     mime = mimetypes.guess_type(path)[0] or 'application/octet-stream'
-    return f'data:{mime};base64,{b64(rel)}'
+    data = base64.b64encode(open(path, 'rb').read()).decode()
+    return f'data:{mime};base64,{data}'
 
-html, n = re.subn(r'\{\{ASSET:([^}]+)\}\}', asset, html)
+
+def linked(m):
+    rel = m.group(1)                       # e.g. case/s1.webp
+    if not os.path.exists(os.path.join(HERE, 'assets', rel)):
+        sys.exit(f'asset missing: assets/{rel}')
+    return f'assets/{rel}'
+
+
+artifact_html, n = re.subn(r'\{\{ASSET:([^}]+)\}\}', inline, html)
+html, _ = re.subn(r'\{\{ASSET:([^}]+)\}\}', linked, html)
 
 os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
 artifact = os.path.join(ROOT, 'dist', 'portfolio-artifact.html')
-open(artifact, 'w', encoding='utf-8').write(html)
+open(artifact, 'w', encoding='utf-8').write(artifact_html)
+
+# the linked copies, next to index.html
+dst = os.path.join(ROOT, 'assets', 'case')
+os.makedirs(dst, exist_ok=True)
+for f in sorted(os.listdir(os.path.join(HERE, 'assets', 'case'))):
+    if f.endswith('.webp'):
+        shutil.copyfile(os.path.join(HERE, 'assets', 'case', f), os.path.join(dst, f))
 
 # --- the hosted copy ---
 # On a plain web server nobody supplies a <head>: without the charset the em
@@ -70,5 +99,7 @@ page = (
 index = os.path.join(ROOT, 'index.html')
 open(index, 'w', encoding='utf-8').write(page)
 
-print(f'index.html                   {len(page.encode())/1024:.0f} KB  ({n} screens inlined)')
-print(f'dist/portfolio-artifact.html {len(html.encode())/1024:.0f} KB')
+shot = sum(os.path.getsize(os.path.join(dst, f)) for f in os.listdir(dst))
+print(f'index.html                   {len(page.encode())/1024:.0f} KB'
+      f'  + assets/case {shot/1024:.0f} KB ({n} screens)')
+print(f'dist/portfolio-artifact.html {len(artifact_html.encode())/1024:.0f} KB  (screens inlined, compact)')

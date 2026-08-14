@@ -1,9 +1,9 @@
-# elifuysal.com — portfolio
+# elifbeyzauysal.com — portfolio
 
-One self-contained page. Fonts, the character illustration and every case-study
-screen are inlined as `data:` URIs, so the site is a single `index.html` with no
-external requests, no build step on the server and nothing to break when a CDN
-changes.
+One page. Fonts and the character illustration are inlined as `data:` URIs, so
+the page draws in its own type with no external requests. Case-study screens are
+the exception: they are 4× Figma exports and ship as real files under `assets/`,
+lazy and cacheable, rather than a megabyte of base64 in front of the first paint.
 
 ## Editing
 
@@ -14,26 +14,39 @@ generated and will be overwritten.
 python3 src/build.py
 ```
 
-Writes two files from the same body:
+Writes two copies from the same body:
 
 | file | for |
 | --- | --- |
-| `index.html` | what GitHub Pages serves — carries its own `<head>` (charset, viewport, title, favicon) |
-| `dist/portfolio-artifact.html` | what gets published as a Claude Artifact, where the host supplies the `<head>` |
+| `index.html` + `assets/` | what GitHub Pages serves — carries its own `<head>` (charset, viewport, title, favicon), screens linked at full resolution |
+| `dist/portfolio-artifact.html` | what gets published as a Claude Artifact — screens inlined from `src/assets/case/sm/`, because that CSP blocks every external host and the share ceiling is under a megabyte |
 
-New screens: drop the image into `src/assets/case/`, reference it in the
-template as `{{ASSET:case/name.webp}}`, rebuild.
+New screens: export from Figma at **4×** (a 1× export downscaled to card width
+turns the 2px gradient stroke into a sub-pixel smear), drop the file into
+`src/assets/case/`, add a compact copy in `src/assets/case/sm/`, reference it in
+the template as `{{ASSET:case/name.webp}}`, rebuild.
+
+The hover loop (`case/hover.webp`) is an **animated WebP**, rebuilt from
+`../nore-hover-gif` — same frames as the GIF on the Behance board, full colour
+at a seventh of the bytes.
 
 ## Structure
 
 - **Home** — hero, "Who am I?", the drifting project strip, the work index, contact.
 - **CV** — opens from the *About* link (`#cv`), printable as PDF.
 - **Case studies** — a project card opens its page (`#case`). Content lives in
-  `CASES`, keyed by project; anything not written yet renders as a *draft*
-  prompt instead of a claim.
+  `CASES`, keyed by project, as a list of sections with a `k` (kind) each:
+  `claim · two · mid · gap · play · ladder · grid · end`.
 
-Both are full-screen sheets over the site rather than separate pages, so the
-whole thing stays one file. EN/TR throughout.
+Both are full-screen sheets over the site rather than separate pages. EN/TR
+throughout.
+
+The Cursor Assistant case keeps the art direction of Elif's own board — near
+black, the coral→pink ramp, heavy uppercase headings — and alternates centred
+and left-aligned on purpose: centred where the page states something in its own
+voice, left-aligned where it argues. `body.case-open` carries the nav and the
+close button into the dark and hides the character, so the case study speaks
+without her commenting over it.
 
 ## Deploy
 

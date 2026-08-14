@@ -643,134 +643,225 @@ body.sheet-open #stage{z-index:46}
 }
 
 /* ============================================================
-   CASE STUDY — a project card opens its own page over the site,
-   same mechanics as the CV sheet. Six sections, and the weight
-   sits on the decisions: what was chosen, what was left, and
-   what the discarded option would have cost.
+   CASE STUDY — a project card opens its own page over the site.
+   This one keeps the art direction of Elif's own board: near-black
+   ground, coral→pink ramp, heavy uppercase headings, and a layout
+   that alternates on purpose — centred where the page speaks in
+   its own voice, left-aligned where it argues.
    ============================================================ */
 #case{
   position:fixed; inset:0; z-index:45;
   overflow-y:auto; overscroll-behavior:contain;
-  background:var(--paper);
+  background:var(--c-bg); color:var(--c-ink);
   opacity:0; visibility:hidden;
   transition:opacity .34s ease, visibility 0s linear .34s;
-}
-#case.open{opacity:1;visibility:visible;transition:opacity .34s ease}
-.case-sheet{
-  max-width:1120px;margin-inline:auto;
-  padding:clamp(104px,14vh,164px) clamp(20px,5vw,72px) clamp(80px,11vh,140px);
-}
-.case-sheet > *{
-  opacity:0;transform:translateY(30px);
-  transition:opacity .55s ease,transform .8s cubic-bezier(.22,1.14,.32,1);
-}
-#case.open .case-sheet > *{opacity:1;transform:none}
-#case.open .case-sheet > *:nth-child(2){transition-delay:.07s}
-#case.open .case-sheet > *:nth-child(3){transition-delay:.14s}
-#case.open .case-sheet > *:nth-child(4){transition-delay:.21s}
-#case.open .case-sheet > *:nth-child(5){transition-delay:.28s}
-#case.open .case-sheet > *:nth-child(6){transition-delay:.35s}
 
-.case-brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14.5px;color:var(--ink)}
-.case-brand em{font-style:normal;color:var(--muted);font-size:13px}
-.case-title{
-  font-family:var(--display);font-weight:800;letter-spacing:-.045em;line-height:.9;
-  font-size:clamp(52px,9vw,132px);margin-top:12px;
+  --c-bg:#0F1115;
+  --c-bg-2:#121418;
+  --c-ink:#EFEAE7;                       /* the few things that are truly white */
+  --c-head:#BFBFC3;                      /* section headlines sit back a step */
+  --c-body:#8A8B90;
+  --c-line:rgba(255,255,255,.08);
+  --c-o:#FF7643;                         /* ramp start — also the eyebrow colour */
+  --c-p:#FF557D;                         /* ramp end */
+  --c-ramp:linear-gradient(96deg,#FF7643,#FF557D);
+  --cw:min(1200px,90vw);                 /* her board is 1200 inside 1400 */
 }
-/* the one-sentence summary is the headline of the whole page, so it is set
-   in the display face rather than as another paragraph */
-.case-lede{
-  margin-top:clamp(22px,3.4vh,38px);max-width:24ch;
-  font-family:var(--display);font-weight:400;letter-spacing:-.03em;
-  font-size:clamp(23px,3.2vw,42px);line-height:1.14;
-}
-.case-lede em{font-style:normal;color:var(--accent)}
-.case-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(24px,3.6vh,38px)}
-.case-facts i{
-  font-style:normal;display:inline-flex;align-items:center;gap:7px;
-  padding:7px 13px;border-radius:10px;background:rgba(23,20,15,.045);
-  font-size:12.5px;color:var(--ink-2);
-}
-.case-facts svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;
-  stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+/* opening is quick on purpose: while the sheet cross-fades, the light site
+   shows through a dark page. The arrival is carried by the cover animation
+   and the reveals, not by a long fade. */
+#case.open{opacity:1;visibility:visible;transition:opacity .18s ease}
+.case-sheet{padding-bottom:clamp(60px,9vh,110px)}
 
-.case-block{
-  padding-top:clamp(52px,8vh,96px);margin-top:clamp(52px,8vh,96px);
-  border-top:1px solid var(--line);
-}
-.case-block .block-h{margin-bottom:clamp(22px,3.2vh,34px)}
-.case-body{max-width:66ch;font-size:clamp(16px,1.4vw,18px);line-height:1.68;color:var(--ink-2)}
-.case-body + .case-body{margin-top:1.1em}
+/* the character stays on the home page: this sheet has its own voice */
+body.case-open #stage{display:none}
+/* grain multiplies, which on near-black is the same as switching it off */
+body.case-open .grain{mix-blend-mode:screen;opacity:.09}
 
-/* the differentiator: each fork as a card, chosen beside abandoned */
-.moves{display:grid;gap:clamp(14px,2.2vh,22px)}
-.move{background:var(--paper-2);border-radius:22px;padding:clamp(22px,3vw,36px)}
-.move-n{font-size:12.5px;color:var(--muted)}
-.move-h{
-  font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:1.1;
-  font-size:clamp(21px,2.4vw,32px);margin-top:9px;max-width:30ch;
+/* ---- shared rhythm ---- */
+.cs{padding-inline:clamp(20px,5vw,72px)}
+.cs-in{width:var(--cw);margin-inline:auto}
+.cs-in.mid{text-align:center}
+.cs-sec{padding-block:clamp(56px,9vh,120px)}
+.cs-eyebrow{
+  font-family:var(--ui);font-size:13.5px;font-weight:500;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--c-o);
 }
-.move-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.8vw,44px);margin-top:clamp(20px,2.6vh,30px)}
-.move-col b{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-bottom:9px}
-.move-col p{font-size:15px;line-height:1.62;color:var(--ink-2)}
-.move-col.picked b{color:var(--accent)}
-.move-col.picked p{color:var(--ink)}
+.cs-h{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,4.6vw,60px);line-height:1.03;letter-spacing:-.012em;
+  color:var(--c-head);margin-top:clamp(14px,2vh,22px);max-width:20ch;
+}
+.cs-in.mid .cs-h{margin-inline:auto}
+.cs-body{font-size:clamp(15px,1.25vw,17px);line-height:1.62;color:var(--c-body);max-width:62ch}
 
-/* screen slots — a plate until the export lands, never an empty hole */
-.shots{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));
-  gap:clamp(20px,2.8vw,36px);
+/* the warm mesh — bottom-left on the cover, top-left on the gap band, the
+   same light source moving through the page rather than two decorations */
+.cs-mesh{position:relative;isolation:isolate}
+.cs-mesh:before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(126% 104% at -8% 108%, rgba(255,186,158,.72), rgba(255,126,96,.22) 38%, rgba(15,17,21,0) 68%),
+    radial-gradient(86% 76% at 24% 112%, rgba(255,104,120,.30), rgba(15,17,21,0) 70%);
 }
-.shot-frame{
-  aspect-ratio:16/10;border-radius:18px;overflow:hidden;display:grid;place-items:center;
-  background:linear-gradient(160deg,#FBFAF7,#EFEBE3);border:1px solid var(--line);
+.cs-mesh.top:before{
+  background:
+    radial-gradient(126% 104% at -8% -8%, rgba(255,186,158,.62), rgba(255,126,96,.19) 38%, rgba(15,17,21,0) 68%),
+    radial-gradient(86% 76% at 22% -12%, rgba(255,104,120,.26), rgba(15,17,21,0) 70%);
 }
-.shot.tall .shot-frame{aspect-ratio:9/16}
-.shot-frame img{width:100%;height:100%;object-fit:cover;display:block}
-.shot-slot{font-family:var(--display);font-size:13px;color:var(--muted);opacity:.65;padding:0 16px;text-align:center}
-.shot-cap{margin-top:12px;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
-.shot-cap b{
-  display:block;font-family:var(--display);font-weight:800;font-size:15.5px;
-  letter-spacing:-.02em;color:var(--ink);margin-bottom:5px;
-}
-.shots.wide{grid-template-columns:1fr}          /* one screen, full measure */
-.shots.wide .shot-cap{max-width:62ch}
-.case-block .shots{margin-top:clamp(24px,3.4vh,36px)}
-.case-block .shots + .case-body{margin-top:clamp(36px,5vh,58px)}
 
-/* the timing ladder — her own numbers, drawn to scale: the bar is how long
-   the assistant holds its tongue before it earns the right to speak */
-.ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.6vw,36px);margin-top:clamp(22px,3vh,32px)}
-.rung b{display:block;font-family:var(--display);font-weight:800;letter-spacing:-.04em;
-  font-size:clamp(26px,3.2vw,42px);line-height:1}
-.rung i{font-style:normal;display:block;margin-top:7px;font-size:12.5px;color:var(--muted)}
-.rung .bar{position:relative;height:3px;border-radius:2px;background:rgba(23,20,15,.10);margin:14px 0 13px;overflow:hidden}
-.rung .bar span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
-.rung p{font-size:14px;line-height:1.55;color:var(--ink-2)}
-@media (max-width:820px){ .ladder{grid-template-columns:1fr;gap:20px} }
-
-.case-end{margin-top:clamp(56px,9vh,110px);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.case-next{
-  cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
-  font-family:var(--ui);font-size:14px;padding:13px 22px;border-radius:13px;
-  transition:transform .45s cubic-bezier(.34,1.4,.5,1),background .28s ease,border-color .28s ease;
+/* ---- COVER — the pitch, drawn the way the product itself behaves ---- */
+.cover{min-height:min(96svh,880px);display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(90px,12vh,140px) clamp(40px,6vh,70px)}
+.cover-top{
+  width:var(--cw);margin-inline:auto;display:flex;align-items:center;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;margin-bottom:clamp(34px,6vh,74px);
 }
-.case-next:hover{transform:translateY(-2px);background:var(--accent);border-color:var(--accent)}
+.cover-kicker{font-family:var(--ui);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#9B9CA1}
+.sig{display:flex;align-items:center;gap:14px}
+.sig img{width:42px;height:42px;border-radius:50%;display:block;border:1.5px solid var(--c-o)}
+.sig span{font-family:var(--ui);font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--c-o)}
+
+/* four ghost tiles: the catalogue, present but not the point */
+.cover-art{position:relative;width:var(--cw);margin-inline:auto}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.8vw,26px)}
+.tiles i{
+  display:block;aspect-ratio:.74;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  border:1px solid rgba(255,255,255,.05);
+}
+.tiles i:nth-child(1){background:linear-gradient(180deg,rgba(255,166,140,.13),rgba(255,255,255,.02))}
+.tiles i:nth-child(2){background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.02))}
+/* the assistant's two marks: the arrow, and the one line it says */
+.cover-cursor{position:absolute;left:24%;top:34%;width:clamp(46px,5vw,74px);pointer-events:none}
+.cover-cursor svg{width:100%;height:auto;display:block;
+  filter:drop-shadow(0 6px 18px rgba(255,90,110,.42))}
+.cover-say{
+  position:absolute;left:calc(24% + clamp(30px,3.4vw,50px));top:calc(34% + clamp(30px,3.6vw,52px));
+  display:flex;align-items:center;gap:clamp(12px,1.4vw,20px);
+  background:#fff;border-radius:999px;padding:clamp(13px,1.5vw,20px) clamp(14px,1.6vw,22px) clamp(13px,1.5vw,20px) clamp(20px,2.2vw,30px);
+  box-shadow:0 18px 50px rgba(0,0,0,.42);white-space:nowrap;
+  font-family:var(--display);font-weight:600;letter-spacing:-.02em;
+  font-size:clamp(15px,1.9vw,27px);color:#15161A;
+}
+.cover-say b{font-weight:600;background-image:var(--c-ramp);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.cover-say kbd{
+  font-family:var(--ui);font-weight:400;font-size:clamp(11px,.95vw,14px);color:#6C6E74;
+  border:1px solid rgba(0,0,0,.13);border-radius:9px;padding:6px 11px;background:#F4F3F1;
+}
+/* the arrow and its line arrive the way they do in the product — the cursor
+   lands first, the sentence catches up */
+#case.open .cover-cursor{animation:curIn .8s cubic-bezier(.22,1.1,.32,1) both}
+#case.open .cover-say{animation:sayIn .7s cubic-bezier(.22,1.3,.36,1) .34s both;transform-origin:0 50%}
+@keyframes curIn{from{opacity:0;transform:translate(-38px,-26px)}to{opacity:1;transform:none}}
+@keyframes sayIn{from{opacity:0;transform:scale(.9) translateX(-14px)}to{opacity:1;transform:none}}
+/* both keyframes start at opacity 0 — without this the cover would simply be
+   blank for anyone who has motion turned off */
+@media (prefers-reduced-motion:reduce){
+  #case.open .cover-cursor,#case.open .cover-say{animation:none}
+  .rv{opacity:1;transform:none}
+  .rung .bar span{transition:none}
+}
+
+.cover-foot{width:var(--cw);margin-inline:auto;margin-top:clamp(34px,6vh,72px);
+  display:flex;align-items:center;gap:clamp(14px,2vw,26px);flex-wrap:wrap}
+.cs-meta{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--ui);font-size:13px;color:#82838A}
+.cs-meta b{font-weight:400;color:var(--c-ink)}
+
+/* See demo — the only filled control on the page, so it reads as the one
+   thing to press */
+.demo-btn{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;border:0;
+  font-family:var(--ui);font-size:14.5px;color:#15161A;background-image:var(--c-ramp);
+  padding:14px 22px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(255,105,110,.24);
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1),box-shadow .3s ease;
+}
+.demo-btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,105,110,.34)}
+.demo-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- the statement, centred: the page's own sentence ---- */
+.cs-claim{
+  font-family:var(--display);font-weight:800;letter-spacing:-.025em;line-height:1.12;
+  font-size:clamp(28px,4.3vw,56px);margin-top:clamp(16px,2.4vh,26px);
+  background-image:var(--c-ramp);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.cs-lead{font-family:var(--ui);font-size:15px;color:#9B9CA1;letter-spacing:.01em}
+
+/* ---- screens ---- */
+.cs-shots{display:grid;gap:clamp(26px,3.4vw,52px);margin-top:clamp(30px,4.4vh,54px)}
+.cs-shots.two{grid-template-columns:1fr 1fr}
+.cs-shots.mid{width:min(760px,100%);margin-inline:auto}
+.cs-shots.tight{width:min(560px,100%)}   /* the gap is a diagram, not a screen */
+.cs-shots img{width:100%;height:auto;display:block;border-radius:clamp(8px,1vw,14px)}
+.cs-cap{margin-top:clamp(14px,2vh,20px)}
+.cs-cap b{display:block;font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(15px,1.35vw,18px);letter-spacing:-.005em;color:var(--c-ink);margin-bottom:9px}
+.cs-cap.k b{font-family:var(--ui);font-weight:500;font-size:12.5px;letter-spacing:.12em;color:#C9C4C0}
+.cs-cap p{font-size:15px;line-height:1.6;color:var(--c-body)}
+
+/* the hover loop, at the width it was recorded. The ramp is a real 2px frame
+   here rather than part of the picture, so it stays 2px at every size —
+   which is what went wrong when the screens were exported at 1×. */
+.cs-play{position:relative;padding:2px;border-radius:calc(clamp(8px,1vw,16px) + 2px);
+  background-image:var(--c-ramp);box-shadow:0 40px 90px rgba(0,0,0,.45)}
+.cs-play img{width:100%;height:auto;display:block;border-radius:clamp(8px,1vw,16px)}
+
+/* ---- the ladder: her numbers, the bar drawn to the wait ---- */
+.ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(22px,3.2vw,54px);
+  margin-top:clamp(34px,5vh,64px)}
+.rung b{display:block;font-family:var(--display);font-weight:800;letter-spacing:-.035em;
+  font-size:clamp(34px,4.4vw,58px);line-height:1;color:#fff}
+.rung .bar{height:3px;border-radius:2px;background:rgba(255,255,255,.10);margin:16px 0 15px;overflow:hidden}
+.rung .bar span{display:block;height:100%;border-radius:2px;background-image:var(--c-ramp);
+  transform-origin:0 50%;transform:scaleX(0);transition:transform 1s cubic-bezier(.22,1,.3,1) .1s}
+.rung.in .bar span{transform:none}
+.rung i{font-style:normal;display:block;font-family:var(--ui);font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;color:#C9C4C0;margin-bottom:11px}
+.rung p{font-size:14.5px;line-height:1.6;color:var(--c-body)}
+
+/* ---- the sign-off, the way the board ends ---- */
+.cs-sign{display:flex;align-items:center;justify-content:center;gap:clamp(18px,2.4vw,34px);
+  margin-top:clamp(40px,6vh,80px)}
+.cs-sign img{width:clamp(78px,7vw,104px);height:clamp(78px,7vw,104px);border-radius:50%;
+  display:block;border:2px solid var(--c-o)}
+.cs-sign span{font-family:var(--ui);font-size:clamp(17px,2.1vw,28px);letter-spacing:.26em;
+  text-transform:uppercase;color:var(--c-o)}
+.case-end{margin-top:clamp(44px,7vh,84px);display:flex;flex-wrap:wrap;gap:14px;
+  align-items:center;justify-content:center}
 .case-back{
-  cursor:pointer;border:0;background:none;font-family:var(--ui);font-size:15px;color:var(--muted);
-  padding:13px 6px;transition:color .25s ease;
+  cursor:pointer;border:1px solid var(--c-line);background:transparent;
+  font-family:var(--ui);font-size:14.5px;color:#9B9CA1;
+  padding:13px 22px;border-radius:999px;transition:color .25s ease,border-color .25s ease;
 }
-.case-back:hover{color:var(--accent)}
+.case-back:hover{color:var(--c-ink);border-color:rgba(255,255,255,.28)}
 
-/* anything Elif still has to write shows as a prompt, so a draft can never
-   be mistaken for finished copy */
-.todo{color:var(--muted)}
-html[lang="tr"] .todo:before{content:'taslak'}
-.todo:before{
-  content:'draft';display:inline-block;margin-right:10px;padding:3px 9px;border-radius:8px;
-  background:rgba(214,52,42,.09);color:var(--accent);font-size:11.5px;vertical-align:2px;
+@media (max-width:820px){
+  .cs-shots.two{grid-template-columns:1fr}
+  .ladder{grid-template-columns:1fr;gap:26px}
+  .cs-h{max-width:none}
+  .cover-say{position:static;margin-top:18px;white-space:normal;justify-content:space-between}
+  .cover-cursor{left:20%;top:26%}
 }
-@media (max-width:820px){ .move-cols{grid-template-columns:1fr;gap:20px} }
+
+/* the nav and the way out follow the sheet into the dark */
+body.case-open nav{
+  background:rgba(28,29,34,.72);border-color:rgba(255,255,255,.10);
+  box-shadow:0 6px 24px rgba(0,0,0,.34);
+}
+body.case-open nav .mark{color:var(--paper)}
+body.case-open nav .mark i{color:#FF7643}
+body.case-open nav a{color:#B9BABF}
+body.case-open nav a:hover{background:rgba(255,255,255,.09);color:#fff}
+body.case-open .lang{background:rgba(255,255,255,.08)}
+body.case-open .lang button{color:#8A8B90}
+body.case-open .lang button.on{background:#EFEAE7;color:#15161A}
+body.case-open .cv-close{
+  background:rgba(28,29,34,.74);border-color:rgba(255,255,255,.12);color:#B9BABF;
+}
+body.case-open .cv-close:hover{background:#EFEAE7;color:#15161A;border-color:#EFEAE7}
 
 /* Save as PDF — the sheet is the document, so printing drops
    everything that belongs to the screen and keeps the paper. */
@@ -1468,126 +1559,127 @@ addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeCV(); closeCase(); } 
    as a draft, so an unfinished page can never read as a claim.
    ============================================================= */
 const CASE_UI = {
-  en:{
-    s:['The problem','Research','Decision moments','The solution','Result'],
-    p:['Where was the gap, and how did you notice it — which observation, which data, which conversation?',
-       'What are the others doing, and not doing? What did you assume going in, and how did you check it?',
-       'Every fork as: I chose A because ___, and B carried this risk.',
-       'The screens and the flow — one line under each: which problem this screen solves.',
-       'What happened, plus one honest "today I would do this differently".'],
-    picked:'What I chose', left:'What I left', risk:'and the risk it carried',
-    mp:['I chose this because …','…and this is what that choice could have cost.'],
-    slot:'screen', cap:'what this screen solves',
-    back:'← Back to the work', next:'Next project →',
-  },
-  tr:{
-    s:['Problem','Araştırma','Karar anları','Çözüm','Sonuç'],
-    p:['Boşluk neredeydi, bunu nasıl fark ettin — hangi gözlem, hangi veri, hangi sohbet?',
-       'Diğerleri ne yapıyor, ne yapmıyor? Varsayımın neydi, nasıl doğruladın?',
-       'Her çatal şöyle: A’yı seçtim çünkü ___, B’nin şu riski vardı.',
-       'Ekranlar ve akış — her birinin altında tek satır: bu ekran hangi problemi çözüyor.',
-       'Ne oldu, artı dürüst bir "bugün olsa şunu farklı yapardım".'],
-    picked:'Seçtiğim', left:'Bıraktığım', risk:'ve taşıdığı risk',
-    mp:['Bunu seçtim çünkü …','…ve bu seçim şunu göze almak demekti.'],
-    slot:'ekran', cap:'bu ekran neyi çözüyor',
-    back:'← İşlere dön', next:'Sonraki proje →',
-  }
+  en:{ demo:'See demo', back:'← Back to the work', role:'Role', year:'Year', kind:'Project' },
+  tr:{ demo:'Demoyu gör', back:'← İşlere dön', role:'Rol', year:'Yıl', kind:'Proje' }
 };
 
 /* Screens exported from Elif's Figma board (Chatbot Redesign, node 98:8006)
-   and inlined by build.py — the CSP blocks every external host. */
+   at 4× and re-encoded by build.py. `hover` is the recorded loop, an animated
+   WebP rather than the GIF the board carries — same frames, full colour. */
 const A = {
-  hero:'{{ASSET:case/hero.webp}}',
-  bubble:'{{ASSET:case/b1.webp}}', modal:'{{ASSET:case/b2.webp}}', asks:'{{ASSET:case/b3.webp}}',
+  p1:'{{ASSET:case/p1.webp}}', p2:'{{ASSET:case/p2.webp}}', p3:'{{ASSET:case/p3.webp}}',
+  gap:'{{ASSET:case/gap.webp}}', hover:'{{ASSET:case/hover.webp}}', me:'{{ASSET:case/avatar.webp}}',
   s1:'{{ASSET:case/s1.webp}}', s2:'{{ASSET:case/s2.webp}}', s3:'{{ASSET:case/s3.webp}}',
   s4:'{{ASSET:case/s4.webp}}', s5:'{{ASSET:case/s5.webp}}', s6:'{{ASSET:case/s6.webp}}',
 };
 
-/* Real content only — every word here is Elif's own, off the board. What she
-   has not written yet stays a `todo` prompt rather than a claim I invented. */
+/* Every word below is Elif's own, lifted off her board — the page is that
+   board rebuilt as HTML, in her order and her alignment: centred where it
+   states, left-aligned where it argues.
+   Section kinds: claim · two · mid · gap · play · ladder · grid · end */
 const CASES = {
   cursor:{
-    facts:['ai','product','uiux'],
+    demo:'https://claude.ai/code/artifact/70f10327-55ee-4778-afce-7b95d144d288',
     en:{
-      titles:['The problem','The gap','Decision moments','The solution','Where it stands'],
-      lede:'An assistant that speaks up when you need it. Not from a window — <em>from the cursor</em>.',
-      blocks:[
-        [ {p:'The current design is not natural.'},
-          {shots:[
-            {img:A.bubble, h:'The corner bubble', cap:'Invisible until something goes wrong. You open it to complain, not to explore.'},
-            {img:A.modal,  h:'The centre modal',  cap:'Announces discovery — by covering the catalogue it is supposed to help you browse.'}]},
-          {p:'And it asks what the screen already knows.'},
-          {shots:[{img:A.asks, wide:true, cap:'Six minutes on the site, four cuts viewed, one size touched and abandoned. The box opens and asks how it can help.'}]} ],
-        [ {p:'Keep the discovery promise, drop the real estate. Answer behaviour instead of position.'},
-          {todo:'Which stores did you look at, what did you assume going in, and how did you check it?'} ],
-        [],
-        [ {p:'Let the cursor speak when needed — it understands you, then answers you.'},
-          {shots:[{img:A.hero, wide:true, cap:'The storefront the assistant lives in. No panel is reserved for it.'}]},
-          {shots:[
-            {img:A.s1, h:'Describe it, don’t name it', cap:'You don’t need the word for the cut. Say it in your own words and the grid narrows to it.'},
-            {img:A.s2, h:'It speaks from the cursor',  cap:'One line at the tip of the arrow, and Enter if you want more.'},
-            {img:A.s3, h:'The answer is a picture',    cap:'Asked about another colour, it doesn’t list swatches. It swaps the photograph so you see the garment you asked about.'},
-            {img:A.s4, h:'Every guess is deletable',   cap:'What it understood becomes chips you can switch off. Close one and the grid reopens.'},
-            {img:A.s5, h:'It shows, then offers',      cap:'It answers with the pieces themselves and leaves the other routes visible, instead of asking which one you meant.'},
-            {img:A.s6, h:'The fact you’d have asked for', cap:'It leads with what it knows: one left in your size, and whether the basket still makes tomorrow’s delivery.'}]} ],
-        [ {p:'Published as a case study on Behance.'},
-          {todo:'And one honest line: what would you do differently if you started it today?'} ],
-      ],
-      moves:[
-        {h:'It speaks from the cursor',
-         picked:'No panel, no bubble in the corner. One line at the tip of the arrow, and Enter if you want more.',
-         left:'The corner bubble — invisible until something goes wrong, opened to complain rather than to explore. And the centre modal, which announces discovery by covering the catalogue it is supposed to help you browse.'},
-        {h:'The more it knows, the sooner it speaks',
-         picked:'The wait is tied to certainty: 2.8s on context alone, 1.5s once behaviour is in, 0.7s when memory agrees.',
-         ladder:[
+      kicker:'E-commerce AI chatbot',
+      say:'<b>AI Chatbot</b> Redesign Case Study',
+      role:'Product design · AI UX',
+      kind:'Self-initiated concept',
+      sections:[
+        {k:'claim', lead:'What did I do?',
+         h:'Created an assistant that speaks up when you need it.<br>Not from a window, from the cursor.'},
+
+        {k:'two', eyebrow:'The problem', h:'Current design is not natural',
+         shots:[
+           {img:A.p1, t:'The corner bubble',
+            p:'Invisible until something goes wrong. You open it to complain, not to explore.'},
+           {img:A.p2, t:'The centre modal',
+            p:'Announces discovery — by covering the catalogue it is supposed to help you browse.'}]},
+
+        {k:'mid', eyebrow:'The problem', h:'Asks what the screen already knows',
+         img:A.p3,
+         p:'Six minutes on the site, four cuts viewed, one size touched and abandoned. The box opens and asks how it can help.'},
+
+        {k:'gap', lead:'What is the gap?', img:A.gap, t:'The gap',
+         p:'Keep the discovery promise, drop the real estate. Answer behaviour instead of position.'},
+
+        {k:'play', eyebrow:'My solution', h:'Let the cursor speak when needed',
+         img:A.hover,
+         p:'The storefront the assistant lives in. No panel is reserved for it.'},
+
+        {k:'ladder', eyebrow:'When should it speak?', h:'The more it knows, the sooner it speaks.',
+         rungs:[
            {t:'2.8s', h:'Context only', p:'It knows what you are looking at. Nothing more, so it waits longest.'},
            {t:'1.5s', h:'+ Behaviour',  p:'You cycled the photos, touched a size chip and pulled back.'},
            {t:'0.7s', h:'+ Memory',     p:'Your size against low stock, a colour you keep returning to.'}]},
-        {h:'Every guess is deletable',
-         picked:'What it understood becomes chips you can switch off. Close one and the grid reopens — no dead end, no starting over.'},
-        {h:'The answer is a picture',
-         picked:'Asked about another colour, it doesn’t list swatches. It swaps the photograph so you see the garment you asked about.'},
+
+        {k:'grid', eyebrow:'My solution', h:'Understands you, answers you',
+         shots:[
+           {img:A.s1, t:'Describe it, don’t name it',
+            p:'You don’t need the word for the cut. Say it in your own words and the grid narrows to it.'},
+           {img:A.s2, t:'It speaks from the cursor',
+            p:'No panel, no bubble in the corner. One line at the tip of the arrow, and Enter if you want more.'},
+           {img:A.s3, t:'The answer is a picture',
+            p:'Asked about another colour, it doesn’t list swatches. It swaps the photograph so you see the garment you asked about.'},
+           {img:A.s4, t:'Every guess is deletable',
+            p:'What it understood becomes chips you can switch off. Close one and the grid reopens — no dead end, no starting over.'},
+           {img:A.s5, t:'It shows, then offers',
+            p:'It answers with the pieces themselves and leaves the other routes visible, instead of asking which one you meant.'},
+           {img:A.s6, t:'The fact you’d have asked for',
+            p:'It leads with what it knows: one left in your size, and whether the basket still makes tomorrow’s delivery.'}]},
+
+        {k:'end', eyebrow:'That was all', h:'Thank you.'},
       ],
     },
     tr:{
-      titles:['Problem','Boşluk','Karar anları','Çözüm','Nerede duruyor'],
-      lede:'İhtiyacın olduğunda konuşan bir asistan. Bir pencereden değil — <em>imleçten</em>.',
-      blocks:[
-        [ {p:'Bugünkü tasarım doğal değil.'},
-          {shots:[
-            {img:A.bubble, h:'Köşedeki balon', cap:'Bir şey ters gidene kadar görünmez. Onu keşfetmek için değil, şikâyet etmek için açarsın.'},
-            {img:A.modal,  h:'Ortadaki modal', cap:'Keşfi duyurur — hem de gezmene yardım edeceği kataloğun üstünü kapatarak.'}]},
-          {p:'Üstelik ekranın zaten bildiğini sorar.'},
-          {shots:[{img:A.asks, wide:true, cap:'Sitede altı dakika, dört farklı kalıp, dokunulup bırakılmış bir beden. Kutu açılıp “nasıl yardımcı olabilirim” diye soruyor.'}]} ],
-        [ {p:'Keşif vaadini koru, kapladığı yeri bırak. Konuma değil, davranışa cevap ver.'},
-          {todo:'Hangi mağazalara baktın, işin başında varsayımın neydi, nasıl doğruladın?'} ],
-        [],
-        [ {p:'Gerektiğinde imleç konuşsun — önce seni anlasın, sonra cevap versin.'},
-          {shots:[{img:A.hero, wide:true, cap:'Asistanın içinde yaşadığı vitrin. Ona ayrılmış bir panel yok.'}]},
-          {shots:[
-            {img:A.s1, h:'Adını değil, tarifini söyle', cap:'Kalıbın adını bilmen gerekmiyor. Kendi cümlenle söyle, ızgara ona daralsın.'},
-            {img:A.s2, h:'İmleçten konuşur',            cap:'Okun ucunda tek satır; daha fazlası için Enter.'},
-            {img:A.s3, h:'Cevap bir fotoğraf',          cap:'Başka rengi var mı dediğinde renk kutucukları dizmez. Fotoğrafı değiştirir, sorduğun ürünü görürsün.'},
-            {img:A.s4, h:'Her tahmin silinebilir',      cap:'Anladığı şey kapatılabilir çiplere dönüşür. Birini kapat, ızgara yeniden açılır.'},
-            {img:A.s5, h:'Önce gösterir, sonra önerir', cap:'“Hangisini demek istedin” diye sormak yerine ürünlerin kendisiyle cevaplar, diğer yolları da açık bırakır.'},
-            {img:A.s6, h:'Zaten soracağın bilgi',       cap:'Bildiğiyle başlar: bedeninden bir tane kalmış ve sepet yarınki teslimata yetişiyor mu.'}]} ],
-        [ {p:'Behance’te case study olarak yayında.'},
-          {todo:'Bir de dürüst tek cümle: bugün baştan başlasan neyi farklı yapardın?'} ],
-      ],
-      moves:[
-        {h:'İmleçten konuşuyor',
-         picked:'Panel yok, köşede balon yok. Okun ucunda tek satır, fazlasını istersen Enter.',
-         left:'Köşedeki balon — bir şey ters gidene kadar görünmez, keşif için değil şikâyet için açılır. Ve ortadaki modal: gezmene yardım edeceği kataloğun üstünü kapatarak keşfi duyurur.'},
-        {h:'Ne kadar çok bilirse o kadar erken konuşur',
-         picked:'Bekleme süresi kesinliğe bağlı: yalnız bağlamla 2.8sn, davranış eklenince 1.5sn, hafıza da onaylayınca 0.7sn.',
-         ladder:[
+      kicker:'E-ticaret AI chatbot',
+      say:'<b>AI Chatbot</b> yeniden tasarımı',
+      role:'Ürün tasarımı · AI UX',
+      kind:'Kendi başlattığım konsept',
+      sections:[
+        {k:'claim', lead:'Ne yaptım?',
+         h:'İhtiyacın olduğunda konuşan bir asistan tasarladım.<br>Bir pencereden değil, imleçten.'},
+
+        {k:'two', eyebrow:'Problem', h:'Bugünkü tasarım doğal değil',
+         shots:[
+           {img:A.p1, t:'Köşedeki balon',
+            p:'Bir şey ters gidene kadar görünmez. Onu keşfetmek için değil, şikâyet etmek için açarsın.'},
+           {img:A.p2, t:'Ortadaki modal',
+            p:'Keşfi duyurur — hem de gezmene yardım edeceği kataloğun üstünü kapatarak.'}]},
+
+        {k:'mid', eyebrow:'Problem', h:'Ekranın zaten bildiğini sorar',
+         img:A.p3,
+         p:'Sitede altı dakika, dört farklı kalıp, dokunulup bırakılmış bir beden. Kutu açılıp “nasıl yardımcı olabilirim” diye soruyor.'},
+
+        {k:'gap', lead:'Boşluk nerede?', img:A.gap, t:'Boşluk',
+         p:'Keşif vaadini koru, kapladığı yeri bırak. Konuma değil, davranışa cevap ver.'},
+
+        {k:'play', eyebrow:'Çözümüm', h:'Gerektiğinde imleç konuşsun',
+         img:A.hover,
+         p:'Asistanın içinde yaşadığı vitrin. Ona ayrılmış bir panel yok.'},
+
+        {k:'ladder', eyebrow:'Ne zaman konuşmalı?', h:'Ne kadar çok bilirse o kadar erken konuşur.',
+         rungs:[
            {t:'2.8s', h:'Yalnızca bağlam', p:'Neye baktığını biliyor. Fazlası yok, o yüzden en uzun o bekliyor.'},
            {t:'1.5s', h:'+ Davranış',      p:'Fotoğrafları çevirdin, bir beden çipine dokunup geri çekildin.'},
            {t:'0.7s', h:'+ Hafıza',        p:'Bedenin azalan stokla karşılaşıyor, dönüp durduğun bir renk var.'}]},
-        {h:'Her tahmin silinebilir',
-         picked:'Anladığı şey kapatabileceğin çiplere dönüşür. Birini kapat, ızgara yeniden açılır — çıkmaz sokak yok, baştan başlamak yok.'},
-        {h:'Cevap bir fotoğraf',
-         picked:'Başka rengi var mı diye sorduğunda renk kutucukları dizmez. Fotoğrafı değiştirir, sorduğun ürünü görürsün.'},
+
+        {k:'grid', eyebrow:'Çözümüm', h:'Seni anlar, sana cevap verir',
+         shots:[
+           {img:A.s1, t:'Adını değil, tarifini söyle',
+            p:'Kalıbın adını bilmen gerekmiyor. Kendi cümlenle söyle, ızgara ona daralsın.'},
+           {img:A.s2, t:'İmleçten konuşur',
+            p:'Panel yok, köşede balon yok. Okun ucunda tek satır, fazlasını istersen Enter.'},
+           {img:A.s3, t:'Cevap bir fotoğraf',
+            p:'Başka rengi var mı dediğinde renk kutucukları dizmez. Fotoğrafı değiştirir, sorduğun ürünü görürsün.'},
+           {img:A.s4, t:'Her tahmin silinebilir',
+            p:'Anladığı şey kapatabileceğin çiplere dönüşür. Birini kapat, ızgara yeniden açılır — çıkmaz sokak yok, baştan başlamak yok.'},
+           {img:A.s5, t:'Önce gösterir, sonra önerir',
+            p:'“Hangisini demek istedin” diye sormak yerine ürünlerin kendisiyle cevaplar, diğer yolları da açık bırakır.'},
+           {img:A.s6, t:'Zaten soracağın bilgi',
+            p:'Bildiğiyle başlar: bedeninden bir tane kalmış ve sepet yarınki teslimata yetişiyor mu.'}]},
+
+        {k:'end', eyebrow:'Hepsi bu kadar', h:'Teşekkürler.'},
       ],
     },
   }
@@ -1596,72 +1688,110 @@ const CASES = {
 const caseEl=document.getElementById('case'), caseSheet=document.getElementById('caseSheet');
 let caseOpen=false, caseKey=null;
 
-const todo = txt => `<p class="case-body todo">${txt}</p>`;
+const ARROW = '<svg viewBox="0 0 44 52" aria-hidden="true">'+
+  '<defs><linearGradient id="cgr" x1="0" y1="0" x2="1" y2="1">'+
+  '<stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF3F8B"/></linearGradient></defs>'+
+  '<path d="M3 2.6 40.2 26.4a2.4 2.4 0 0 1-.7 4.3l-15.2 3.9a2.4 2.4 0 0 0-1.6 1.3l-6.6 13.4a2.4 2.4 0 0 1-4.5-.9L3.1 4.8A1.7 1.7 0 0 1 3 2.6Z"'+
+  ' fill="url(#cgr)" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>';
+const EXT = '<svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>';
 
-/* one part of a section: a paragraph, a screen row, the timing ladder, or a
-   question Elif has still to answer */
-function casePart(part,u){
-  if(part.p)    return `<p class="case-body">${part.p}</p>`;
-  if(part.todo) return todo(part.todo);
-  if(part.shots) return `<div class="shots${part.shots[0]&&part.shots[0].wide?' wide':''}">${part.shots.map(s=>
-      `<figure class="shot">`+
-        `<div class="shot-frame">${s.img?`<img src="${s.img}" alt="" loading="lazy">`:`<span class="shot-slot">${u.slot}</span>`}</div>`+
-        `<figcaption class="shot-cap${(s.cap||s.h)?'':' todo'}">`+
-          (s.h?`<b>${s.h}</b>`:'')+(s.cap||(s.h?'':u.cap))+
-        `</figcaption>`+
-      `</figure>`).join('')}</div>`;
+const demoBtn = (href,label) =>
+  `<a class="demo-btn" href="${href}" target="_blank" rel="noopener noreferrer">${label}${EXT}</a>`;
+
+/* one screen with its caption — `k` switches the caption to the tracked
+   small-caps label the board uses under the solution screens */
+const shotHTML = (s,k) =>
+  `<figure class="cs-shot rv"><img src="${s.img}" alt="" loading="lazy" decoding="async">`+
+  `<figcaption class="cs-cap${k?' k':''}"><b>${s.t}</b><p>${s.p}</p></figcaption></figure>`;
+
+const headHTML = s =>
+  `<p class="cs-eyebrow rv">${s.eyebrow}</p><h2 class="cs-h rv">${s.h}</h2>`;
+
+function sectionHTML(s,d,u){
+  switch(s.k){
+    case 'claim':
+      return `<section class="cs cs-sec"><div class="cs-in mid">`+
+        `<p class="cs-lead rv">${s.lead}</p><p class="cs-claim rv">${s.h}</p></div></section>`;
+
+    case 'two':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots two">${s.shots.map(x=>shotHTML(x)).join('')}</div></div></section>`;
+
+    case 'mid':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots mid"><figure class="cs-shot rv">`+
+          `<img src="${s.img}" alt="" loading="lazy" decoding="async">`+
+          `<figcaption class="cs-cap"><p>${s.p}</p></figcaption></figure></div></div></section>`;
+
+    case 'gap':
+      return `<section class="cs cs-sec cs-mesh top"><div class="cs-in mid">`+
+        `<p class="cs-lead rv">${s.lead}</p>`+
+        `<div class="cs-shots mid tight"><figure class="cs-shot rv">`+
+          `<img src="${s.img}" alt="" loading="lazy" decoding="async">`+
+          `<figcaption class="cs-cap" style="text-align:left"><b>${s.t}</b><p>${s.p}</p></figcaption>`+
+        `</figure></div></div></section>`;
+
+    case 'play':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots"><figure class="cs-shot rv">`+
+          `<div class="cs-play"><img src="${s.img}" alt="" loading="lazy" decoding="async"></div>`+
+          `<figcaption class="cs-cap"><p>${s.p}</p></figcaption></figure></div></div></section>`;
+
+    case 'ladder':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="ladder">${s.rungs.map(r=>
+          `<div class="rung rv"><b>${r.t}</b>`+
+            `<div class="bar"><span style="width:${Math.round(parseFloat(r.t)/2.8*100)}%"></span></div>`+
+            `<i>${r.h}</i><p>${r.p}</p></div>`).join('')}</div></div></section>`;
+
+    case 'grid':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots two">${s.shots.map(x=>shotHTML(x,1)).join('')}</div></div></section>`;
+
+    case 'end':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-sign rv"><img src="${A.me}" alt=""><span>Elif Beyza Uysal</span></div>`+
+        `<div class="case-end rv">${demoBtn(CASES[caseKey].demo,u.demo)}`+
+          `<button class="case-back" type="button">${u.back}</button></div>`+
+        `</div></section>`;
+  }
   return '';
 }
-const ladderHTML = rows => `<div class="ladder">${rows.map(r=>
-  `<div class="rung"><b>${r.t}</b><i>${r.h}</i>`+
-    `<div class="bar"><span style="width:${Math.round(parseFloat(r.t)/2.8*100)}%"></span></div>`+
-    `<p>${r.p}</p></div>`).join('')}</div>`;
 
 function buildCase(key){
   const p = PROJECTS.find(x=>x.key===key); if(!p) return;
-  const u = CASE_UI[L], c = CASES[key], d = c[L];
-  const head = i => (d.titles && d.titles[i]) || u.s[i];
-  const blocks = (i,extra='') =>
-    `<section class="case-block"><h2 class="block-h">${head(i)}</h2>`+
-    ((d.blocks[i]&&d.blocks[i].length) ? d.blocks[i].map(x=>casePart(x,u)).join('') : todo(u.p[i]))+
-    extra+`</section>`;
-
-  const moves = `<div class="moves">${d.moves.map((m,i)=>
-    `<div class="move">`+
-      `<div class="move-n">${String(i+1).padStart(2,'0')}</div>`+
-      `<h3 class="move-h">${m.h || ''}</h3>`+
-      `<div class="move-cols">`+
-        `<div class="move-col picked"><b>${u.picked}</b>`+
-          (m.picked?`<p>${m.picked}</p>`:`<p class="todo">${u.mp[0]}</p>`)+`</div>`+
-        `<div class="move-col"><b>${u.left} — ${u.risk}</b>`+
-          (m.left?`<p>${m.left}</p>`:`<p class="todo">${u.mp[1]}</p>`)+`</div>`+
-      `</div>`+
-      (m.ladder?ladderHTML(m.ladder):'')+
-    `</div>`).join('')}</div>`;
+  const u = CASE_UI[L], d = CASES[key][L];
 
   caseSheet.innerHTML =
-    `<header>`+
-      `<div class="case-brand">${brandMark(p)}<em>${p.year}</em>`+
-        (p.note?`<span class="entry-note">${t().notes[p.note]}</span>`:'')+`</div>`+
-      `<h1 class="case-title">${p.mark}</h1>`+
-      (d.lede ? `<p class="case-lede">${d.lede}</p>` : `<p class="case-lede todo">${t().proj[key]?t().proj[key].t:''}</p>`)+
-      `<div class="case-facts">${c.facts.map(f=>`<i>${icoSvg(DISC_ICON[f])}${t().disc[f].l}</i>`).join('')}</div>`+
-    `</header>`+
-    blocks(0)+blocks(1)+
-    `<section class="case-block"><h2 class="block-h">${head(2)}</h2>`+
-      (d.moves.some(m=>m.picked)?'':todo(u.p[2]))+moves+`</section>`+
-    blocks(3)+
-    blocks(4)+
-    `<div class="case-end">`+
-      `<button class="case-next" type="button">${u.next}</button>`+
-      `<button class="case-back" type="button">${u.back}</button>`+
-    `</div>`;
+    `<section class="cs cover cs-mesh">`+
+      `<div class="cover-top">`+
+        `<p class="cover-kicker">${d.kicker}</p>`+
+        `<span class="sig"><img src="${A.me}" alt=""><span>Elif Beyza Uysal</span></span>`+
+      `</div>`+
+      `<div class="cover-art">`+
+        `<div class="tiles"><i></i><i></i><i></i><i></i></div>`+
+        `<div class="cover-cursor">${ARROW}</div>`+
+        `<div class="cover-say">${d.say}<kbd>Enter</kbd></div>`+
+      `</div>`+
+      `<div class="cover-foot">`+
+        demoBtn(CASES[key].demo,u.demo)+
+        `<div class="cs-meta">`+
+          `<span>${u.role} <b>${d.role}</b></span>`+
+          `<span>${u.year} <b>${p.year}</b></span>`+
+          `<span>${u.kind} <b>${d.kind}</b></span>`+
+        `</div>`+
+      `</div>`+
+    `</section>`+
+    d.sections.map(s=>sectionHTML(s,d,u)).join('');
 
   caseSheet.querySelector('.case-back').onclick=()=>closeCase();
-  caseSheet.querySelector('.case-next').onclick=()=>{
-    const keys=Object.keys(CASES); const n=keys[(keys.indexOf(key)+1)%keys.length];
-    n===key ? closeCase() : openCase(n);
-  };
+
+  /* the sheet scrolls inside itself, so its own reveal observer replaces the
+     page-level one, which only ever saw the markup present at boot */
+  const o=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); o.unobserve(e.target); }
+  }),{rootMargin:'0px 0px -12% 0px',threshold:.06});
+  caseSheet.querySelectorAll('.rv').forEach(el=>o.observe(el));
 }
 
 function openCase(key){
@@ -1671,7 +1801,9 @@ function openCase(key){
   caseOpen=true; caseEl.scrollTop=0;
   document.body.classList.add('case-open','sheet-open');
   caseEl.setAttribute('aria-hidden','false');
-  sayProject(key); renderChips([]);
+  /* she stays on the home page — the case study speaks in its own voice,
+     and #stage is hidden for the duration (see body.case-open) */
+  renderChips([]);
   requestAnimationFrame(()=>caseEl.classList.add('open'));
 }
 function closeCase(){
@@ -1692,7 +1824,7 @@ function applyLang(){
     const k=el.dataset.i18n; if(t()[k]!==undefined) el.innerHTML=t()[k];
   });
   buildStrip(); buildBand(); buildIndex(); splitStatement();
-  if(caseOpen){ buildCase(caseKey); sayProject(caseKey); return; }
+  if(caseOpen){ buildCase(caseKey); return; }
   if(cvOpen){ buildCV(); cvLines(); return; }   // the sheet is open — swap it in place
   zone=''; // force the current line to re-say itself in the new language
   const y=scrollY;
