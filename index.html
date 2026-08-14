@@ -746,12 +746,21 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
 }
 .tiles i:nth-child(1){background:linear-gradient(180deg,rgba(255,166,140,.13),rgba(255,255,255,.02))}
 .tiles i:nth-child(2){background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.02))}
-/* the assistant's two marks: the arrow, and the one line it says */
-.cover-cursor{position:absolute;left:24%;top:34%;width:clamp(46px,5vw,74px);pointer-events:none}
+/* The assistant's two marks — the arrow and the one line it says — ride a
+   single rig, so the pair can be handed over to the real pointer inside the
+   catalogue and spring back to its parked pose on the way out. The rig has no
+   size: its origin is the arrow's tip, which is what the pointer sits at. */
+.cover-rig{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;will-change:transform}
+.cover-art.live,.cover-art.live *{cursor:none}
+.cover-cursor{position:absolute;left:0;top:0;width:clamp(46px,5vw,74px)}
 .cover-cursor svg{width:100%;height:auto;display:block;
   filter:drop-shadow(0 6px 18px rgba(255,90,110,.42))}
+/* the slot carries the side-flip, the pill carries its own entry animation —
+   one transform each, so neither overwrites the other */
+.say-slot{position:absolute;left:clamp(30px,3.4vw,50px);top:clamp(30px,3.6vw,52px);width:max-content;
+  transition:transform .34s cubic-bezier(.22,1.1,.32,1)}
+.cover-rig.flip .say-slot{transform:translateX(calc(-100% - clamp(38px,4vw,60px)))}
 .cover-say{
-  position:absolute;left:calc(24% + clamp(30px,3.4vw,50px));top:calc(34% + clamp(30px,3.6vw,52px));
   display:flex;align-items:center;gap:clamp(12px,1.4vw,20px);
   background:#fff;border-radius:999px;padding:clamp(13px,1.5vw,20px) clamp(14px,1.6vw,22px) clamp(13px,1.5vw,20px) clamp(20px,2.2vw,30px);
   box-shadow:0 18px 50px rgba(0,0,0,.42);white-space:nowrap;
@@ -836,15 +845,9 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
   letter-spacing:.12em;text-transform:uppercase;color:#C9C4C0;margin-bottom:11px}
 .rung p{font-size:14.5px;line-height:1.6;color:var(--c-body)}
 
-/* ---- the sign-off, the way the board ends ---- */
-.cs-sign{display:flex;align-items:center;justify-content:center;gap:clamp(18px,2.4vw,34px);
-  margin-top:clamp(40px,6vh,80px)}
-.cs-sign img{width:clamp(78px,7vw,104px);height:clamp(78px,7vw,104px);border-radius:50%;
-  display:block;border:2px solid var(--c-o)}
-.cs-sign span{font-family:var(--ui);font-size:clamp(17px,2.1vw,28px);letter-spacing:.26em;
-  text-transform:uppercase;color:var(--c-o)}
-.case-end{margin-top:clamp(44px,7vh,84px);display:flex;flex-wrap:wrap;gap:14px;
-  align-items:center;justify-content:center}
+/* ---- the sign-off: the name is already on the cover, so the end is the
+   thank-you and the two ways on ---- */
+.case-end{margin-top:clamp(40px,6vh,74px);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 .case-back{
   cursor:pointer;border:1px solid var(--c-line);background:transparent;
   font-family:var(--ui);font-size:14.5px;color:#9B9CA1;
@@ -856,8 +859,12 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
   .cs-shots.two{grid-template-columns:1fr}
   .ladder{grid-template-columns:1fr;gap:26px}
   .cs-h{max-width:none}
-  .cover-say{position:static;margin-top:18px;white-space:normal;justify-content:space-between}
-  .cover-cursor{left:20%;top:26%}
+  /* no pointer to hand the arrow to: the rig collapses and the pair goes back
+     to sitting in the flow, the arrow over the tiles, the line beneath them */
+  .cover-rig{position:static;transform:none !important}
+  .cover-cursor{left:16%;top:24%}
+  .say-slot{position:static;transform:none !important;width:auto;margin-top:18px}
+  .cover-say{white-space:normal;justify-content:space-between}
 }
 
 /* the nav and the way out follow the sheet into the dark */
@@ -1593,7 +1600,10 @@ const A = {
    Section kinds: claim · two · mid · gap · play · ladder · grid · end */
 const CASES = {
   cursor:{
-    demo:'https://claude.ai/code/artifact/70f10327-55ee-4778-afce-7b95d144d288',
+    /* the prototype runs on Elif's own domain rather than the Artifact it was
+       first published to — absolute, so the link also works from the Artifact
+       build of this page. Built by src/build_demo.py into /demo. */
+    demo:'https://elifbeyzauysal.com/demo/',
     en:{
       kicker:'E-commerce AI chatbot',
       say:'<b>AI Chatbot</b> Redesign Case Study',
@@ -1764,12 +1774,70 @@ function sectionHTML(s,d,u){
 
     case 'end':
       return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
-        `<div class="cs-sign rv"><img src="${A.me}" alt=""><span>Elif Beyza Uysal</span></div>`+
         `<div class="case-end rv">${demoBtn(CASES[caseKey].demo,u.demo)}`+
           `<button class="case-back" type="button">${u.back}</button></div>`+
         `</div></section>`;
   }
   return '';
+}
+
+/* THE COVER HANDS THE POINTER OVER.
+   The page argues that the assistant should be the cursor, so inside the
+   catalogue it is: the native arrow is hidden and the gradient one takes the
+   pointer's exact position, the sentence trailing at its tip. Leave the tiles —
+   or scroll the cover away — and the pair springs back to the parked pose the
+   board was drawn in, and the machine's own cursor comes back.
+   Mouse only: there is no pointer to borrow on a touch screen. */
+function wireCover(){
+  const art = caseSheet.querySelector('.cover-art');
+  const rig = art && art.querySelector('.cover-rig');
+  if(!rig) return;
+
+  const park = () => {                        // the pose in Elif's board
+    const r = art.getBoundingClientRect();
+    return [r.width * .24, r.height * .34];
+  };
+  const put = (x,y) => rig.style.transform = `translate3d(${x}px,${y}px,0)`;
+  const goPark = spring => {
+    rig.style.transition = spring ? 'transform .72s cubic-bezier(.22,1.1,.32,1)' : 'none';
+    rig.classList.remove('flip');
+    const [x,y] = park(); put(x,y);
+  };
+  goPark(false);
+
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+
+  let live = false, cx = 0, cy = 0;            // last pointer, in client space
+  const follow = () => {
+    const r = art.getBoundingClientRect();
+    const x = cx - r.left, y = cy - r.top;
+    /* the pill needs room on the right; against the window — not the tile
+       block — it swaps sides, so it only flips when it would truly be cut off
+       rather than every time it crosses the last column */
+    const slot = rig.querySelector('.say-slot');
+    rig.classList.toggle('flip', cx + slot.offsetWidth + 70 > innerWidth);
+    put(x,y);
+  };
+  const stop = () => { if(!live) return; live = false; art.classList.remove('live'); goPark(true); };
+
+  art.addEventListener('pointerenter', e => {
+    if(e.pointerType !== 'mouse') return;
+    live = true; art.classList.add('live'); rig.style.transition = 'none';
+    cx = e.clientX; cy = e.clientY; follow();
+  });
+  art.addEventListener('pointermove', e => {
+    if(!live) return;
+    cx = e.clientX; cy = e.clientY; follow();
+  });
+  art.addEventListener('pointerleave', stop);
+  /* scrolling moves the cover out from under a still pointer, so no pointermove
+     fires and the arrow would drift off it */
+  caseEl.addEventListener('scroll', () => {
+    if(!live) return;
+    const r = art.getBoundingClientRect();
+    (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) ? stop() : follow();
+  }, {passive:true});
+  addEventListener('resize', () => { live ? follow() : goPark(false); });
 }
 
 function buildCase(key){
@@ -1784,8 +1852,10 @@ function buildCase(key){
       `</div>`+
       `<div class="cover-art">`+
         `<div class="tiles"><i></i><i></i><i></i><i></i></div>`+
-        `<div class="cover-cursor">${ARROW}</div>`+
-        `<div class="cover-say">${d.say}<kbd>Enter</kbd></div>`+
+        `<div class="cover-rig">`+
+          `<div class="cover-cursor">${ARROW}</div>`+
+          `<div class="say-slot"><div class="cover-say">${d.say}<kbd>Enter</kbd></div></div>`+
+        `</div>`+
       `</div>`+
       `<div class="cover-foot">`+
         demoBtn(CASES[key].demo,u.demo)+
@@ -1799,6 +1869,7 @@ function buildCase(key){
     d.sections.map(s=>sectionHTML(s,d,u)).join('');
 
   caseSheet.querySelector('.case-back').onclick=()=>closeCase();
+  wireCover();
 
   /* the sheet scrolls inside itself, so its own reveal observer replaces the
      page-level one, which only ever saw the markup present at boot */

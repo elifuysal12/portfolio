@@ -37,15 +37,16 @@ for k, v in SUB.items():
 #     As files they are lazy, cacheable, and can stay at full resolution.
 #
 #   the Artifact copy → a data: URI, because the Artifact CSP blocks every
-#     external host. Those come from assets/case/sm/, the compact re-encode,
-#     to stay under the share-size ceiling.
-SM = os.path.join(HERE, 'assets', 'case', 'sm')
+#     external host. Same full-resolution files: a compact re-encode kept the
+#     page under the share-size ceiling but read as soft, which is the one
+#     thing these screens cannot be. Publishing is fine up to ~2.3 MB; a page
+#     this size may refuse to produce a share link, and the shareable address
+#     is the domain anyway.
 
 
 def inline(m):
     rel = os.path.join('assets', m.group(1))
-    small = os.path.join(SM, os.path.basename(m.group(1)))
-    path = small if os.path.exists(small) else os.path.join(HERE, rel)
+    path = os.path.join(HERE, rel)
     if not os.path.exists(path):
         sys.exit(f'asset missing: {rel}')
     mime = mimetypes.guess_type(path)[0] or 'application/octet-stream'
@@ -102,4 +103,4 @@ open(index, 'w', encoding='utf-8').write(page)
 shot = sum(os.path.getsize(os.path.join(dst, f)) for f in os.listdir(dst))
 print(f'index.html                   {len(page.encode())/1024:.0f} KB'
       f'  + assets/case {shot/1024:.0f} KB ({n} screens)')
-print(f'dist/portfolio-artifact.html {len(artifact_html.encode())/1024:.0f} KB  (screens inlined, compact)')
+print(f'dist/portfolio-artifact.html {len(artifact_html.encode())/1024:.0f} KB  (screens inlined at full resolution)')
