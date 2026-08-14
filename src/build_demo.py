@@ -58,12 +58,32 @@ for p in sorted(used):
 BEACON = ("<script defer src='https://static.cloudflareinsights.com/beacon.min.js' "
           "data-cf-beacon='{\"token\": \"589b26a9898440e583a7272ff182a1e4\"}'></script>")
 
+# The prototype was drawn against an Orbina brief and names it in the footer and
+# in three design notes. On Elif's own site the work is hers, so the brand comes
+# out — of the page and of the source anyone reads. Exact strings, and the
+# assertion below, so this fails loudly rather than quietly shipping the name if
+# the prototype's wording changes.
+SCRUB = [
+    ('Orbina.ai · keşif imleci prototipi', 'Powered by Elif Beyza Uysal'),
+    ("gradient Orbina'nın, kabuk markanın", 'gradient asistanın, kabuk markanın'),
+    ("Orbina'nın sıcak rampasından", 'asistanın sıcak rampasından'),
+    ('Orbina AI rampası', 'AI rampası'),
+]
+
 # one file, so the demo is a single request plus its photographs
 html = re.sub(r'<title>.*?</title>', f'<title>{TITLE}</title>', html, count=1, flags=re.S)
 html = html.replace('</head>', BEACON + '\n</head>', 1)
 html = html.replace('<link rel="stylesheet" href="style.css">', '<style>\n' + css + '\n</style>')
 html = re.sub(r'<script src="(data|answers|cursor)\.js"></script>\s*', '', html)
 html = html.replace('</body>', '<script>\n' + '\n'.join([data, answers, cursor]) + '\n</script>\n</body>')
+
+for old, new in SCRUB:
+    if old not in html:
+        sys.exit(f'scrub target moved, check the prototype: {old!r}')
+    html = html.replace(old, new)
+left = re.findall(r'.{0,40}[Oo]rbina.{0,40}', html)
+if left:
+    sys.exit('Orbina still in the demo: ' + ' / '.join(left))
 
 page = os.path.join(OUT, 'index.html')
 open(page, 'w', encoding='utf-8').write(html)
