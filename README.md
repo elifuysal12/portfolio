@@ -107,9 +107,12 @@ Its work-card cover is the only one not exported from Figma. The project was
 made in code, so the cover is drawn in code too — `src/cover_sunninja.html`,
 in the prototype's own Poppins over the Sunrise ramp from its own `DAY` table,
 laid out the way the Figma covers are: eyebrow, the page's own sentence with
-the second line in the accent, one support line, and the artefact bleeding off
-the right edge. The artefact is a slice of the page at **noon** while the
-ground is dawn, so the claim is proved on the card rather than described.
+the second line in the accent, one support line, and the work beside it on one
+flat pale tone — the ground is a single colour for the same reason base360's
+is, a gradient behind a screenshot of a gradient reads as noise. The artefact
+is a plain uncropped shot of the **product** page: the landing repeats the
+cover's own sentence in its hero, and the product page shows more of the
+design anyway.
 Shoot it and downscale (already 16:10, hence `--ratio native` — the widening
 path reads the peach gradient at the bottom as a rule and paints a band across
 it); the exact command is in the file's own comment.
