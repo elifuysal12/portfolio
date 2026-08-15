@@ -58,20 +58,15 @@ than the shop, and copies the photographs in as plain files — the prototype's
 own builds either hotlink Unsplash or base64 everything, and neither belongs on
 a real site. Output is committed; re-run when the prototype changes.
 
-Prototypes that live in Figma rather than in code get the same kind of room,
-built from a table of share links:
-
 ```bash
-python3 src/build_demo_figma.py      # /demo/base360
+python3 src/build_demo_base360.py    # reads ../base360-journey.html
 ```
 
-Elif's own chrome — her paper, her type, a way back to the work — around the
-Figma player. Two things matter in that URL: the prototype must be shared
-publicly in Figma (Share → *Anyone with the link* → can view), or visitors get
-a login wall where the work should be; and the scaling must be
-`scale-down-width`. `contain` fits a whole landing-page frame into the window
-and hands you a postage stamp, `min-zoom` refuses to go below 100% and crops
-the right-hand side.
+base360's prototype is already one self-contained file — no external requests,
+nothing to copy — so that build is a head, a credit line in the footer and the
+beacon. A Figma embed was tried here first and taken out: an embedded player is
+a picture of the work behind someone else's chrome, and the point of a demo is
+that it runs.
 
 ## The work cards
 
