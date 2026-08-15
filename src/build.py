@@ -93,9 +93,11 @@ for sub in ('case', 'cover'):                 # case screens, project cover shot
 # On a plain web server nobody supplies a <head>: without the charset the em
 # dashes and Turkish characters arrive as mojibake, and without the viewport
 # tag phones render the page at 980px.
-FAVICON = ('data:image/svg+xml,'
-           "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E"
-           "%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E")
+# No tab icon: the title carries the tab. An empty SVG rather than no <link> at
+# all — drop the link and the browser goes looking for /favicon.ico, misses, and
+# falls back to its own generic page glyph, which is the thing being removed.
+FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'"
+           "%20viewBox='0%200%201%201'%3E%3C/svg%3E")
 DESC = ('Elif Uysal — product designer. Selected work, the CV, '
         'and the Cursor Assistant case study.')
 
