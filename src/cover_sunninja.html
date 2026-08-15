@@ -34,32 +34,29 @@
   src:url(/assets/font/sn-po-600i.woff2) format('woff2')}
 
 :root{
-  --sky-1:#FFE0AE; --sky-2:#FF8A66;
+  /* one flat tone, the way base360's cover sits on one pale blue: the sky
+     ramp belongs to the page, and a gradient behind a screenshot of a
+     gradient reads as noise. This is the Sunrise `foam` off the same DAY
+     table, lifted a little so navy type has somewhere to land. */
+  --paper:#FFEDDC;
   --ink:#20366C; --accent:#0F7FA8;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1600px;height:1000px;overflow:hidden}
 body{
   font-family:'Poppins',system-ui,sans-serif;
-  background:linear-gradient(176deg,var(--sky-1) 0%,#FFC79A 46%,var(--sky-2) 100%);
+  background:var(--paper);
   position:relative;
-}
-/* the sun sits where the page puts it at first light: low, left of centre,
-   a wide soft bloom rather than a disc */
-.sun{
-  position:absolute; left:26%; top:34%; width:1100px; height:1100px;
-  transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
-  background:radial-gradient(circle,rgba(255,247,214,.85) 0%,rgba(255,236,190,.42) 34%,rgba(255,225,175,0) 68%);
 }
 .wrap{position:relative; height:100%; display:flex; align-items:center; padding:0 0 0 96px}
 
-.copy{width:620px; flex:none}
+.copy{width:560px; flex:none}
 .eyebrow{
   font-size:15px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
   color:var(--accent); margin-bottom:34px;
 }
 .claim{
-  font-size:82px; font-weight:700; line-height:1.0; letter-spacing:-.025em;
+  font-size:72px; font-weight:700; line-height:1.02; letter-spacing:-.025em;
   color:var(--ink);
 }
 .claim em{display:block; font-style:italic; font-weight:600; color:var(--accent)}
@@ -69,16 +66,19 @@ body{
 }
 
 /* the artefact, off the right edge the way the phone runs off base360's */
+/* the whole band, not a crop of it: the panel is cut to the shot's own ratio
+   so the page sits inside at page scale. Zoomed in, its headline grows past
+   the cover's own and the card reads as two competing claims. */
 .shot{
-  position:absolute; left:790px; top:130px; width:900px; height:740px;
-  border-radius:26px; overflow:hidden;
-  box-shadow:0 46px 90px rgba(32,54,108,.30), 0 4px 14px rgba(32,54,108,.16);
+  position:absolute; left:706px; top:202px; width:844px; height:594px;
+  border-radius:18px; overflow:hidden;
+  box-shadow:0 34px 68px rgba(32,54,108,.20), 0 2px 8px rgba(32,54,108,.10);
 }
 .shot img{width:100%; height:100%; object-fit:cover; object-position:left top; display:block}
 </style>
 </head>
 <body>
-<div class="sun"></div>
+
 <div class="wrap">
   <div class="copy">
     <p class="eyebrow">Sun Ninja · Storefront redesign</p>
