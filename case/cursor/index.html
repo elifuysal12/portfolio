@@ -1012,6 +1012,9 @@ const PROJECTS = [
    year:'2026', note:'grad', disc:['service','uiux','product']},
 
   {key:'cursor',  mark:'Cursor Assistant',    style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
+   /* ← Elif: kapak görseli. Dosyayı src/assets/cover/ içine koy, sonra bu
+      satırı ASSET yer tutucusuyla doldur: cover:'…cover/cursor.webp…' — 16:10 */
+   cover:null,
    logo:null,      /* ← Elif: proje logosu */       client:'Personal',         clientLogo:null,
    year:'2026', disc:['ai','product','uiux']},
 
@@ -1275,8 +1278,13 @@ function buildIndex(){
     a.className='entry rv'; a.dataset.key=p.key;
     a.href = (ROUTES && CASES[p.key]) ? `/case/${p.key}/` : '#';
     const line = t().proj[p.key] ? t().proj[p.key].t : '';
-    // no export yet? the slot shows a typographic plate rather than a hole
-    const media = p.logo
+    /* three ways to fill the slot, in order of how much they say:
+         cover → a photograph of the work, edge to edge
+         logo  → the project's mark, centred small
+         neither → the name set as type, deliberate rather than empty */
+    const media = p.cover
+      ? `<img src="${p.cover}" alt="${p.mark}">`
+      : p.logo
       ? `<img class="plate-img" src="${p.logo}" alt="${p.mark}">`
       : `<span class="plate" style="${p.style}">${p.mark}</span>`;
     const note = p.note ? `<span class="entry-note">${t().notes[p.note]}</span>` : '';

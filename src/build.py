@@ -77,11 +77,17 @@ artifact = os.path.join(ROOT, 'dist', 'portfolio-artifact.html')
 open(artifact, 'w', encoding='utf-8').write(artifact_html)
 
 # the linked copies, next to index.html
-dst = os.path.join(ROOT, 'assets', 'case')
-os.makedirs(dst, exist_ok=True)
-for f in sorted(os.listdir(os.path.join(HERE, 'assets', 'case'))):
-    if f.endswith('.webp'):
-        shutil.copyfile(os.path.join(HERE, 'assets', 'case', f), os.path.join(dst, f))
+copied = []
+for sub in ('case', 'cover'):                 # case screens, project cover shots
+    src_dir = os.path.join(HERE, 'assets', sub)
+    if not os.path.isdir(src_dir):
+        continue
+    dst = os.path.join(ROOT, 'assets', sub)
+    os.makedirs(dst, exist_ok=True)
+    for f in sorted(os.listdir(src_dir)):
+        if f.endswith('.webp'):
+            shutil.copyfile(os.path.join(src_dir, f), os.path.join(dst, f))
+            copied.append(os.path.join(dst, f))
 
 # --- the hosted copy ---
 # On a plain web server nobody supplies a <head>: without the charset the em
@@ -148,8 +154,8 @@ for path, opens, title, desc in ROUTE_PAGES:
 open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8').write(
     wrap(html, 'Elif Uysal — Product Designer', DESC))
 
-shot = sum(os.path.getsize(os.path.join(dst, f)) for f in os.listdir(dst))
+shot = sum(os.path.getsize(f) for f in copied)
 print(f'index.html                   {os.path.getsize(index)/1024:.0f} KB'
-      f'  + assets/case {shot/1024:.0f} KB ({n} screens)')
+      f'  + assets {shot/1024:.0f} KB ({n} images)')
 print('routes                       ' + ', '.join('/%s/' % p for p, *_ in ROUTE_PAGES) + ', 404.html')
 print(f'dist/portfolio-artifact.html {len(artifact_html.encode())/1024:.0f} KB  (screens inlined at full resolution)')
