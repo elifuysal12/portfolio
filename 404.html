@@ -1017,9 +1017,9 @@ const PROJECTS = [
    year:'2026', note:'grad', disc:['service','uiux','product']},
 
   {key:'cursor',  mark:'Cursor Assistant',    style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
-   /* ← Elif: kapak görseli. Dosyayı src/assets/cover/ içine koy, sonra bu
-      satırı ASSET yer tutucusuyla doldur: cover:'…cover/cursor.webp…' — 16:10 */
-   cover:null, coverBg:'#0F1115',   /* coverBg dolu → görsel kırpılmaz, artan yer bu renkle dolar */
+   /* kapak: 109:14 frame'inin 4× export'u, src/make_cover.py ile 16:10'a
+      genişletilip küçültülmüş. coverBg dolu olduğu için görsel kırpılmıyor. */
+   cover:'/assets/cover/cursor.webp', coverBg:'#0F1115',
    logo:null,      /* ← Elif: proje logosu */       client:'Personal',         clientLogo:null,
    year:'2026', disc:['ai','product','uiux']},
 

@@ -23,8 +23,20 @@ Writes two copies from the same body:
 
 New screens: export from Figma at **4×** (a 1× export downscaled to card width
 turns the 2px gradient stroke into a sub-pixel smear), drop the file into
-`src/assets/case/`, add a compact copy in `src/assets/case/sm/`, reference it in
-the template as `{{ASSET:case/name.webp}}`, rebuild.
+`src/assets/case/`, reference it in the template as `{{ASSET:case/name.webp}}`,
+rebuild.
+
+Work-card covers go through one more step, because the cards are 16:10 and the
+cover frames are not:
+
+```bash
+python3 src/make_cover.py cursor ~/Downloads/cover@4x.png
+```
+
+It widens the artwork to 16:10 with the artwork's own background rather than
+cropping it, carries the coral rule along the bottom edge out to both corners,
+and downscales from 4× so the thin strokes stay clean. Set `cover` on the
+project and `coverBg` to that background.
 
 The hover loop (`case/hover.webp`) is an **animated WebP**, rebuilt from
 `../nore-hover-gif` — same frames as the GIF on the Behance board, full colour
