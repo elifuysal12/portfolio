@@ -180,13 +180,38 @@ main{{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 /* the room's own line, under the desk — the nav belongs to the site, this
    belongs to the prototype */
 .cap{{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;
-  margin:22px 0 0;font-size:13.5px;color:var(--dim)}}
+  margin:20px 0 0;font-size:13.5px;color:var(--dim)}}
 .cap b{{color:var(--paper);font-weight:600;letter-spacing:-.01em}}
-.cap button,.cap a{{display:inline-flex;align-items:center;gap:6px;font:inherit;
-  color:#B4B7C2;text-decoration:none;cursor:pointer;background:none;border:0;
-  border-bottom:1px solid rgba(243,239,231,.2);padding:0 0 1px;
-  transition:color .2s ease,border-color .2s ease}}
-.cap button:hover,.cap a:hover{{color:var(--coral);border-color:var(--coral)}}
+
+/* THE ACTIONS, in the site's own two weights — this is `.demo-btn` from the
+   case studies and `.go`/`.quiet` from the phone room, to the pixel: same
+   pill, same 14.5px, same 14/22, same ramp, same spring lift. The secondary
+   is NOT an outlined copy of the primary — an outline-only control is on the
+   list of tells to keep off this site — it is a quiet icon and a word that
+   brightens on hover. Ranked, so the page answers "what now". */
+.acts{{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  margin:18px 0 0}}
+.go{{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  font-size:14.5px;color:#15161A;background-image:var(--ramp);
+  padding:14px 22px;border-radius:999px;margin-right:10px;
+  box-shadow:0 10px 30px rgba(255,118,67,.26);
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1),box-shadow .3s ease;
+}}
+.go:hover{{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,118,67,.36)}}
+.quiet{{
+  display:inline-flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer;
+  font-family:inherit;font-size:13.5px;color:var(--dim);
+  border:0;background:none;padding:9px 12px;border-radius:10px;
+  transition:color .2s ease;
+}}
+.quiet:hover{{color:#fff}}
+.acts svg{{width:15px;height:15px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .3s cubic-bezier(.34,1.4,.5,1)}}
+.go:hover svg{{transform:translateX(2px)}}
+.quiet:hover svg{{transform:translateX(2px)}}
+#restart:hover svg{{transform:rotate(-40deg)}}
 .foot-note{{flex:0 0 auto;padding:10px clamp(14px,3vw,26px) 14px;font-size:12.5px;
   color:#6B6F7B;text-align:center}}
 
@@ -228,8 +253,16 @@ main{{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 
   <p class="cap">
     <span><b>Chatbot Dashboard</b> &middot; <span data-i18n="sub">Jotform, inside WordPress</span></span>
-    <button id="restart" data-i18n="restart">Start over</button>
-    <a href="{PROTO}" target="_blank" rel="noopener noreferrer" data-i18n="figma">Open in Figma</a>
+  </p>
+  <p class="acts">
+    <a class="go" href="https://elifbeyzauysal.com/#work"><span data-i18n="more">See more work</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg></a>
+    <button class="quiet" type="button" id="restart">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg>
+      <span data-i18n="restart">Start over</span></button>
+    <a class="quiet" href="{PROTO}" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>
+      <span data-i18n="figma">Open in Figma</span></a>
   </p>
 </main>
 
@@ -254,7 +287,9 @@ main{{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
     var padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
     var availW = main.clientWidth - padX - (narrow?14:28);
     // bezel 14 + chin 30 + neck 52 + foot 16 = 112, and a little slack under it
-    var availH = main.clientHeight - padY - (narrow?0:122) - cap.offsetHeight - 14;
+    var acts = document.querySelector('.acts');
+    var availH = main.clientHeight - padY - (narrow?0:122)
+                 - cap.offsetHeight - acts.offsetHeight - 14;
     var k = narrow ? availW/W : Math.min(availW/W, availH/H);
     k = Math.max(.16, Math.min(k, 1));
     screen.style.width  = Math.round(W*k)+'px';
@@ -284,11 +319,13 @@ var T = {{
   en:{{ work:'Work', about:'About', contact:'Contact',
        sub:'Jotform, inside WordPress',
        loading:'Loading the prototype', restart:'Start over', figma:'Open in Figma',
+       more:'See more work',
        foot:'A clickable prototype — the sidebar, the tabs and the cards all respond.<br>'+
             'Analytics for Jotform AI Chatbot · design by '+CREDIT+'.' }},
   tr:{{ work:'İşler', about:'Hakkında', contact:'İletişim',
        sub:'WordPress içinde Jotform',
        loading:'Prototip yükleniyor', restart:'Baştan başlat', figma:'Figma\\u2019da aç',
+       more:'Diğer işlere bak',
        foot:'Tıklanabilir prototip — kenar çubuğu, sekmeler ve kartlar cevap veriyor.<br>'+
             'Jotform AI Chatbot analitiği · tasarım: '+CREDIT+'.' }}
 }};
