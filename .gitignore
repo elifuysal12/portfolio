@@ -2,3 +2,6 @@ dist/
 .DS_Store
 src/cover_alti/_profile/
 src/cover_alti/_render.png
+src/thy-exports/
+src/cover_thy/_profile/
+src/cover_thy/_render.png

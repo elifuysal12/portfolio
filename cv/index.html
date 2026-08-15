@@ -997,6 +997,62 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
     radial-gradient(86% 76% at 26% -12%, rgba(255,99,161,.22), rgba(5,15,43,0) 70%);
 }
 
+/* =============================================================
+   REMOTE CONTROLLER (THY) — the deck this page is built from is
+   drawn on WHITE end to end, with one red (#C81800, her value,
+   not the airline's #E81932) and one charcoal: #2D2D2D, the body
+   of the controller itself. So unlike ALTI there is no second
+   band to alternate — `alt` is unused here on purpose, and the
+   one dark section is the gap, painted the controller's own
+   charcoal rather than a colour invented for the page.
+   ============================================================= */
+#case[data-theme="thy"]{
+  --c-bg:#FFFFFF;
+  --c-bg-2:#F6F3F3;                      /* the warm grey wash off her slides */
+  --c-ink:#1A1514;
+  --c-head:#1A1514;                      /* on paper the headline leads */
+  --c-body:#6E6663;
+  --c-line:#EBE4E3;
+  --c-o:#C81800;                         /* every heading on her deck */
+  --c-p:#FF5C2E;
+  --c-ramp:linear-gradient(96deg,#C81800,#FF5C2E);
+  --c-quiet:#A49B99;
+}
+#case[data-theme="thy"] .cs-sec.alt{background:var(--c-bg-2)}
+#case[data-theme="thy"] .cs-lead,
+#case[data-theme="thy"] .cover-kicker,
+#case[data-theme="thy"] .cs-meta,
+#case[data-theme="thy"] .cs-cap.k b{color:var(--c-quiet)}
+#case[data-theme="thy"] .case-back{color:var(--c-body);border-color:var(--c-line)}
+#case[data-theme="thy"] .case-back:hover{color:var(--c-ink);border-color:#D9CFCD}
+/* the numerals and the dots between the stats are navy in ALTI's sheet */
+#case[data-theme="thy"] .rows i,
+#case[data-theme="thy"] .stats span+span:before{color:#DCD3D1}
+/* the cover is a white slide on a white page, so it needs an edge rather than
+   the deep shadow the dark sheets drop behind it */
+#case[data-theme="thy"] .cover-shot{
+  border:1px solid var(--c-line);box-shadow:0 30px 70px -40px rgba(26,21,20,.45);
+}
+#case[data-theme="thy"] .cs-mesh:before{
+  background:
+    radial-gradient(120% 96% at -6% 112%, rgba(200,24,0,.13), rgba(255,92,46,.07) 42%, rgba(255,255,255,0) 72%),
+    radial-gradient(84% 74% at 24% 116%, rgba(255,92,46,.10), rgba(255,255,255,0) 72%);
+}
+#case[data-theme="thy"] .cs-mesh.top:before{
+  background:
+    radial-gradient(120% 96% at -6% -12%, rgba(200,24,0,.12), rgba(255,92,46,.06) 42%, rgba(255,255,255,0) 72%),
+    radial-gradient(84% 74% at 22% -16%, rgba(255,92,46,.09), rgba(255,255,255,0) 72%);
+}
+/* the gap band: the controller's charcoal, lit by its own red */
+#case[data-theme="thy"] .cs-sec.band{background:#2D2D2D}
+#case[data-theme="thy"] .cs-sec.band:before{
+  background:
+    radial-gradient(70% 120% at 50% 50%, rgba(200,24,0,.34), rgba(45,45,45,0) 68%),
+    radial-gradient(50% 90% at 86% 8%, rgba(255,92,46,.18), rgba(45,45,45,0) 70%);
+}
+#case[data-theme="thy"] .cs-sec.band .cs-eyebrow{color:#FF7A5C}
+#case[data-theme="thy"] .band-p{color:#C6BFBD}
+
 /* ---- the cover: her photograph, the type over it ---- */
 .alti-cover{
   position:relative;overflow:hidden;isolation:isolate;
@@ -1118,6 +1174,42 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
   letter-spacing:-.01em;color:var(--c-ink);margin-bottom:9px}
 .rows p{margin:0;font-size:15px;line-height:1.62;color:var(--c-body);max-width:76ch}
 
+/* ---- the information architecture, rebuilt rather than screenshotted ----
+   On the deck this is a diagram of chips; exported it would be an image of
+   type, unreadable on a phone and invisible to search. As markup it reflows,
+   it stays selectable, and the grouping — one column per intent — is carried
+   by the layout instead of by a picture of a layout. */
+.ia{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(10px,1.1vw,16px);
+  margin-top:clamp(32px,4.6vh,56px);align-items:start}
+.ia-col{display:grid;gap:8px}
+.ia-col b{
+  font-family:var(--ui);font-weight:500;font-size:12.5px;letter-spacing:.02em;
+  color:#fff;background:var(--c-o);border-radius:9px;padding:13px 12px;text-align:center;
+}
+.ia-col span,.ia-col i{
+  font-style:normal;font-family:var(--ui);font-size:12px;letter-spacing:.01em;
+  border-radius:9px;padding:11px 12px;text-align:center;
+}
+.ia-col span{background:#2D2D2D;color:#fff}          /* the controller's own body */
+.ia-col i{background:var(--c-bg-2);color:var(--c-body);border:1px solid var(--c-line)}
+/* the leaf keys hang off the level above them, so the indent is the diagram */
+.ia-sub{display:grid;gap:6px;margin-left:14px;padding-left:12px;
+  border-left:1px solid var(--c-line)}
+
+/* ---- the note the page has to carry ---- */
+.nda{display:flex;gap:0;margin-top:clamp(8px,1.4vh,18px);
+  border-radius:0 16px 16px 0;overflow:hidden}
+.nda:before{content:'';flex:0 0 4px;background-image:var(--c-ramp)}
+/* flex:1 or it sizes to its content — the ramp rule would then run down the
+   side of a box two thirds the width of everything above it */
+.nda-in{flex:1;padding:clamp(22px,2.6vw,32px);background:var(--c-bg-2);
+  display:grid;grid-template-columns:auto 1fr;gap:clamp(16px,2vw,24px);align-items:start}
+.nda svg{width:26px;height:26px;fill:none;stroke:var(--c-o);stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;margin-top:2px}
+.nda b{display:block;font-family:var(--display);font-weight:600;letter-spacing:-.012em;
+  font-size:clamp(17px,1.6vw,21px);color:var(--c-ink);margin-bottom:10px}
+.nda p{margin:0;font-size:15px;line-height:1.65;color:var(--c-body);max-width:72ch}
+
 /* the count, above the sign-off — what the project actually came to */
 .stats{font-family:var(--ui);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--c-quiet);margin-bottom:clamp(26px,4.4vh,54px)}
@@ -1127,11 +1219,14 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
   .pcards{grid-template-columns:1fr 1fr}
   .flow{grid-template-columns:repeat(3,1fr);gap:22px}
   .trio{grid-template-columns:1fr;gap:38px}
+  .ia{grid-template-columns:repeat(3,1fr)}
 }
 @media (max-width:560px){
   .flow{grid-template-columns:1fr 1fr}
   .pcards{grid-template-columns:1fr}
   .rows .row{grid-template-columns:1fr;gap:8px}
+  .ia{grid-template-columns:1fr 1fr}
+  .nda-in{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){.ti .rule{transition:none;transform:none}}
 
@@ -1310,6 +1405,12 @@ const PROJECTS = [
    year:'2025', disc:['web','product','ai']},
 
   {key:'thy',     mark:'Remote Controller', style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
+   /* kapak: sunum destesinin kendi kapak slaytı (345:3794), 4× export.
+      Slayt 16:9, kart 16:10 — YANDAN KIRPILMADI: fotoğrafın yuvarlatılmış sağ
+      köşesi kartın kenarına 75px kalıyor, 96px kırpmak onu yerdi. slice_thy.py
+      bunun yerine üstten ve alttan beyaz ekliyor; slaytın ilk ve son satırı
+      zaten baştan sona saf beyaz, yani dikiş görünmüyor. */
+   cover:'/assets/cover/thy.webp', coverBg:'#FFFFFF',
    logo:null,                                       client:'Turkish Airlines', clientLogo:null,  /* ← Elif: THY logosu */
    year:'2025', disc:['uiux']},
 
@@ -1422,7 +1523,7 @@ const T = {
       alti:    {i:'compass', t:'My graduation project, made with Commencis — a hybrid physical–digital system that gets people exploring the history of the city they live in. Five flows and 79 screens, from the object on the street to the app in your hand.'},
       cursor:  {i:'cursor',  t:'An e-commerce assistant that speaks from the cursor instead of a chat window.'},
       chatbot: {i:'chart',   t:'A chatbot analytics dashboard for Jotform, built with a team of three — design, frontend, backend.'},
-      thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved."},
+      thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved — and under NDA, so the page shows the alternates."},
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
       base360: {i:'monitor', t:'A full website redesign for base360 — click and the prototype runs.'},
       sunninja:{i:'monitor', t:'A concept redesign of the Sun Ninja storefront — the sky, and the whole palette with it, moves with the sun as you scroll. Click and the prototype runs.'},
@@ -1469,7 +1570,7 @@ const T = {
       alti:    {i:'compass', t:'Commencis ile yaptığım bitirme projem — insanları yaşadıkları şehrin tarihini keşfetmeye iten hibrit fiziksel–dijital bir sistem. Sokaktaki nesneden elindeki uygulamaya, beş akış ve 79 ekran.'},
       cursor:  {i:'cursor',  t:'Sohbet penceresinden değil, imleçten konuşan bir e-ticaret asistanı.'},
       chatbot: {i:'chart',   t:'Jotform için chatbot analitik paneli; tasarım, frontend ve backend’den oluşan üç kişilik ekiple.'},
-      thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı.'},
+      thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı — ve NDA kapsamında, o yüzden sayfada alternatifler var.'},
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
       base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı — tıkla, prototip çalışsın.'},
       sunninja:{i:'monitor', t:'Sun Ninja mağazası için konsept yeniden tasarım — kaydırdıkça gökyüzü, onunla birlikte bütün palet günün saatine göre değişiyor. Tıkla, prototip çalışsın.'},
@@ -2012,6 +2113,19 @@ const B = {
   w4:'/assets/alti/w4.webp', w5:'/assets/alti/w5.webp',
   g1:'/assets/alti/g1.webp', g2:'/assets/alti/g2.webp', g3:'/assets/alti/g3.webp',
   g4:'/assets/alti/g4.webp', g5:'/assets/alti/g5.webp',
+};
+
+/* Remote Controller — cut out of the deck's 4× slide exports by
+   src/slice_thy.py. `hero` is the deck's own cover slide, whole; `fin1` and
+   `fin2` are the two showcase arrays, which bleed off their frames on the
+   board and go on bleeding here. */
+const C = {
+  hero:'/assets/thy/hero.webp',
+  p1:'/assets/thy/p1.webp', p2:'/assets/thy/p2.webp', p3:'/assets/thy/p3.webp',
+  w1:'/assets/thy/w1.webp', w2:'/assets/thy/w2.webp', w3:'/assets/thy/w3.webp',
+  w4:'/assets/thy/w4.webp', w5:'/assets/thy/w5.webp',
+  l1:'/assets/thy/l1.webp', l2:'/assets/thy/l2.webp',
+  comp:'/assets/thy/comp.webp', fin1:'/assets/thy/fin1.webp', fin2:'/assets/thy/fin2.webp',
 };
 
 /* the board's two problem illustrations and its three model icons, kept as
@@ -2580,6 +2694,180 @@ const CASES = {
          stats:['5 akış','79 ekran','4 görüşme','Tamamen bağlı prototip']},
       ],
     },
+  },
+
+  /* REMOTE CONTROLLER — Elif's four-slide deck (Portfolyo_2026, page 345:3793)
+     rebuilt as a page. The one thing this case does that the others do not:
+     it says what it is NOT showing. The design that was approved and went into
+     the product is under NDA, so the page carries the alternates she drew
+     around the same problem, and the `nda` block before the sign-off says so
+     in her own words rather than in a disclaimer nobody reads.
+     Two departures from the deck, both deliberate:
+       · the architecture is rebuilt as markup, not exported as a picture of a
+         diagram — see the `ia` kind.
+       · the deck labels the volume group "Voice Control", which is the Turkish
+         "ses kontrolü" coming back through translation; its children are
+         Increase / Decrease, so the page says Volume.
+     Section kinds: claim · three · band · ia · flow · two · play · mid ·
+     rows · nda · end. */
+  thy:{
+    theme:'thy', light:true, coverShot:C.hero,
+    en:{
+      kicker:'In-flight entertainment · Turkish Airlines',
+      say:'Remote Control UI for Turkish Airlines',
+      role:'UI/UX',
+      kind:'Client work, under NDA',
+      sections:[
+        {k:'claim', lead:'What did I do?',
+         h:'Rebuilt the in-flight remote around<br>the few controls a hand reaches for.'},
+
+        {k:'three', eyebrow:'The research', h:'Hardest to use in the one place it is always used',
+         intro:'In-flight entertainment remote controllers are used in constrained physical conditions, where attention, reach and visibility are all limited. Existing controllers answer that by showing every control at once, with no order of priority — which makes even the basic actions harder than they need to be.',
+         shots:[
+           {img:C.p1, t:'Overloaded control layout',
+            p:'Too many buttons compete for attention in a limited space, reducing visual clarity. Most of them you never learn the function of.'},
+           {img:C.p2, t:'Unclear action hierarchy',
+            p:'Primary and secondary actions look alike, which increases cognitive load. On the phone version the controller becomes a second screen to read.'},
+           {img:C.p3, t:'Limited physical ergonomics',
+            p:'The interaction requires frequent switching between the controller and the screen, breaking the flow of whatever you were watching.'}]},
+
+        {k:'band', lead:'What is the gap?',
+         q:'“Attention, reach and visibility are all limited — and the remote asks for all three at once.”',
+         lab:'The gap',
+         p:'Stop making the passenger read the controller.<br>Give them a surface the thumb can find without leaving the film.'},
+
+        {k:'ia', eyebrow:'Information architecture', h:'Grouped by intent, not by button count',
+         intro:'The structure groups controls by what someone is trying to do, and separates primary navigation from secondary and system-level actions. It is what lets a passenger find the one thing they came for without scanning the whole interface.',
+         cols:[
+           {h:'Control buttons', kids:['Touchpad','Buttons'], sub:['Left','Right','Up','Down']},
+           {h:'Volume',          kids:['Increase','Decrease']},
+           {h:'Return home'},
+           {h:'Back'},
+           {h:'Play / OK'},
+           {h:'Brightness',      kids:['Increase','Decrease']}]},
+
+        {k:'flow', eyebrow:'Wireframes', h:'Drawn to be reached, not only to be read',
+         intro:'Wireframes were used to test button hierarchy, spacing and reachability. The goal was that the actions used most often are also the easiest ones to hit.',
+         steps:[
+           {img:C.w1, p:'The ring around OK, with volume and brightness as rails in the bottom corners.'},
+           {img:C.w2, p:'The same frame with the touchpad in it; the pair at the top switches between the two.'},
+           {img:C.w3, p:'Touchpad given the full height, and the system actions moved down into a bar of their own.'},
+           {img:C.w4, p:'Ring again — home and back pulled up beside it rather than left in the bar.'},
+           {img:C.w5, p:'Secondary actions to the top, the ring to the bottom half: the part of a phone a thumb can cover.'}]},
+
+        {k:'two', eyebrow:'Wireframes · landscape', h:'The same controller, turned',
+         shots:[
+           {img:C.l1, t:'Touchpad left, keys right',
+            p:'Held sideways the work splits between two thumbs: the pad under one, the four keys under the other, brightness in the rail between them.'},
+           {img:C.l2, t:'Ring left, keys right',
+            p:'The same frame with the ring in place of the pad — one tab, two ways to drive the same screen.'}]},
+
+        {k:'play', eyebrow:'Finalization', h:'Core actions first, everything else quieter',
+         img:C.fin1,
+         p:'The final direction simplifies the control surface by emphasising the core actions and sharpening the visual hierarchy. Layout and contrast are set for fast recognition and comfortable use in a seated, low-attention environment.'},
+
+        {k:'mid', eyebrow:'Finalization', h:'And the same thing held sideways',
+         img:C.fin2,
+         p:'Landscape is not a second product. The same components and the same ranking, rearranged for two thumbs instead of one.'},
+
+        {k:'play', eyebrow:'The system', h:'Component set',
+         img:C.comp,
+         p:'Volume and brightness as rails, OK as the one filled red circle on the screen, and every state drawn before a single screen used it — which is what keeps two orientations and two input modes looking like one remote.'},
+
+        {k:'rows', eyebrow:'Looking back', h:'What I would put in front of people next',
+         items:[
+           {b:'Reach is argued here, not measured',
+            p:'Every layout on this page assumes a phone held in one hand, in a seat, with the tray down. That is exactly the kind of claim ten minutes in a mock seat would settle, and it has not been run.'},
+           {b:'Two modes still cost a decision',
+            p:'Buttons and Touchpad both exist because both are genuinely useful. But someone reaching for the remote mid-film has to pick one first, and I never checked which one they reach for.'},
+           {b:'Red is carrying the whole hierarchy',
+            p:'Priority is signalled almost entirely by colour. In a dark cabin with the screen dimmed, that ranking should be checked against contrast values, not against a screenshot.'}]},
+
+        {k:'nda', t:'About what is shown on this page',
+         p:'The design that was approved and went into the product is covered by an NDA, so it is not here. Everything above comes from the alternative directions I drew around the same problem — kept for the thinking rather than for the outcome.'},
+
+        {k:'end', mesh:1, eyebrow:'That was all', h:'Thank you.',
+         stats:['3 pain points','7 wireframes','2 orientations','1 component set']},
+      ],
+    },
+    tr:{
+      kicker:'Uçak içi eğlence · Türk Hava Yolları',
+      say:'Türk Hava Yolları için Remote Control UI',
+      role:'UI/UX',
+      kind:'Müşteri projesi, NDA kapsamında',
+      sections:[
+        {k:'claim', lead:'Ne yaptım?',
+         h:'Uçak içi kumandayı, elin gerçekten uzandığı<br>birkaç kontrolün etrafında yeniden kurdum.'},
+
+        {k:'three', eyebrow:'Araştırma', h:'En çok kullanıldığı yerde en zor kullanılıyor',
+         intro:'Uçak içi eğlence kumandaları; dikkatin, erişimin ve görüşün kısıtlı olduğu fiziksel koşullarda kullanılıyor. Mevcut kumandalar buna bütün kontrolleri aynı anda göstererek cevap veriyor — öncelik sırası olmadan. En basit işler bile olması gerekenden zor hâle geliyor.',
+         shots:[
+           {img:C.p1, t:'Aşırı yüklü kontrol düzeni',
+            p:'Sınırlı bir alanda çok sayıda tuş birbiriyle yarışıyor, görsel netlik düşüyor. Çoğunun ne işe yaradığını hiç öğrenmiyorsun.'},
+           {img:C.p2, t:'Belirsiz aksiyon hiyerarşisi',
+            p:'Birincil ve ikincil aksiyonlar birbirine benziyor, bilişsel yük artıyor. Telefondaki sürümde kumanda, okunması gereken ikinci bir ekrana dönüşüyor.'},
+           {img:C.p3, t:'Kısıtlı fiziksel ergonomi',
+            p:'Etkileşim, kumanda ile ekran arasında sürekli geçiş gerektiriyor; izlediğin şeyin akışı her seferinde bölünüyor.'}]},
+
+        {k:'band', lead:'Boşluk nerede?',
+         q:'“Dikkat de, erişim de, görüş de kısıtlı — kumanda üçünü birden istiyor.”',
+         lab:'Boşluk',
+         p:'Yolcuya kumandayı okutma.<br>Başparmağın filmi bırakmadan bulabileceği bir yüzey ver.'},
+
+        {k:'ia', eyebrow:'Bilgi mimarisi', h:'Tuş sayısına göre değil, niyete göre gruplandı',
+         intro:'Yapı, kontrolleri kişinin ne yapmaya çalıştığına göre grupluyor; birincil gezinmeyi ikincil ve sistem düzeyindeki aksiyonlardan ayırıyor. Yolcunun aradığı tek şeyi bütün arayüzü taramadan bulmasını sağlayan şey bu.',
+         cols:[
+           {h:'Kontrol tuşları', kids:['Touchpad','Tuşlar'], sub:['Sol','Sağ','Yukarı','Aşağı']},
+           {h:'Ses',             kids:['Artır','Azalt']},
+           {h:'Ana ekran'},
+           {h:'Geri'},
+           {h:'Oynat / OK'},
+           {h:'Parlaklık',       kids:['Artır','Azalt']}]},
+
+        {k:'flow', eyebrow:'Wireframe’ler', h:'Okunsun diye değil, uzanılsın diye çizildi',
+         intro:'Wireframe’ler tuş hiyerarşisini, aralıkları ve erişilebilirliği test etmek için kullanıldı. Amaç, en sık kullanılan aksiyonların aynı zamanda en kolay basılanlar olmasıydı.',
+         steps:[
+           {img:C.w1, p:'OK’in çevresindeki halka; ses ve parlaklık alt köşelerde birer ray olarak.'},
+           {img:C.w2, p:'Aynı çerçeve, bu kez touchpad ile — üstteki ikili, ikisi arasında geçiş yapıyor.'},
+           {img:C.w3, p:'Touchpad tam yüksekliğe çıktı, sistem aksiyonları kendi çubuğuna indi.'},
+           {img:C.w4, p:'Halka geri geldi; ana ekran ve geri, çubukta kalmak yerine halkanın yanına alındı.'},
+           {img:C.w5, p:'İkincil aksiyonlar üste, halka alt yarıya: telefonun başparmakla örtülebilen kısmına.'}]},
+
+        {k:'two', eyebrow:'Wireframe’ler · yatay', h:'Aynı kumanda, yan çevrilmiş',
+         shots:[
+           {img:C.l1, t:'Solda touchpad, sağda tuşlar',
+            p:'Yatayken iş iki başparmağa bölünüyor: pad birinin altında, dört tuş diğerinin; parlaklık ikisinin arasındaki rayda.'},
+           {img:C.l2, t:'Solda halka, sağda tuşlar',
+            p:'Aynı çerçevenin pad yerine halkalı hâli — tek sekme, aynı ekranı sürmenin iki yolu.'}]},
+
+        {k:'play', eyebrow:'Finalizasyon', h:'Önce çekirdek aksiyonlar, gerisi daha sessiz',
+         img:C.fin1,
+         p:'Son yön, kontrol yüzeyini çekirdek aksiyonları öne çıkararak sadeleştiriyor ve görsel hiyerarşiyi keskinleştiriyor. Yerleşim ve kontrast; oturur pozisyonda, dikkatin düşük olduğu bir ortamda hızlı tanıma ve rahat kullanım için ayarlandı.'},
+
+        {k:'mid', eyebrow:'Finalizasyon', h:'Ve aynı şeyin yan tutulan hâli',
+         img:C.fin2,
+         p:'Yatay, ikinci bir ürün değil. Aynı bileşenler ve aynı sıralama; tek başparmak yerine ikisine göre yeniden dizilmiş.'},
+
+        {k:'play', eyebrow:'Sistem', h:'Bileşen seti',
+         img:C.comp,
+         p:'Ses ve parlaklık birer ray, OK ekrandaki tek dolu kırmızı daire ve her durum, tek bir ekran onu kullanmadan önce çizilmiş — iki yönü ve iki girdi modunu tek bir kumanda gibi gösteren şey bu.'},
+
+        {k:'rows', eyebrow:'Geriye bakınca', h:'Sırada bunları insanların önüne koymak var',
+         items:[
+           {b:'Erişim burada ölçülmedi, savunuldu',
+            p:'Bu sayfadaki her yerleşim; tek elde tutulan bir telefonu, koltukta, masa açıkken varsayıyor. Tam da sahte bir koltukta on dakikada çözülecek türden bir iddia ve henüz denenmedi.'},
+           {b:'İki mod hâlâ bir karara mal oluyor',
+            p:'Tuşlar da Touchpad de gerçekten işe yaradığı için duruyor. Ama filmin ortasında kumandaya uzanan biri önce birini seçmek zorunda ve hangisine uzandığını hiç kontrol etmedim.'},
+           {b:'Hiyerarşiyi tek başına kırmızı taşıyor',
+            p:'Öncelik neredeyse tamamen renkle veriliyor. Karanlık bir kabinde, ekran kısıkken bu sıralama ekran görüntüsüne değil kontrast değerlerine karşı kontrol edilmeli.'}]},
+
+        {k:'nda', t:'Bu sayfada ne gösterildiği hakkında',
+         p:'Onaylanan ve ürüne giren tasarım NDA kapsamında, o yüzden burada yok. Yukarıdaki her şey, aynı problem etrafında çizdiğim alternatif yönlerden — sonucu değil, düşünme biçimini göstermek için duruyorlar.'},
+
+        {k:'end', mesh:1, eyebrow:'Hepsi bu kadar', h:'Teşekkürler.',
+         stats:['3 problem','7 wireframe','2 yön','1 bileşen seti']},
+      ],
+    },
   }
 };
 
@@ -2625,6 +2913,13 @@ function sectionHTML(s,d,u){
     case 'two':
       return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
         `<div class="cs-shots two">${s.shots.map(x=>shotHTML(x)).join('')}</div></div></section>`;
+
+    /* three across with the full caption, not the tracked label `devices` uses:
+       these are the pain points, and each one has a sentence to make */
+    case 'three':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        (s.intro?`<p class="cs-body rv" style="margin-top:clamp(18px,2.6vh,28px)">${s.intro}</p>`:'')+
+        `<div class="cs-shots three">${s.shots.map(x=>shotHTML(x)).join('')}</div></div></section>`;
 
     case 'mid':
       return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
@@ -2730,6 +3025,34 @@ function sectionHTML(s,d,u){
         `<div class="rows">${s.items.map((n,i)=>
           `<div class="row rv"><i>0${i+1}</i><div><b>${n.b}</b><p>${n.p}</p></div></div>`).join('')}</div>`+
         `</div></section>`;
+
+    /* ---- Remote Controller's own kinds ---- */
+
+    /* the architecture as markup rather than as a picture of a diagram: it
+       reflows on a phone, it stays selectable, and the grouping is carried by
+       the layout instead of by an export of a layout */
+    case 'ia':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        (s.intro?`<p class="cs-body rv" style="margin-top:clamp(18px,2.6vh,28px)">${s.intro}</p>`:'')+
+        `<div class="ia">${s.cols.map(c=>
+          `<div class="ia-col rv"><b>${c.h}</b>`+
+            (c.kids||[]).map(k=>`<span>${k}</span>`).join('')+
+            (c.sub?`<div class="ia-sub">${c.sub.map(k=>`<i>${k}</i>`).join('')}</div>`:'')+
+          `</div>`).join('')}</div>`+
+        `</div></section>`;
+
+    /* what the page is not showing, and why. It sits with the argument rather
+       than in a footnote, because a reader who never reaches it would leave
+       thinking these screens are the ones that shipped. */
+    case 'nda':
+      return `<section class="${secCls(s)}"><div class="cs-in"><div class="nda rv">`+
+        `<div class="nda-in">`+
+          `<svg viewBox="0 0 24 24" aria-hidden="true">`+
+            `<rect x="4" y="10.2" width="16" height="10.8" rx="2.6"/>`+
+            `<path d="M7.8 10.2V7.4a4.2 4.2 0 0 1 8.4 0v2.8"/><path d="M12 14.4v2.6"/>`+
+          `</svg>`+
+          `<div><b>${s.t}</b><p>${s.p}</p></div>`+
+        `</div></div></div></section>`;
 
     case 'end':
       return `<section class="${secCls(s)}${s.mesh?' cs-mesh':''}"><div class="cs-in">`+

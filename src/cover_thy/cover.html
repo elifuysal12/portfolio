@@ -1,0 +1,84 @@
+<!doctype html><meta charset="utf-8">
+<!-- The Remote Controller cover. Rendered by ../make_cover_thy.py, not opened
+     by hand: it is a 2600x1625 plate and the browser has to be that size.
+
+     Why not the deck's own cover slide: it was tried first and it is a SLIDE —
+     small type in the left third, a photograph in a rounded frame on the
+     right, a lot of empty middle, and the deck's section numeral "3" welded to
+     the first word. On a card 870px wide none of that survives. This is the
+     house composition instead (Whallet, then ALTI): tracked eyebrow, the name
+     large, the line under it poured through the ramp, and the work hanging off
+     an edge so the frame cuts it.
+
+     The one departure from its two siblings: they are dark and this is white.
+     That is the deck's own ground — every slide Elif drew for this project is
+     white with one red (#C81800) and one charcoal (#2D2D2D, the body of the
+     controller) — and the phones are charcoal, so they need the light to read.
+     It also means the array can be placed as it is: no cutting a tilted
+     composition off a white ground and hoping its red glow survives.
+
+     Paths are relative so the file renders under file:// with no server. -->
+<style>
+@font-face{font-family:Bric;font-weight:800;font-display:block;
+  src:url(../assets/f3.woff2) format('woff2')}
+@font-face{font-family:IS;font-weight:500;font-display:block;
+  src:url(../assets/f4.woff2) format('woff2')}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff}
+.cover{
+  position:relative; width:2600px; height:1625px; overflow:hidden;
+  background:#fff; isolation:isolate;
+}
+/* Her slides carry soft red blobs off the edge. They have to stay OFF THE
+   RIGHT here: the array arrives as a rectangle of white, so any wash behind it
+   ends in a straight seam down the middle of the plate. On the left there is
+   nothing but ground, so the light can sit there. */
+.cover:before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(40% 52% at 2% -8%,  rgba(200,24,0,.10), rgba(255,255,255,0) 70%),
+    radial-gradient(34% 46% at 6% 108%, rgba(255,92,46,.09), rgba(255,255,255,0) 70%);
+}
+/* THE ARRAY, first in the source and behind everything: it hangs off the right
+   edge and off the bottom, so it reads as part of the plate rather than as a
+   picture placed on it. Sized off the plate's height, never its width, and
+   pushed far enough right that the leftmost phone clears the words. */
+.rack{
+  position:absolute; right:-620px; top:-40px;
+  height:1800px; width:auto;
+}
+/* the type sits in the left half; the array's own white ground carries the
+   right, so nothing has to be dimmed for the words to stay readable */
+.copy{position:absolute; left:150px; top:0; height:100%;
+  display:flex; flex-direction:column; justify-content:center; width:1060px}
+.eyebrow{
+  font-family:IS,sans-serif; font-weight:500; font-size:27px; letter-spacing:.42em;
+  text-transform:uppercase; color:#C81800; padding-left:.42em;
+}
+.word{
+  margin-top:44px; font-family:Bric,sans-serif; font-weight:800;
+  font-size:162px; line-height:.90; letter-spacing:-.022em; color:#1A1514;
+  text-transform:uppercase;
+}
+.tag{
+  margin-top:40px; font-family:Bric,sans-serif; font-weight:800; font-size:52px;
+  letter-spacing:-.015em;
+  background:linear-gradient(96deg,#C81800,#FF5C2E);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  width:fit-content;    /* or the ramp spreads across the empty rest of the row */
+}
+/* no client-and-year line down here: the card prints "Turkish Airlines · 2025"
+   directly under the image, and the case sheet prints it again in the meta row
+   below the cover. The rule is the terminal instead. */
+.rule{margin-top:56px; width:132px; height:7px; border-radius:4px;
+  background:linear-gradient(96deg,#C81800,#FF5C2E)}
+</style>
+<div class="cover">
+  <img class="rack" src="../assets/thy/fin1.webp" alt="">
+  <div class="copy">
+    <p class="eyebrow">Case study</p>
+    <h1 class="word">Remote<br>Control UI</h1>
+    <p class="tag">Simplified control, clear hierarchy</p>
+    <span class="rule"></span>
+  </div>
+</div>

@@ -78,7 +78,7 @@ open(artifact, 'w', encoding='utf-8').write(artifact_html)
 
 # the linked copies, next to index.html
 copied = []
-for sub in ('case', 'cover', 'alti'):         # case screens, cover shots, ALTI
+for sub in ('case', 'cover', 'alti', 'thy'):  # case screens, cover shots, ALTI, THY
     src_dir = os.path.join(HERE, 'assets', sub)
     if not os.path.isdir(src_dir):
         continue
@@ -151,6 +151,10 @@ ROUTE_PAGES = [
      'A city that tells its own story — not from a museum label, from the '
      'streets you pass. ALTI, a location-based cultural heritage app for '
      'Ankara. A case study by Elif Uysal.'),
+    ('case/thy', 'case:thy', 'Remote Controller — Elif Uysal',
+     'An in-flight remote rebuilt around the few controls a hand actually '
+     'reaches for. Alternative directions from a Turkish Airlines project — '
+     'the approved design is under NDA. A case study by Elif Uysal.'),
     ('cv', 'cv', 'CV — Elif Uysal',
      'Elif Uysal — product designer. Experience, education and what she works with.'),
 ]
