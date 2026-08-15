@@ -180,6 +180,13 @@ main{{flex:1 1 auto;min-height:0;display:grid;
 .screen iframe{{position:absolute;inset:0;width:100%;height:100%;border:0;
   opacity:0;transition:opacity .5s ease}}
 .screen iframe.ready{{opacity:1}}
+/* full screen: the box drops its ratio and its ceiling and takes the window.
+   The player is already `scale-down-width`, so it fills the width and lands
+   the frame's own height — the same picture, larger. */
+.screen:fullscreen{{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;
+  border-radius:0;background:var(--ink);box-shadow:none}}
+.screen:-webkit-full-screen{{width:100vw;height:100vh;aspect-ratio:auto;border-radius:0}}
+
 /* the player takes a few seconds and shows white while it does; the room
    holds a dark card over it until the frame reports back */
 .wait{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
@@ -263,6 +270,9 @@ main{{flex:1 1 auto;min-height:0;display:grid;
       <button class="go" type="button" id="restart">
         <span data-i18n="restart">Start over</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg></button>
+      <button class="quiet" type="button" id="full">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-7 7"/><path d="M10 20H4v-6"/><path d="M4 20l7-7"/></svg>
+        <span data-i18n="full">Full screen</span></button>
       <a class="quiet" href="https://elifbeyzauysal.com/#work">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
         <span data-i18n="more">See more work</span></a>
@@ -288,7 +298,8 @@ main{{flex:1 1 auto;min-height:0;display:grid;
 
 <script>
 (function(){{
-  var proto=document.getElementById('proto'), wait=document.getElementById('wait');
+  var proto=document.getElementById('proto'), wait=document.getElementById('wait'),
+      box=document.getElementById('screen');
   /* The frame's `load` fires long before the player has painted, and a card
      lifted at a fixed delay showed a white screen on a slow line. Figma's
      embed posts to the parent when it is actually up, so the card waits for
@@ -304,6 +315,26 @@ main{{flex:1 1 auto;min-height:0;display:grid;
     if(t === 'INITIAL_LOAD' || t === 'PRESENTED_NODE_CHANGED') reveal();
   }});
   proto.addEventListener('load', function(){{ setTimeout(reveal, 6000); }});
+
+  /* Full screen is the screen's, not the page's: the monitor is scenery, and
+     what someone wants larger is the prototype. Escape is the browser's, so
+     the label follows the state rather than the click. */
+  var full = document.getElementById('full'),
+      fullLabel = full.querySelector('span');
+  full.addEventListener('click', function(){{
+    if(document.fullscreenElement || document.webkitFullscreenElement){{
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }} else {{
+      var go = box.requestFullscreen || box.webkitRequestFullscreen;
+      if(go) go.call(box); else open(proto.src, '_blank', 'noopener');
+    }}
+  }});
+  function syncFull(){{
+    var on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    fullLabel.textContent = T[document.documentElement.lang][on ? 'exit' : 'full'];
+  }}
+  addEventListener('fullscreenchange', syncFull);
+  addEventListener('webkitfullscreenchange', syncFull);
 
   /* hide-ui=1 takes Figma's own restart away with the rest of the chrome, so
      the room supplies one */
@@ -323,14 +354,14 @@ var T = {{
        sub:'Jotform, inside WordPress',
        hint:'This is the prototype itself, not a picture of it. <b>Click the sidebar, the tabs and the cards.</b> Overview, User Rates and Conversation Rates are all wired.',
        loading:'Loading the prototype', restart:'Start over', figma:'Open in Figma',
-       more:'See more work',
+       more:'See more work', full:'Full screen', exit:'Exit full screen',
        foot:'A clickable prototype — the sidebar, the tabs and the cards all respond.<br>'+
             'Analytics for Jotform AI Chatbot · design by '+CREDIT+'.' }},
   tr:{{ work:'İşler', about:'Hakkında', contact:'İletişim',
        sub:'WordPress içinde Jotform',
        hint:'Bu, prototipin resmi değil, kendisi. <b>Kenar çubuğuna, sekmelere ve kartlara tıklayabilirsin.</b> Overview, User Rates ve Conversation Rates üçü de bağlı.',
        loading:'Prototip yükleniyor', restart:'Baştan başlat', figma:'Figma\\u2019da aç',
-       more:'Diğer işlere bak',
+       more:'Diğer işlere bak', full:'Tam ekran', exit:'Tam ekrandan çık',
        foot:'Tıklanabilir prototip — kenar çubuğu, sekmeler ve kartlar cevap veriyor.<br>'+
             'Jotform AI Chatbot analitiği · tasarım: '+CREDIT+'.' }}
 }};
@@ -339,6 +370,9 @@ function setLang(l){{
   document.querySelectorAll('[data-i18n]').forEach(function(e){{ e.textContent = T[l][e.dataset.i18n]; }});
   document.querySelectorAll('[data-i18n-html]').forEach(function(e){{ e.innerHTML = T[l][e.dataset.i18nHtml]; }});
   document.querySelectorAll('.lang button').forEach(function(b){{ b.classList.toggle('on', b.dataset.lang===l); }});
+  if(document.fullscreenElement || document.webkitFullscreenElement){{
+    document.querySelector('#full span').textContent = T[l].exit;
+  }}
 }}
 document.querySelectorAll('.lang button').forEach(function(b){{
   b.addEventListener('click', function(){{ setLang(b.dataset.lang); }});
