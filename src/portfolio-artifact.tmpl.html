@@ -431,6 +431,7 @@ html{scroll-snap-type:y proximity}
   transition:-webkit-text-fill-color .4s ease}
 .entry:hover .entry-title{-webkit-text-fill-color:transparent}
 .entry-line{font-size:15px;line-height:1.55;color:var(--ink-2);max-width:52ch}
+.entry-with{display:block;margin-top:7px;font-size:13.5px;color:#8A8B92;letter-spacing:.005em}
 
 .entry-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
 .entry-tags i{
@@ -1267,12 +1268,13 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
    `disc` is a list now: one project can be service + UI/UX + product at once. */
 const PROJECTS = [
   {key:'alti',    mark:'ALTI',              style:'letter-spacing:.26em;font-size:21px;font-weight:800',
-   /* kapak: Elif'in "Cover 3" pankartı (3972:13598), 2× export, kırpılmadan.
-      Vitrin kartı 24:9 ama bu görsel 21:9'a yakın: 24:9'a kırpmak üstte
-      telefonların tepesini, altta ayakkabıları keserdi — o yüzden kart
-      görselin oranını alıyor (coverRatio). Sol kenarı zaten siyaha açılıyor,
-      coverBg de o siyah. make_cover.py --trim --ratio native --width 2600 */
-   cover:'{{ASSET:cover/alti.webp}}', coverBg:'#000', coverRatio:'2600/1113',
+   /* kapak: tek Figma frame'i değil, `src/cover_alti/cover.html`'in render'ı —
+      `python3 src/make_cover_alti.py`. Önce Elif'in fotoğraflı "Cover 3"
+      pankartı denendi ve elendi: buradaki BÜTÜN kapaklar düz zemin üstünde
+      poster (base360 açık gri-mavi, Cursor siyaha yakın, Jotform leylak,
+      Whallet lacivert mesh) — aralarında tek fotoğraf sahnesi yabancı duruyor.
+      Bu, Whallet'ın kompozisyonu ALTI'nin derisiyle. */
+   cover:'{{ASSET:cover/alti.webp}}', coverBg:'#0A1551', coverRatio:'2600/1113',
    logo:null,      /* ← Elif: ALTI logosu */        client:'Commencis',        clientLogo:null,
    year:'2026', note:'grad', disc:['service','uiux','product']},
 
@@ -1284,12 +1286,11 @@ const PROJECTS = [
    year:'2026', disc:['ai','product','uiux']},
 
   {key:'chatbot', mark:'Chatbot Dashboard', style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
-   /* kapak: diğerleriyle aynı aile — koyu zemin, harf aralıklı üst başlık,
-      Bricolage cümle (ikinci satır vurguda), ürün kompozisyonun içinde. İddia
-      panelin kendi iddiası: sayıları okumak zorunda değilsin, kart sana ne
-      yapacağını söylüyor — o yüzden "Enhance Top FAQs" kartı bileşenin
-      kendisinden 4× export edilip ekranın önüne kaldırıldı. */
-   cover:'{{ASSET:cover/chatbot.webp}}', coverBg:'#0A1551',
+   /* kapak: Overview ekranının 3× export'u, sağdan ve alttan taşacak şekilde
+      yerleştirilmiş. Bütün ekranı karta sığdırmak yazıyı okunmaz yapıyordu;
+      taşırınca "Hello Designware!", iki gösterge ve WP kenar çubuğu kart
+      boyunda okunuyor. Zemin ürünün kendi mavisi. */
+   cover:'{{ASSET:cover/chatbot.webp}}', coverBg:'#E7F0FF',
    logo:null,                                       client:'Jotform',          clientLogo:null,  /* ← Elif: Jotform logosu */
    year:'2025', disc:['web','product','ai']},
 
@@ -1330,6 +1331,12 @@ const PROJECTS = [
 
   {key:'shutter', mark:'Shutter Echoes',    style:'font-size:19px;font-weight:800;letter-spacing:.02em',
    logo:null,                                       client:'Personal',         clientLogo:null,
+   /* Made by three people, so the card says so. The names go on their own line
+      rather than into the client slot — that slot answers "who was it for",
+      and the answer is still nobody. Elif's own name is not in the list: the
+      site is hers, so "with" credits the other two without her having to
+      claim the top of a list on her own page. */
+   team:['İrem Kocaarık','Furkan Diker'],
    year:'2025', disc:['game','gameui']},
 ];
 
@@ -1400,9 +1407,10 @@ const T = {
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
       base360: {i:'monitor', t:'A full website redesign for base360 — click and the prototype runs.'},
       sunninja:{i:'monitor', t:'A concept redesign of the Sun Ninja storefront — the sky, and the whole palette with it, moves with the sun as you scroll. Click and the prototype runs.'},
-      shutter: {i:'gamepad', t:'Game design and the game UI — both mine.'},
+      shutter: {i:'gamepad', t:'A game made by three of us. The game design and the game UI are mine.'},
     },
     notes:{grad:'Graduation project'},
+    withLine:a=>'With '+a.slice(0,-1).join(', ')+(a.length>1?' and ':'')+a[a.length-1],
     cta_tile:'View case →',
     cta_demo:'Open the prototype →',   /* no case study yet, but it runs */
     disc:{
@@ -1446,9 +1454,10 @@ const T = {
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
       base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı — tıkla, prototip çalışsın.'},
       sunninja:{i:'monitor', t:'Sun Ninja mağazası için konsept yeniden tasarım — kaydırdıkça gökyüzü, onunla birlikte bütün palet günün saatine göre değişiyor. Tıkla, prototip çalışsın.'},
-      shutter: {i:'gamepad', t:'Oyun tasarımı ve oyun arayüzü — ikisi de bana ait.'},
+      shutter: {i:'gamepad', t:'Üç kişilik bir oyun. Oyun tasarımı ve oyun arayüzü bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
+    withLine:a=>a.slice(0,-1).join(', ')+(a.length>1?' ve ':'')+a[a.length-1]+' ile birlikte',
     cta_tile:'Vakayı gör →',
     cta_demo:'Prototipi aç →',
     disc:{
@@ -1611,6 +1620,7 @@ function buildIndex(){
         `<span class="entry-brand">${brandMark(p)}<em class="entry-year">${p.year}</em>${note}</span>`+
         `<span class="entry-title">${p.mark}</span>`+
         `<span class="entry-line">${line}</span>`+
+        (p.team ? `<span class="entry-with">${t().withLine(p.team)}</span>` : '')+
         `<span class="entry-tags">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].l}</i>`).join('')}</span>`+
       `</span>`+
       `<span class="entry-go">${projCta(p)}</span>`;

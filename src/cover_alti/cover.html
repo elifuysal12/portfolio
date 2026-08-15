@@ -1,0 +1,79 @@
+<!doctype html><meta charset="utf-8">
+<!-- The ALTI work-card cover. Rendered by ../make_cover_alti.py, not opened by
+     hand: it is a 2600x1113 band and the browser has to be that size.
+
+     Why a poster and not the photograph: every other card on the site is a
+     designed plate on a flat ground — base360 pale blue-grey, Cursor near
+     black, Jotform lilac, Whallet navy mesh — each with a tracked uppercase
+     eyebrow and type as part of the artwork. A photographic scene was tried
+     first and read as a stranger among them. This is Whallet's composition in
+     ALTI's skin, which is the nearest sibling: mesh ground, eyebrow, the name
+     large, the line under it in the ramp, and the screens hanging from a top
+     edge so the frame cuts them off at the bottom.
+
+     Paths are relative so the file renders under file:// with no server. -->
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:block;
+  src:url(../assets/poppins-400.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:400;font-display:block;
+  src:url(../assets/poppins-400-ext.woff2) format('woff2');unicode-range:U+0100-024F}
+@font-face{font-family:Poppins;font-weight:700;font-display:block;
+  src:url(../assets/poppins-700.woff2) format('woff2')}
+@font-face{font-family:Poppins;font-weight:700;font-display:block;
+  src:url(../assets/poppins-700-ext.woff2) format('woff2');unicode-range:U+0100-024F}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A1551}
+.cover{
+  position:relative; width:2600px; height:1113px; overflow:hidden;
+  background:#0A1551; font-family:Poppins,sans-serif; isolation:isolate;
+  display:flex; flex-direction:column; align-items:center;
+}
+/* the mesh Whallet's cover has, in ALTI's ramp rather than its violet */
+.cover:before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(58% 90% at 18% 8%,  rgba(255,85,123,.42), rgba(10,21,81,0) 62%),
+    radial-gradient(52% 86% at 86% 96%, rgba(255,117,29,.34), rgba(10,21,81,0) 64%),
+    radial-gradient(70% 70% at 50% 118%, rgba(255,85,123,.30), rgba(10,21,81,0) 66%);
+}
+.eyebrow{
+  margin-top:88px; font-size:25px; font-weight:400; letter-spacing:.42em;
+  text-transform:uppercase; color:#FF8FA8; padding-left:.42em;
+}
+/* Whallet's wordmark is ~14% of its height, but that cover is 1.6 and this
+   band is 2.34 — the same proportion of a much shorter frame would fill it. */
+.word{
+  margin-top:34px; font-size:152px; font-weight:700; line-height:.92;
+  letter-spacing:.14em; color:#fff; padding-left:.14em;
+}
+.tag{
+  margin-top:22px; font-size:36px; font-weight:700; letter-spacing:.01em;
+  background:linear-gradient(96deg,#FF557B,#FF9A3D);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+/* The screens hang from a top edge and run off the bottom of the band — that
+   is what makes them read as part of the frame rather than three objects
+   placed on it. Sized off the band's height, never its width. */
+.rack{
+  position:absolute; left:50%; top:452px; transform:translateX(-50%);
+  display:flex; align-items:flex-start; gap:58px;
+}
+.rack img{
+  display:block; width:auto; height:840px; border-radius:32px;
+  box-shadow:0 26px 70px rgba(4,8,32,.5);
+}
+.rack img.mid{height:920px; border-radius:35px; margin-top:-58px}
+</style>
+<div class="cover">
+  <p class="eyebrow">Cultural heritage, on foot</p>
+  <h1 class="word">ALTI</h1>
+  <p class="tag">Turn the City Inside Out</p>
+  <!-- light map · the façade answering · the capsule. The scan screen was the
+       third of these and came out as an almost empty navy rectangle on a navy
+       ground; the map carries colour, so the row reads light / photo / dark. -->
+  <div class="rack">
+    <img class="side" src="w1.png" alt="">
+    <img class="mid"  src="d2.png" alt="">
+    <img class="side" src="d3.png" alt="">
+  </div>
+</div>

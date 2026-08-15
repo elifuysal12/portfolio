@@ -38,6 +38,27 @@ cropping it, carries the coral rule along the bottom edge out to both corners,
 and downscales from 4× so the thin strokes stay clean. Set `cover` on the
 project and `coverBg` to that background.
 
+**The covers are one family, and it is a poster family.** Every card is a
+designed plate on a flat ground — base360 pale blue-grey, Cursor near-black,
+Jotform lilac, Whallet navy mesh — each with a tracked uppercase eyebrow and
+type as part of the artwork. ALTI was a photographic scene first and read as a
+stranger among them; a photograph belongs to a case study's hero, not to this
+row.
+
+```bash
+python3 src/make_cover_alti.py        # renders src/cover_alti/cover.html
+```
+
+ALTI's is the one cover not exported from a Figma frame: it is assembled here
+from screens that already live in `src/assets/alti/` and set in the Poppins the
+repo already carries, then rendered through headless Chrome — the tracked
+eyebrow, the ramp poured through the tagline and the mesh are things a browser
+does correctly and a rasteriser has to be talked into. Change the words or swap
+a screen in `cover_alti/cover.html` and re-run.
+
+A card whose artwork is not 24:9 sets **`coverRatio`** and the featured slot
+takes the artwork's own shape instead of cropping it (`--cover-ar`).
+
 The hover loop (`case/hover.webp`) is an **animated WebP**, rebuilt from
 `../nore-hover-gif` — same frames as the GIF on the Behance board, full colour
 at a seventh of the bytes.
