@@ -135,7 +135,7 @@ main{flex:1 1 auto;min-height:0;display:grid;
   transition:transform .3s cubic-bezier(.34,1.4,.5,1)}
 .quiet:hover svg{transform:translateX(2px)}
 .go:hover svg{transform:rotate(-40deg)}
-.foot-note{flex:0 0 auto;padding:10px clamp(14px,3vw,26px) 14px;font-size:12.5px;
+.foot-note{margin:22px 0 0;max-width:52ch;font-size:12.5px;line-height:1.6;
   color:#6B6F7B;text-align:center}
 
 @media (max-width:1100px){
@@ -195,10 +195,9 @@ main{flex:1 1 auto;min-height:0;display:grid;
     </div>
     <div class="neck"></div>
     <div class="foot"></div>
+    <p class="foot-note" data-i18n-html="foot"></p>
   </div>
 </main>
-
-<p class="foot-note" data-i18n-html="foot"></p>
 
 <script>
 (function(){
