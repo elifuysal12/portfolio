@@ -58,6 +58,29 @@ than the shop, and copies the photographs in as plain files — the prototype's
 own builds either hotlink Unsplash or base64 everything, and neither belongs on
 a real site. Output is committed; re-run when the prototype changes.
 
+Prototypes that live in Figma rather than in code get the same kind of room,
+built from a table of share links:
+
+```bash
+python3 src/build_demo_figma.py      # /demo/base360
+```
+
+Elif's own chrome — her paper, her type, a way back to the work — around the
+Figma player. Two things matter in that URL: the prototype must be shared
+publicly in Figma (Share → *Anyone with the link* → can view), or visitors get
+a login wall where the work should be; and the scaling must be
+`scale-down-width`. `contain` fits a whole landing-page frame into the window
+and hands you a postage stamp, `min-zoom` refuses to go below 100% and crops
+the right-hand side.
+
+## The work cards
+
+A card goes to the project's case study, or — when that page isn't written yet
+but the prototype runs — straight to its demo room, and says so on the card
+(*Open the prototype →*). `DEMOS` in the template holds the second kind; a key
+that appears in both `CASES` and `DEMOS` shows the case study, which carries
+its own *See demo* button.
+
 ## Structure
 
 - **Home** — hero, "Who am I?", the drifting project strip, the work index, contact.

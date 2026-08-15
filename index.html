@@ -1036,6 +1036,9 @@ const PROJECTS = [
    year:'—',    disc:['web3','product','uiux']},
 
   {key:'base360', mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
+   /* kapak: 262:744 frame'inin 4× export'u — src/make_cover.py kendi zeminini
+      (#ECF1F9) okuyup 16:10'a genişletiyor, görsel kırpılmıyor. */
+   cover:'/assets/cover/base360.webp', coverBg:'#ECF1F9',
    logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
    year:'—',    disc:['web','uiux']},
 
@@ -1109,11 +1112,12 @@ const T = {
       chatbot: {i:'chart',   t:'A chatbot analytics dashboard for Jotform, built with a team of three — design, frontend, backend.'},
       thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved."},
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
-      base360: {i:'monitor', t:'A full website redesign for base360.'},
+      base360: {i:'monitor', t:'A full website redesign for base360 — click and the prototype runs.'},
       shutter: {i:'gamepad', t:'Game design and the game UI — both mine.'},
     },
     notes:{grad:'Graduation project'},
     cta_tile:'View case →',
+    cta_demo:'Open the prototype →',   /* no case study yet, but it runs */
     disc:{
       service:{s:'Service', l:'Service design'},
       uiux:   {s:'UI/UX',   l:'UI/UX design'},
@@ -1153,11 +1157,12 @@ const T = {
       chatbot: {i:'chart',   t:'Jotform için chatbot analitik paneli; tasarım, frontend ve backend’den oluşan üç kişilik ekiple.'},
       thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı.'},
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
-      base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı.'},
+      base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı — tıkla, prototip çalışsın.'},
       shutter: {i:'gamepad', t:'Oyun tasarımı ve oyun arayüzü — ikisi de bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
     cta_tile:'Vakayı gör →',
+    cta_demo:'Prototipi aç →',
     disc:{
       service:{s:'Servis', l:'Servis tasarımı'},
       uiux:   {s:'UI/UX',  l:'UI/UX tasarımı'},
@@ -1249,22 +1254,38 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const track = document.getElementById('track');
 const band  = document.getElementById('band');
 
+/* Where a project card goes, in order of what is there to see: its case study,
+   else its running prototype, else nowhere — openCase says as much. The demo
+   is a real href so it can be middle-clicked, copied and crawled; on the site
+   it opens in place (the room has a way back), from the Artifact in a new tab,
+   since that page lives inside a sandboxed frame. */
+const projHref = p => (ROUTES && CASES[p.key]) ? `/case/${p.key}/`
+                    : (!CASES[p.key] && DEMOS[p.key]) ? DEMOS[p.key] : '#';
+const projCta  = p => (!CASES[p.key] && DEMOS[p.key]) ? t().cta_demo : t().cta_tile;
+function wireOpen(a,p){
+  if(!CASES[p.key] && DEMOS[p.key]){                 // let the link do its job
+    if(!ROUTES){ a.target='_blank'; a.rel='noopener noreferrer'; }
+    return;
+  }
+  a.addEventListener('click',e=>{ e.preventDefault(); openCase(p.key); });
+}
+
 function buildStrip(){
   track.innerHTML = '';
   // rendered twice so the loop is seamless
   for(let r=0;r<2;r++) PROJECTS.forEach(p=>{
     const a = document.createElement('a');
-    a.className='tile'; a.href='#'; a.dataset.key=p.key;
+    a.className='tile'; a.href=projHref(p); a.dataset.key=p.key;
     a.innerHTML =
       `<span class="tile-top">${brandMark(p)}<span class="yr">${p.year}</span></span>`+
       `<span class="wordmark" style="${p.style}">${projectMark(p)}</span>`+
       `<span class="tile-foot">`+
         `<span class="discs">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].s}</i>`).join('')}</span>`+
-        `<span class="cta">${t().cta_tile}</span>`+
+        `<span class="cta">${projCta(p)}</span>`+
       `</span>`;
     a.addEventListener('mouseenter',()=>{ stripSpeed=.12; sayProject(p.key); });
     a.addEventListener('mouseleave',()=>{ stripSpeed=1; });
-    a.addEventListener('click',e=>{ e.preventDefault(); openCase(p.key); });
+    wireOpen(a,p);
     track.appendChild(a);
   });
 }
@@ -1281,7 +1302,7 @@ function buildIndex(){
     const li = document.createElement('li');
     const a  = document.createElement('a');
     a.className='entry rv'; a.dataset.key=p.key;
-    a.href = (ROUTES && CASES[p.key]) ? `/case/${p.key}/` : '#';
+    a.href = projHref(p);
     const line = t().proj[p.key] ? t().proj[p.key].t : '';
     /* three ways to fill the slot, in order of how much they say:
          cover → a photograph of the work, edge to edge
@@ -1302,9 +1323,9 @@ function buildIndex(){
         `<span class="entry-line">${line}</span>`+
         `<span class="entry-tags">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].l}</i>`).join('')}</span>`+
       `</span>`+
-      `<span class="entry-go">${t().cta_tile}</span>`;
+      `<span class="entry-go">${projCta(p)}</span>`;
     a.addEventListener('mouseenter',()=>sayProject(p.key));
-    a.addEventListener('click',e=>{ e.preventDefault(); openCase(p.key); });
+    wireOpen(a,p);
     li.appendChild(a); ol.appendChild(li);
     rio.observe(a);
   });
@@ -1651,6 +1672,13 @@ const A = {
   gap:'/assets/case/gap.webp', hover:'/assets/case/hover.webp', me:'/assets/case/avatar.webp',
   s1:'/assets/case/s1.webp', s2:'/assets/case/s2.webp', s3:'/assets/case/s3.webp',
   s4:'/assets/case/s4.webp', s5:'/assets/case/s5.webp', s6:'/assets/case/s6.webp',
+};
+
+/* A project whose case study is not written yet, but whose prototype runs:
+   the card goes straight to the demo room instead of promising a page that
+   isn't there. Absolute, so the link also works from the Artifact build. */
+const DEMOS = {
+  base360:'https://elifbeyzauysal.com/demo/base360/',
 };
 
 /* Every word below is Elif's own, lifted off her board — the page is that
