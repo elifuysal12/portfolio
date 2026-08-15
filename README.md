@@ -72,20 +72,21 @@ that it runs.
 python3 src/build_demo_jotform.py     # reads ../jotform-dashboard/index.html
 ```
 
-**`/demo/jotform`** is the Jotform AI Chatbot analytics dashboard, and it is
-code, not a player: the three sections switch, the segmented tabs swap the
-dataset, the charts are SVG drawn from the data arrays and read out under the
-pointer, the optimisation card is a real queue that ends in *completed*, and
-saving an answer turns *Add Answer* into *Edit Answer*. It started as a Figma
-embed and was rebuilt after Elif asked for a demo that actually runs.
+**`/demo/jotform`** is the Jotform AI Chatbot analytics dashboard: Elif's Figma
+prototype **running inside a monitor** on a dark desk, under the site's own nav
+— the desktop counterpart of the phone in `/demo/alti`. The screen is cut to
+the frame's own 1440×900, so `scale-down-width` lands it exactly: no letterbox,
+no scrolling inside the player. `hide-ui=1` takes Figma's restart away with the
+rest of the chrome, so the caption under the desk carries *Start over* and
+*Open in Figma*.
 
-It ships as **two files**: `app/index.html` is the prototype, untouched and
-unsigned, because it is the product's own screen; `index.html` is the room —
-Elif's bar, and a monitor with the prototype live inside it. The screen holds
-the page at its own **1440×900 and scales the whole thing**, never reflowing
-it: a 1440-wide WordPress admin that collapses into a portfolio-sized window
-stops being the thing it is. The beacon is on the room only, so one visit is
-one visit. Below 820px the desk goes away and the note offers full screen.
+Two earlier attempts are worth not repeating, both recorded in the build file.
+A bare edge-to-edge embed reads as somebody's player dropped into a page, and
+loads as a white rectangle the size of the room. Then the dashboard was
+**rebuilt in code** — it ran, but the icons and a hundred small decisions were
+the rebuild's rather than Elif's, and a portfolio piece has to be the
+designer's own artefact, not a faithful copy of it. That source is kept outside
+the repo at `~/Projects/jotform-dashboard`.
 
 ```bash
 python3 src/build_demo_alti.py        # /demo/alti — ALTI, in a phone
