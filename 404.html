@@ -647,12 +647,6 @@ body.sheet-open{overflow:hidden}
 }
 .cv-end{text-align:center}
 .cv-end .big-cta{margin-top:0;font-size:clamp(38px,7vw,88px)}
-.cv-back{margin-top:clamp(30px,4.6vh,52px)}
-.cv-backlink{
-  border:0;background:none;cursor:pointer;font-family:var(--ui);font-size:15px;color:var(--muted);
-  transition:color .25s ease;
-}
-.cv-backlink:hover{color:var(--accent)}
 
 /* the way out: a pill clear of the nav on desktop, thumb-height on phones */
 .cv-close{
@@ -1299,6 +1293,15 @@ const PROJECTS = [
    logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
    year:'2026', disc:['web','uiux']},
 
+  {key:'sunninja',mark:'Sun Ninja',         style:'font-size:19px;font-weight:700;letter-spacing:.02em',
+   /* kapak: Figma değil — prototipin kendi hero'sundan alınmış gerçek ekran
+      görüntüsü (1440×900, headless Chrome, 2×). Zaten 16:10 olduğu için
+      make_cover.py --ratio native ile sadece küçültüldü; genişletme yolu
+      alttaki şeftali degradesini "kural çizgisi" sanıp bant basıyordu. */
+   cover:'/assets/cover/sunninja.webp', coverBg:'#FFE1AF',
+   logo:null,                                       client:'Concept',          clientLogo:null,
+   year:'2026', disc:['web','uiux','product']},
+
   {key:'shutter', mark:'Shutter Echoes',    style:'font-size:19px;font-weight:800;letter-spacing:.02em',
    logo:null,                                       client:'Personal',         clientLogo:null,
    year:'—',    disc:['game','gameui']},
@@ -1370,6 +1373,7 @@ const T = {
       thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved."},
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
       base360: {i:'monitor', t:'A full website redesign for base360 — click and the prototype runs.'},
+      sunninja:{i:'monitor', t:'A concept redesign of the Sun Ninja storefront — the sky, and the whole palette with it, moves with the sun as you scroll. Click and the prototype runs.'},
       shutter: {i:'gamepad', t:'Game design and the game UI — both mine.'},
     },
     notes:{grad:'Graduation project'},
@@ -1415,6 +1419,7 @@ const T = {
       thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı.'},
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
       base360: {i:'monitor', t:'base360 için baştan sona web sitesi yeniden tasarımı — tıkla, prototip çalışsın.'},
+      sunninja:{i:'monitor', t:'Sun Ninja mağazası için konsept yeniden tasarım — kaydırdıkça gökyüzü, onunla birlikte bütün palet günün saatine göre değişiyor. Tıkla, prototip çalışsın.'},
       shutter: {i:'gamepad', t:'Oyun tasarımı ve oyun arayüzü — ikisi de bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
@@ -1440,7 +1445,7 @@ const CV = {
   en:{
     role:'Product Designer', place:'Türkiye',
     intro:'I’m drawn to the small decisions that make an interface feel clear and easy to use. I usually start by listening, asking questions, and understanding the people behind the product before jumping into design. I enjoy working closely with developers and improving ideas through iteration. And yes, I’m probably the person who will notice if a button is two pixels off — not because it has to be perfect, but because those small things tend to matter more than they seem.',
-    print:'Save as PDF', close:'Close', back:'← Back to the work',
+    print:'Save as PDF', close:'Close',
     skills_h:'Skills',
     skills:[
       {label:'Design',      items:['Figma','Design systems','Prototyping','Usability testing','Responsive design']},
@@ -1471,7 +1476,7 @@ const CV = {
   tr:{
     role:'Ürün Tasarımcısı', place:'Türkiye',
     intro:'Bir arayüzü anlaşılır ve kullanımı kolay kılan küçük kararlar ilgimi çekiyor. Genelde önce dinleyerek, sorular sorarak ve ürünün arkasındaki insanları anlayarak başlıyorum; tasarıma sonra geçiyorum. Geliştiricilerle yakın çalışmayı ve fikirleri iterasyonla iyileştirmeyi seviyorum. Ve evet, bir buton iki piksel kaymışsa muhtemelen fark eden kişi benim — mükemmel olması gerektiği için değil, o küçük şeyler göründüğünden daha çok şey ifade ettiği için.',
-    print:'PDF olarak kaydet', close:'Kapat', back:'← İşlere dön',
+    print:'PDF olarak kaydet', close:'Kapat',
     skills_h:'Neler kullanıyorum',
     skills:[
       {label:'Tasarım', items:['Figma','Tasarım sistemi','Prototipleme','Kullanılabilirlik testi','Responsive tasarım']},
@@ -1821,11 +1826,9 @@ function buildCV(){
       `<ol class="exp">${c.edu.map(cvRow).join('')}</ol></section>`+
     `<section class="cv-block cv-end">`+
       `<a class="big-cta" href="mailto:elifbeyzauysal01@gmail.com">${t().cta}</a>`+
-      `<p class="cv-back"><button class="cv-backlink" type="button">${c.back}</button></p>`+
     `</section>`;
   document.getElementById('cvCloseLabel').textContent=c.close;
   cvSheet.querySelector('.cv-print').onclick=()=>window.print();
-  cvSheet.querySelector('.cv-backlink').onclick=()=>closeCV();
   cvSheet.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
 }
 
@@ -2032,6 +2035,9 @@ const DEMOS = {
   /* no coded counterpart for this one — the prototype is the Figma one,
      embedded in Elif's own chrome. See src/build_demo_figma.py. */
   chatbot:'https://elifbeyzauysal.com/demo/jotform/',
+  /* two pages, not one: the landing opens, and the product page it links into
+     is the second half of the room. See src/build_demo_sunninja.py. */
+  sunninja:'https://elifbeyzauysal.com/demo/sunninja/',
 };
 
 /* Every word below is Elif's own, lifted off her board — the page is that

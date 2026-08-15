@@ -89,6 +89,26 @@ designer's own artefact, not a faithful copy of it. That source is kept outside
 the repo at `~/Projects/jotform-dashboard`.
 
 ```bash
+python3 src/build_demo_sunninja.py    # reads ../sunninja-redesign
+```
+
+**`/demo/sunninja`** is the Sun Ninja storefront redesign, and the first room
+with **two pages**: the landing, and the product page it links into. Three
+things the prototype does for itself that a real address should not, all fixed
+in the build — Google Fonts (the six faces its own Artifact build already
+subset are unpacked into `assets/font/` and linked from there), 12 MB of PNG
+and JPEG (re-encoded to WebP, 4.5 MB, references rewritten), and a footer still
+carrying a live-looking phone number and support address (it takes the
+disclaimer the product page already had). The CSS and JS stay as files rather
+than inlined: two pages share `style.css`, and inlining would ship it twice and
+throw the cache away on the click between them.
+
+Its work-card cover is the only one not exported from Figma — the prototype is
+the artefact, so the cover is a real screenshot of its own hero, taken headless
+at 1440×900 (already 16:10, hence `--ratio native`; the widening path reads the
+peach gradient at the bottom as a rule and paints a band across it).
+
+```bash
 python3 src/build_demo_alti.py        # /case/alti/demo — ALTI, in a phone
 ```
 
