@@ -58,9 +58,25 @@ nav a:hover{background:rgba(255,255,255,.09);color:#fff}
   transition:.3s cubic-bezier(.34,1.4,.5,1)}
 .lang button.on{background:#fff;color:var(--ink)}
 
-/* ---- the desk ---- */
-main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:84px 22px 14px}
+/* ---- the desk ----
+   Three columns, the same shape as the phone room: the words on the left, the
+   controls on the right, and the middle left to the object. Stacking them
+   under the monitor cost it height on every screen and gave the page a column
+   of equal-weight things instead of one machine to look at. */
+main{flex:1 1 auto;min-height:0;display:grid;
+  grid-template-columns:1fr auto 1fr;align-items:center;
+  gap:clamp(18px,3vw,52px);padding:84px 22px 16px}
+/* narrower than its column on purpose: with justify-self:end the block
+   then sits beside the monitor instead of against the window edge */
+.side{max-width:29ch}
+.side.left{justify-self:end}
+.side.right{justify-self:start}
+.room h1{margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;
+  font-size:clamp(25px,2.6vw,34px);letter-spacing:-.025em;line-height:1.08}
+.room span{display:block;margin-top:12px;font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.hint{margin:24px 0 0;font-size:15px;line-height:1.72;color:#A9ACB8}
+.hint b{color:#fff;font-weight:600}
 .rig{display:flex;flex-direction:column;align-items:center}
 /* dark aluminium, a hair lighter along the top edge where the light lands */
 .mon{position:relative;padding:14px 14px 30px;border-radius:20px;
@@ -70,8 +86,14 @@ main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 .mon:after{content:'';position:absolute;left:50%;bottom:13px;width:5px;height:5px;
   margin-left:-2.5px;border-radius:50%;background:#5EE38A;
   box-shadow:0 0 8px rgba(94,227,138,.75)}
+/* the screen is cut to the frame's own 1440x900 and sized against whatever the
+   nav, the stand and the two side columns leave — in CSS, because the middle
+   column of a `1fr auto 1fr` grid is measured *from* this box, so asking JS
+   for the space first would be asking it to measure itself */
 .screen{position:relative;border-radius:7px;overflow:hidden;background:#F0F0F1;
-  box-shadow:0 0 0 1px rgba(0,0,0,.55) inset}
+  box-shadow:0 0 0 1px rgba(0,0,0,.55) inset;
+  aspect-ratio:1440/900;
+  height:min(900px, calc(100dvh - 236px), calc((100vw - 700px) * .625));}
 .screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;
   opacity:0;transition:opacity .5s ease}
 .screen iframe.ready{opacity:1}
@@ -90,24 +112,17 @@ main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 .foot{width:280px;height:16px;border-radius:0 0 14px 14px;
   background:linear-gradient(#2A2D35,#15171C);box-shadow:0 22px 34px -18px rgba(0,0,0,.9)}
 
-/* the room's own line, under the desk — the nav belongs to the site, this
-   belongs to the prototype */
-.cap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;
-  margin:20px 0 0;font-size:13.5px;color:var(--dim)}
-.cap b{color:var(--paper);font-weight:600;letter-spacing:-.01em}
-
-/* THE ACTIONS, in the site's own two weights — this is `.demo-btn` from the
-   case studies and `.go`/`.quiet` from the phone room, to the pixel: same
-   pill, same 14.5px, same 14/22, same ramp, same spring lift. The secondary
-   is NOT an outlined copy of the primary — an outline-only control is on the
-   list of tells to keep off this site — it is a quiet icon and a word that
-   brightens on hover. Ranked, so the page answers "what now". */
-.acts{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
-  margin:18px 0 0}
+/* THE ACTIONS, in the site's own two weights — `.demo-btn` from a case study
+   and `.go`/`.quiet` from the phone room, to the pixel: same pill, same
+   14.5px, same 14/22, same ramp, same spring lift. The secondary is NOT an
+   outlined copy of the primary; an outline-only control is on the list of
+   tells to keep off this site. The filled one is *Start over*, because in a
+   room built around a prototype the thing to press is the prototype again. */
+.acts{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .go{
-  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
-  font-size:14.5px;color:#15161A;background-image:var(--ramp);
-  padding:14px 22px;border-radius:999px;margin-right:10px;
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;
+  font-family:inherit;font-size:14.5px;color:#15161A;background-image:var(--ramp);border:0;
+  padding:14px 22px;border-radius:999px;margin-bottom:14px;
   box-shadow:0 10px 30px rgba(255,118,67,.26);
   transition:transform .45s cubic-bezier(.34,1.4,.5,1),box-shadow .3s ease;
 }
@@ -115,23 +130,29 @@ main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 .quiet{
   display:inline-flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer;
   font-family:inherit;font-size:13.5px;color:var(--dim);
-  border:0;background:none;padding:9px 12px;border-radius:10px;
+  border:0;background:none;padding:9px 10px 9px 0;border-radius:10px;
   transition:color .2s ease;
 }
 .quiet:hover{color:#fff}
 .acts svg{width:15px;height:15px;flex:0 0 auto;fill:none;stroke:currentColor;
   stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
   transition:transform .3s cubic-bezier(.34,1.4,.5,1)}
-.go:hover svg{transform:translateX(2px)}
 .quiet:hover svg{transform:translateX(2px)}
-#restart:hover svg{transform:rotate(-40deg)}
+.go:hover svg{transform:rotate(-40deg)}
 .foot-note{flex:0 0 auto;padding:10px clamp(14px,3vw,26px) 14px;font-size:12.5px;
   color:#6B6F7B;text-align:center}
 
-@media (max-width:900px){
+@media (max-width:1100px){
   body{overflow:auto}
-  main{flex:0 0 auto;padding:74px 10px 6px;justify-content:flex-start}
-  .mon{padding:7px 7px 7px;border-radius:12px}
+  main{grid-template-columns:1fr;justify-items:center;text-align:center;
+    padding:74px 12px 10px;gap:22px}
+  .side{max-width:46ch;justify-self:center}
+  .acts{align-items:center}
+  .screen{height:min(900px, calc((100vw - 48px) * .625))}
+  .mon{padding:9px 9px 20px;border-radius:14px}
+}
+@media (max-width:640px){
+  .mon{padding:6px 6px 6px;border-radius:11px}
   .mon:after,.neck,.foot{display:none}
   nav{top:10px;padding-left:14px} nav a{padding:8px 9px}
 }
@@ -149,6 +170,16 @@ main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 </nav>
 
 <main>
+  <div class="side left">
+    <div class="room">
+      <h1>Chatbot Dashboard</h1>
+      <span data-i18n="sub">Jotform &middot; inside WordPress</span>
+    </div>
+    <p class="hint" data-i18n-html="hint">This is the prototype itself, not a picture of it.
+      <b>Click the sidebar, the tabs and the cards.</b> Overview, User Rates and
+      Conversation Rates are all wired.</p>
+  </div>
+
   <div class="rig">
     <div class="mon">
       <div class="screen" id="screen">
@@ -164,52 +195,22 @@ main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
     <div class="foot"></div>
   </div>
 
-  <p class="cap">
-    <span><b>Chatbot Dashboard</b> &middot; <span data-i18n="sub">Jotform, inside WordPress</span></span>
-  </p>
-  <p class="acts">
-    <a class="go" href="https://elifbeyzauysal.com/#work"><span data-i18n="more">See more work</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg></a>
-    <button class="quiet" type="button" id="restart">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg>
-      <span data-i18n="restart">Start over</span></button>
-    <a class="quiet" href="https://www.figma.com/proto/2x6KiLkwK5G2oheLZrzSaS/Jotform?node-id=1384-158976&page-id=930%3A24958&starting-point-node-id=1384%3A146915&scaling=scale-down-width&content-scaling=fixed" target="_blank" rel="noopener noreferrer">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>
-      <span data-i18n="figma">Open in Figma</span></a>
-  </p>
+  <div class="side right">
+    <p class="acts">
+      <button class="go" type="button" id="restart">
+        <span data-i18n="restart">Start over</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg></button>
+      <a class="quiet" href="https://elifbeyzauysal.com/#work">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg>
+        <span data-i18n="more">See more work</span></a>
+    </p>
+  </div>
 </main>
 
 <p class="foot-note" data-i18n-html="foot"></p>
 
 <script>
-/* The screen is cut to the prototype's own 1440x900, so `scale-down-width`
-   lands the frame exactly: no letterbox, no scroll inside the player. The box
-   is sized in JS because it has to fit whatever is left after the nav, the
-   stand and the caption — a CSS aspect-ratio alone would overflow tall. */
 (function(){
-  var W=1440, H=900,
-      screen=document.getElementById('screen'),
-      main=document.querySelector('main'),
-      cap=document.querySelector('.cap');
-  function fit(){
-    var narrow = innerWidth<=900;
-    // clientHeight includes the padding that keeps the nav off the bezel, so
-    // it has to come back out or the monitor grows under the pill
-    var cs = getComputedStyle(main);
-    var padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
-    var padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-    var availW = main.clientWidth - padX - (narrow?14:28);
-    // bezel 14 + chin 30 + neck 52 + foot 16 = 112, and a little slack under it
-    var acts = document.querySelector('.acts');
-    var availH = main.clientHeight - padY - (narrow?0:122)
-                 - cap.offsetHeight - acts.offsetHeight - 14;
-    var k = narrow ? availW/W : Math.min(availW/W, availH/H);
-    k = Math.max(.16, Math.min(k, 1));
-    screen.style.width  = Math.round(W*k)+'px';
-    screen.style.height = Math.round(H*k)+'px';
-  }
-  fit(); addEventListener('resize', fit); addEventListener('orientationchange', fit);
-
   var proto=document.getElementById('proto'), wait=document.getElementById('wait');
   proto.addEventListener('load', function(){
     /* the frame fires load before the player has painted, so give it a beat
@@ -231,12 +232,14 @@ var CREDIT = '<a href="https://elifbeyzauysal.com/">Elif Beyza Uysal</a>';
 var T = {
   en:{ work:'Work', about:'About', contact:'Contact',
        sub:'Jotform, inside WordPress',
+       hint:'This is the prototype itself, not a picture of it. <b>Click the sidebar, the tabs and the cards.</b> Overview, User Rates and Conversation Rates are all wired.',
        loading:'Loading the prototype', restart:'Start over', figma:'Open in Figma',
        more:'See more work',
        foot:'A clickable prototype — the sidebar, the tabs and the cards all respond.<br>'+
             'Analytics for Jotform AI Chatbot · design by '+CREDIT+'.' },
   tr:{ work:'İşler', about:'Hakkında', contact:'İletişim',
        sub:'WordPress içinde Jotform',
+       hint:'Bu, prototipin resmi değil, kendisi. <b>Kenar çubuğuna, sekmelere ve kartlara tıklayabilirsin.</b> Overview, User Rates ve Conversation Rates üçü de bağlı.',
        loading:'Prototip yükleniyor', restart:'Baştan başlat', figma:'Figma\u2019da aç',
        more:'Diğer işlere bak',
        foot:'Tıklanabilir prototip — kenar çubuğu, sekmeler ve kartlar cevap veriyor.<br>'+
@@ -247,7 +250,6 @@ function setLang(l){
   document.querySelectorAll('[data-i18n]').forEach(function(e){ e.textContent = T[l][e.dataset.i18n]; });
   document.querySelectorAll('[data-i18n-html]').forEach(function(e){ e.innerHTML = T[l][e.dataset.i18nHtml]; });
   document.querySelectorAll('.lang button').forEach(function(b){ b.classList.toggle('on', b.dataset.lang===l); });
-  dispatchEvent(new Event('resize'));
 }
 document.querySelectorAll('.lang button').forEach(function(b){
   b.addEventListener('click', function(){ setLang(b.dataset.lang); });
