@@ -30,20 +30,33 @@ Two things the player needs, both learned the hard way:
 
 Output is committed; re-run when the prototype's start point moves.
 """
-import base64, os
+import os, shutil
+from urllib.parse import quote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, 'demo', 'alti')
 
+# straight off the prototype's own share link (Present → Share prototype):
+#   .../proto/<file>/<name>?node-id=<node>&page-id=<page>&starting-point-node-id=<start>
 FILE_KEY = 'lgAW9lKNHrC3XFm7735tOq'
 FILE_NAME = 'Commencis-I-Elif-Beyza-Uysal'
-NODE = '2510-1760'                     # the section the five flows live in
+PAGE = '2510:1760'                     # the page the five flows live on
+# Elif's choice: the room opens on flow 2, not flow 1. A visitor who lands here
+# has not read anything yet, and flow 1 starts before the product does — this
+# is the screen the app is actually about. `node-id` alone is not enough: it
+# picks the frame, and the player still starts the flow at its own starting
+# point, so both have to be said.
+NODE = '3493-6819'
+START = '3493:6819'
 
-EMBED = (f'https://embed.figma.com/proto/{FILE_KEY}/{FILE_NAME}'
-         f'?node-id={NODE}&scaling=scale-down-width&content-scaling=fixed'
+Q = (f'node-id={NODE}&page-id={quote(PAGE, safe="")}'
+     f'&starting-point-node-id={quote(START, safe="")}'
+     f'&scaling=scale-down-width&content-scaling=fixed')
+
+EMBED = (f'https://embed.figma.com/proto/{FILE_KEY}/{FILE_NAME}?{Q}'
          f'&hide-ui=1&embed-host=elifbeyzauysal')
-FIGMA = (f'https://www.figma.com/proto/{FILE_KEY}/{FILE_NAME}?node-id={NODE}')
+FIGMA = f'https://www.figma.com/proto/{FILE_KEY}/{FILE_NAME}?{Q}'
 
 TITLE = 'ALTI — interactive prototype · Elif Beyza Uysal'
 DESC = ('ALTI, a location-based cultural heritage app for Ankara — the wired '
@@ -54,23 +67,46 @@ BEACON = ("<script defer src='https://static.cloudflareinsights.com/beacon.min.j
 FAVICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'"
            "%20viewBox='0%200%201%201'%3E%3C/svg%3E")
 
-b64 = lambda p: base64.b64encode(open(os.path.join(HERE, 'assets', p), 'rb').read()).decode()
+# The room wears the site's own nav, so it needs the site's own two families
+# as well as ALTI's Poppins. Linked rather than inlined, the way the other
+# Figma room does it: the rooms share one cached copy, and a shell that is
+# about to pull down a whole prototype should not carry 150 KB of base64 in
+# front of it. (build_demo_figma.py writes the Instrument Sans pair too —
+# same names, same bytes, so whichever runs last is fine.)
+FONT_DIR = os.path.join(ROOT, 'assets', 'font')
+os.makedirs(FONT_DIR, exist_ok=True)
+for src, dst in (('f4.woff2', 'is-latin.woff2'), ('f5.woff2', 'is-latinext.woff2'),
+                 ('f3.woff2', 'br-latin.woff2'), ('f1.woff2', 'br-latinext.woff2'),
+                 ('poppins-400.woff2', 'po-400.woff2'),
+                 ('poppins-400-ext.woff2', 'po-400-ext.woff2'),
+                 ('poppins-700.woff2', 'po-700.woff2'),
+                 ('poppins-700-ext.woff2', 'po-700-ext.woff2')):
+    shutil.copyfile(os.path.join(HERE, 'assets', src), os.path.join(FONT_DIR, dst))
 
-# Poppins is ALTI's own type, inlined the way the site inlines its own — the
-# room makes no external request except the player it exists to hold.
-FONTS = ''.join(
-    f"@font-face{{font-family:Poppins;font-style:normal;font-weight:{w};font-display:swap;"
-    f"src:url(data:font/woff2;base64,{b64(f'poppins-{w}{suf}.woff2')}) format('woff2');"
-    f"unicode-range:{ur}}}"
-    for w in (400, 700)
-    for suf, ur in (
-        ('', 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,'
-             'U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,'
-             'U+2193,U+2212,U+2215,U+FEFF,U+FFFD'),
-        ('-ext', 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,'
-                 'U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,'
-                 'U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF'),
-    ))
+LATIN = ('U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,'
+         'U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,'
+         'U+2193,U+2212,U+2215,U+FEFF,U+FFFD')
+LATIN_EXT = ('U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,'
+             'U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,'
+             'U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF')
+
+
+def face(family, file, ur, weight='400'):
+    return (f"@font-face{{font-family:'{family}';font-style:normal;font-weight:{weight};"
+            f"font-display:swap;src:url(/assets/font/{file}) format('woff2');"
+            f"unicode-range:{ur}}}")
+
+
+FONTS = ''.join((
+    face('Instrument Sans', 'is-latin.woff2', LATIN, '400 700'),
+    face('Instrument Sans', 'is-latinext.woff2', LATIN_EXT, '400 700'),
+    face('Bricolage Grotesque', 'br-latin.woff2', LATIN, '400 800'),
+    face('Bricolage Grotesque', 'br-latinext.woff2', LATIN_EXT, '400 800'),
+    face('Poppins', 'po-400.woff2', LATIN),
+    face('Poppins', 'po-400-ext.woff2', LATIN_EXT),
+    face('Poppins', 'po-700.woff2', LATIN, '700'),
+    face('Poppins', 'po-700-ext.woff2', LATIN_EXT, '700'),
+))
 
 PAGE = f"""<!doctype html>
 <html lang="en">
@@ -106,29 +142,57 @@ body{{
   background-attachment:fixed;
 }}
 a{{color:inherit}}
-header{{
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  flex-wrap:wrap; padding:18px clamp(16px,4vw,40px);
+
+/* THE SITE'S OWN NAV, not a bar invented for this room. Same shape, same type,
+   same order — carried into the dark exactly the way body.case-open carries it
+   on a case study, so the demo reads as a room in her site rather than a page
+   that happens to link back to it. The section links point at the home page
+   because this is a separate address: /#work, /cv/, /#contact. */
+nav{{
+  position:fixed; top:18px; left:50%; transform:translateX(-50%);
+  z-index:50; display:flex; align-items:center; gap:6px;
+  padding:7px 8px 7px 18px; border-radius:16px;
+  background:rgba(16,26,72,.72); backdrop-filter:blur(14px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.12); box-shadow:0 6px 24px rgba(0,0,0,.34);
 }}
-.brand{{display:flex; align-items:baseline; gap:14px; min-width:0}}
-.brand b{{font-weight:700; font-size:21px; letter-spacing:.26em}}
-.brand span{{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim)}}
-.links{{display:flex; align-items:center; gap:8px; flex-wrap:wrap}}
-.links a,.links button{{
+nav .mark{{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:15px;
+  letter-spacing:-.02em;margin-right:14px;color:#fff;text-decoration:none;padding:0;
+  border-radius:0;background:none;transition:opacity .25s ease}}
+nav a.mark:hover{{background:none;opacity:.6}}
+nav .mark i{{color:var(--pink);font-style:normal}}
+nav a{{
+  font-family:'Instrument Sans',system-ui,sans-serif; font-size:11px; letter-spacing:.01em;
+  color:#B7BFE8; text-decoration:none; padding:8px 12px; border-radius:10px;
+  transition:background .25s ease,color .25s ease;
+}}
+nav a:hover{{background:rgba(255,255,255,.09); color:#fff}}
+.lang{{display:flex;gap:2px;margin-left:8px;padding:3px;border-radius:11px;background:rgba(255,255,255,.08)}}
+.lang button{{
+  font-family:'Instrument Sans',system-ui,sans-serif;font-size:12.5px;letter-spacing:.01em;
+  border:0;cursor:pointer;padding:5px 9px;border-radius:8px;background:transparent;
+  color:#8E97CF;transition:.3s cubic-bezier(.34,1.4,.5,1);
+}}
+.lang button.on{{background:#fff;color:#0A1551}}
+
+main{{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(14px,2.4vh,22px);
+  padding:clamp(64px,9vh,84px) clamp(16px,4vw,40px) clamp(10px,2vh,20px)}}
+
+/* the room's own three controls, under the phone rather than up in the bar:
+   the bar belongs to the site now, and these belong to the prototype */
+.acts{{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap}}
+.acts a,.acts button{{
   font-family:inherit; font-size:13px; color:#D7DCF5; text-decoration:none; cursor:pointer;
   border:1px solid rgba(255,255,255,.16); background:transparent; border-radius:999px;
   padding:9px 16px; transition:color .2s ease,border-color .2s ease,background .2s ease;
 }}
-.links a:hover,.links button:hover{{color:#fff; border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.06)}}
-
-main{{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:clamp(14px,2.4vh,22px); padding:4px clamp(16px,4vw,40px) clamp(10px,2vh,20px)}}
+.acts a:hover,.acts button:hover{{color:#fff; border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.06)}}
 
 /* the shell is sized off the frame ratio, so `contain` lands at 1:1 and the
    whole thing shrinks together instead of the player letterboxing itself */
 .phone{{
   position:relative; aspect-ratio:393/852;
-  height:min(852px, calc(100dvh - 232px), calc((100vw - 40px) * 852 / 393));
+  height:min(852px, calc(100dvh - 330px), calc((100vw - 40px) * 852 / 393));
   padding:2px; border-radius:34px; background-image:var(--ramp);
   box-shadow:0 40px 90px rgba(0,0,0,.55);
 }}
@@ -145,7 +209,7 @@ iframe.ready{{opacity:1}}
 @keyframes bob{{0%,100%{{transform:translateY(-4px)}}50%{{transform:translateY(4px)}}}}
 .wait.gone{{opacity:0; pointer-events:none; transition:opacity .4s ease}}
 
-.hint{{margin:0; font-size:13.5px; line-height:1.6; color:var(--dim); text-align:center; max-width:46ch}}
+.hint{{margin:0; font-size:13.5px; line-height:1.6; color:var(--dim); text-align:center; max-width:48ch}}
 .hint b{{font-weight:400; color:#fff}}
 
 footer{{padding:0 clamp(16px,4vw,40px) 20px; text-align:center;
@@ -153,8 +217,7 @@ footer{{padding:0 clamp(16px,4vw,40px) 20px; text-align:center;
 footer a{{color:rgba(142,151,207,.8)}}
 
 @media (max-width:560px){{
-  .brand span{{display:none}}
-  header{{padding-bottom:10px}}
+  nav{{padding-left:14px}} nav a{{padding:8px 9px}}
 }}
 @media (prefers-reduced-motion:reduce){{
   .wait svg{{animation:none}}
@@ -164,14 +227,13 @@ footer a{{color:rgba(142,151,207,.8)}}
 </head>
 <body>
 
-<header>
-  <span class="brand"><b>ALTI</b><span>Ankara · on foot</span></span>
-  <span class="links">
-    <button type="button" id="restart">Start over</button>
-    <a href="{FIGMA}" target="_blank" rel="noopener noreferrer">Open in Figma</a>
-    <a href="https://elifbeyzauysal.com/case/alti/">Read the case study</a>
-  </span>
-</header>
+<nav>
+  <a class="mark" href="https://elifbeyzauysal.com/" aria-label="Elif Uysal — home">elif<i>.</i></a>
+  <a href="https://elifbeyzauysal.com/#work" data-i18n="work">Work</a>
+  <a href="https://elifbeyzauysal.com/cv/" data-i18n="about">About</a>
+  <a href="https://elifbeyzauysal.com/#contact" data-i18n="contact">Contact</a>
+  <span class="lang"><button data-lang="en" class="on">EN</button><button data-lang="tr">TR</button></span>
+</nav>
 
 <main>
   <div class="phone">
@@ -183,17 +245,24 @@ footer a{{color:rgba(142,151,207,.8)}}
         <defs><linearGradient id="g" x1="13" y1="30" x2="47" y2="30" gradientUnits="userSpaceOnUse">
           <stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient></defs>
       </svg>
-      Loading the prototype
+      <span data-i18n="loading">Loading the prototype</span>
     </div>
     <iframe id="proto" title="ALTI — interactive prototype"
             src="{EMBED}" allowfullscreen loading="eager"></iframe>
   </div>
 
-  <p class="hint">This is the real thing, not a video. <b>Tap the screen to move.</b>
-     Wander, Gather and Capsule are all wired — 79 screens, five flows.</p>
+  <p class="hint" data-i18n-html="hint">This is the real thing, not a video.
+     <b>Tap the screen to move.</b> Wander, Gather and Capsule are all wired —
+     79 screens, five flows.</p>
+
+  <p class="acts">
+    <button type="button" id="restart" data-i18n="restart">Start over</button>
+    <a href="{FIGMA}" target="_blank" rel="noopener noreferrer" data-i18n="figma">Open in Figma</a>
+    <a href="https://elifbeyzauysal.com/case/alti/" data-i18n="case">Read the case study</a>
+  </p>
 </main>
 
-<footer>
+<footer data-i18n-html="foot">
   ALTI — a location-based cultural heritage app for Ankara.<br>
   Concept and design by <a href="https://elifbeyzauysal.com/">Elif Beyza Uysal</a> · graduation project with Commencis.
 </footer>
@@ -211,6 +280,39 @@ document.getElementById('restart').addEventListener('click', () => {{
   proto.classList.remove('ready'); wait.classList.remove('gone');
   proto.src = proto.src;
 }});
+
+/* The nav carries the site's language switch, so it has to actually switch.
+   The room is a dozen words, so this is the whole of it — no persistence,
+   which is what the site does too (it opens in English every time). */
+const CREDIT = '<a href="https://elifbeyzauysal.com/">Elif Beyza Uysal</a>';
+const T = {{
+  en:{{
+    work:'Work', about:'About', contact:'Contact',
+    loading:'Loading the prototype', restart:'Start over',
+    figma:'Open in Figma', case:'Read the case study',
+    hint:'This is the real thing, not a video. <b>Tap the screen to move.</b> '+
+         'Wander, Gather and Capsule are all wired — 79 screens, five flows.',
+    foot:'ALTI — a location-based cultural heritage app for Ankara.<br>'+
+         'Concept and design by '+CREDIT+' · graduation project with Commencis.'
+  }},
+  tr:{{
+    work:'İşler', about:'Hakkında', contact:'İletişim',
+    loading:'Prototip yükleniyor', restart:'Baştan başlat',
+    figma:'Figma\\u2019da aç', case:'Case study\\u2019yi oku',
+    hint:'Bu videosu değil, kendisi. <b>İlerlemek için ekrana dokun.</b> '+
+         'Wander, Gather ve Capsule\\u2019ün üçü de bağlı — 79 ekran, beş akış.',
+    foot:'ALTI — Ankara için konum tabanlı bir kültürel miras uygulaması.<br>'+
+         'Konsept ve tasarım: '+CREDIT+' · Commencis ile bitirme projesi.'
+  }}
+}};
+function setLang(l){{
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-i18n]').forEach(e => e.textContent = T[l][e.dataset.i18n]);
+  document.querySelectorAll('[data-i18n-html]').forEach(e => e.innerHTML = T[l][e.dataset.i18nHtml]);
+  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+}}
+document.querySelectorAll('.lang button').forEach(b =>
+  b.addEventListener('click', () => setLang(b.dataset.lang)));
 </script>
 </body>
 </html>
@@ -220,4 +322,4 @@ os.makedirs(OUT, exist_ok=True)
 page = os.path.join(OUT, 'index.html')
 open(page, 'w', encoding='utf-8').write(PAGE)
 print(f'{os.path.relpath(page, ROOT)}  {len(PAGE.encode())/1024:.0f} KB'
-      f'  (Poppins inlined; the player is the only request)')
+      f'  + assets/font (shared, cached)')

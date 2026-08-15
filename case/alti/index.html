@@ -1243,11 +1243,11 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
    `disc` is a list now: one project can be service + UI/UX + product at once. */
 const PROJECTS = [
   {key:'alti',    mark:'ALTI',              style:'letter-spacing:.26em;font-size:21px;font-weight:800',
-   /* kapak: board'un 01 · Cover frame'inin (3940:375) 4× export'u, 16:10 için
-      yalnızca alttan kırpıldı — orada sadece cephe var, kompozisyondan bir şey
-      gitmiyor. make_cover.py kullanılmadı: o düz zeminle genişletiyor, bu bir
-      fotoğraf, dikiş bırakırdı. */
-   cover:'/assets/cover/alti.webp', coverBg:'#0A1551',
+   /* kapak: Elif'in üçüncü 01 · Cover frame'i (3956:7753 — Ankara sokağı, iki
+      ekran, alti logosu), 4× export, 16:10 için yalnızca alttan kırpıldı: orada
+      sadece kaldırım var. make_cover.py --crop; genişletme yolu bir fotoğrafın
+      kenarına düz zemin dikerdi. coverBg fotoğrafın kenar ortalaması. */
+   cover:'/assets/cover/alti.webp', coverBg:'#454661',
    logo:null,      /* ← Elif: ALTI logosu */        client:'Commencis',        clientLogo:null,
    year:'2026', note:'grad', disc:['service','uiux','product']},
 
