@@ -100,22 +100,27 @@ PAGE = f"""<!doctype html>
 <style>
 {FONTS}
 *{{box-sizing:border-box}}
+/* The room wears the product's colours, not the site's — the same rule the
+   phone room follows with ALTI's navy. Jotform's panel is navy and blue, and
+   its two gauges run blue→purple, so that ramp is the room's accent. A coral
+   room around a blue product read as somebody else's page. */
 :root{{
-  --ink:#0F1115; --ink-2:#08090C;
-  --paper:#F3EFE7; --dim:#8B8F9C;
-  --coral:#FF7643; --pink:#FF557D;
-  --ramp:linear-gradient(96deg,#FF7643,#FF557D);
+  --ink:#0A1551; --ink-2:#040A1E;
+  --paper:#EAF0FF; --dim:#7C89B4;
+  --blue:#1FA0FD; --purple:#9B4DD8;
+  --ramp:linear-gradient(96deg,#1FA0FD,#9B4DD8);
 }}
 html,body{{height:100%}}
 body{{
   margin:0; background:var(--ink-2); color:var(--paper);
   font-family:'Instrument Sans',system-ui,-apple-system,sans-serif;
   display:flex; flex-direction:column; min-height:100dvh; overflow:hidden;
-  /* the case study's light source: warm, low, off to one side, so the monitor
-     stands in front of something rather than on flat black */
+  /* the product's own light: blue low on the left, a little purple high on the
+     right — the two colours its gauges are drawn in, so the monitor stands in
+     front of something that belongs to it */
   background-image:
-    radial-gradient(110% 80% at 14% 106%, rgba(255,118,67,.20), rgba(8,9,12,0) 60%),
-    radial-gradient(80% 70% at 88% -10%, rgba(255,85,125,.14), rgba(8,9,12,0) 58%);
+    radial-gradient(112% 82% at 12% 104%, rgba(31,160,253,.22), rgba(4,10,30,0) 62%),
+    radial-gradient(84% 72% at 90% -8%, rgba(155,77,216,.18), rgba(4,10,30,0) 60%);
   background-attachment:fixed;
 }}
 a{{color:inherit}}
@@ -128,15 +133,15 @@ nav{{
   position:fixed; top:18px; left:50%; transform:translateX(-50%);
   z-index:50; display:flex; align-items:center; gap:6px;
   padding:7px 8px 7px 18px; border-radius:16px;
-  background:rgba(24,26,33,.72); backdrop-filter:blur(14px) saturate(1.3);
+  background:rgba(16,28,72,.72); backdrop-filter:blur(14px) saturate(1.3);
   border:1px solid rgba(255,255,255,.12); box-shadow:0 6px 24px rgba(0,0,0,.42);
 }}
 nav .mark{{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:15px;
   letter-spacing:-.02em;margin-right:14px;color:#fff;text-decoration:none;
   transition:opacity .25s ease}}
 nav a.mark:hover{{opacity:.6}}
-nav .mark i{{color:var(--coral);font-style:normal}}
-nav a{{font-size:11px;letter-spacing:.01em;color:#B4B7C2;text-decoration:none;
+nav .mark i{{color:var(--blue);font-style:normal}}
+nav a{{font-size:11px;letter-spacing:.01em;color:#AEBBE4;text-decoration:none;
   padding:8px 12px;border-radius:10px;transition:background .25s ease,color .25s ease}}
 nav a:hover{{background:rgba(255,255,255,.09);color:#fff}}
 .lang{{display:flex;gap:2px;margin-left:8px;padding:3px;border-radius:11px;background:rgba(255,255,255,.08)}}
@@ -158,7 +163,7 @@ main{{flex:1 1 auto;min-height:0;display:grid;
   font-size:clamp(25px,2.6vw,34px);letter-spacing:-.025em;line-height:1.08}}
 .room span{{display:block;margin-top:12px;font-size:12px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--dim)}}
-.hint{{margin:22px 0 26px;font-size:15px;line-height:1.72;color:#A9ACB8}}
+.hint{{margin:22px 0 26px;font-size:15px;line-height:1.72;color:#A7B3D8}}
 .hint b{{color:#fff;font-weight:600}}
 .rig{{display:flex;flex-direction:column;align-items:center}}
 /* dark aluminium, a hair lighter along the top edge where the light lands */
@@ -184,13 +189,13 @@ main{{flex:1 1 auto;min-height:0;display:grid;
    The player is already `scale-down-width`, so it fills the width and lands
    the frame's own height — the same picture, larger. */
 .screen:fullscreen{{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;
-  border-radius:0;background:var(--ink);box-shadow:none}}
+  border-radius:0;background:var(--ink-2);box-shadow:none}}
 .screen:-webkit-full-screen{{width:100vw;height:100vh;aspect-ratio:auto;border-radius:0}}
 
 /* the player takes a few seconds and shows white while it does; the room
    holds a dark card over it until the frame reports back */
 .wait{{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:14px;background:#14161C;color:var(--dim);font-size:13px;
+  justify-content:center;gap:14px;background:#0B1330;color:var(--dim);font-size:13px;
   transition:opacity .45s ease}}
 .wait.gone{{opacity:0;pointer-events:none}}
 .wait .bar{{width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}}
@@ -211,12 +216,12 @@ main{{flex:1 1 auto;min-height:0;display:grid;
 .acts{{display:flex;flex-direction:column;align-items:flex-start;gap:6px}}
 .go{{
   display:inline-flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;
-  font-family:inherit;font-size:14.5px;color:#15161A;background-image:var(--ramp);border:0;
+  font-family:inherit;font-size:14.5px;color:#fff;background-image:var(--ramp);border:0;
   padding:14px 22px;border-radius:999px;margin-bottom:14px;
-  box-shadow:0 10px 30px rgba(255,118,67,.26);
+  box-shadow:0 10px 30px rgba(31,160,253,.30);
   transition:transform .45s cubic-bezier(.34,1.4,.5,1),box-shadow .3s ease;
 }}
-.go:hover{{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,118,67,.36)}}
+.go:hover{{transform:translateY(-2px);box-shadow:0 16px 40px rgba(31,160,253,.42)}}
 .quiet{{
   display:inline-flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer;
   font-family:inherit;font-size:13.5px;color:var(--dim);
@@ -230,7 +235,7 @@ main{{flex:1 1 auto;min-height:0;display:grid;
 .quiet:hover svg{{transform:translateX(2px)}}
 .go:hover svg{{transform:rotate(-40deg)}}
 .foot-note{{margin:22px 0 0;max-width:52ch;font-size:12.5px;line-height:1.6;
-  color:#6B6F7B;text-align:center}}
+  color:#67739C;text-align:center}}
 
 @media (max-width:1100px){{
   body{{overflow:auto}}
