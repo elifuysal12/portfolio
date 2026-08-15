@@ -394,6 +394,11 @@ html{scroll-snap-type:y proximity}
 .entry:hover .entry-media{transform:translateY(-6px);box-shadow:0 26px 50px -28px rgba(23,20,15,.35)}
 .entry-media img{width:100%;height:100%;object-fit:cover;display:block;
   filter:saturate(.86);transition:filter .45s ease}
+/* A cover drawn to its own edges — a poster rather than a photograph — gets
+   shown whole instead of cropped, and the card takes the artwork's own ground
+   so the leftover reads as more of the picture rather than as a letterbox. */
+.entry-media.own{border-color:transparent}
+.entry-media.own img{object-fit:contain;filter:none}
 .entry:hover .entry-media img{filter:saturate(1)}
 /* until an export exists, the slot holds the name — deliberate, not empty */
 .plate{
@@ -1014,7 +1019,7 @@ const PROJECTS = [
   {key:'cursor',  mark:'Cursor Assistant',    style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
    /* ← Elif: kapak görseli. Dosyayı src/assets/cover/ içine koy, sonra bu
       satırı ASSET yer tutucusuyla doldur: cover:'…cover/cursor.webp…' — 16:10 */
-   cover:null,
+   cover:null, coverBg:'#0F1115',   /* coverBg dolu → görsel kırpılmaz, artan yer bu renkle dolar */
    logo:null,      /* ← Elif: proje logosu */       client:'Personal',         clientLogo:null,
    year:'2026', disc:['ai','product','uiux']},
 
@@ -1283,13 +1288,14 @@ function buildIndex(){
          logo  → the project's mark, centred small
          neither → the name set as type, deliberate rather than empty */
     const media = p.cover
-      ? `<img src="${p.cover}" alt="${p.mark}">`
+      ? `<img src="${p.cover}" alt="${p.mark}">`  /* see .own on the wrapper */
       : p.logo
       ? `<img class="plate-img" src="${p.logo}" alt="${p.mark}">`
       : `<span class="plate" style="${p.style}">${p.mark}</span>`;
     const note = p.note ? `<span class="entry-note">${t().notes[p.note]}</span>` : '';
     a.innerHTML =
-      `<span class="entry-media">${media}</span>`+
+      `<span class="entry-media${p.cover&&p.coverBg?' own':''}"`+
+        (p.cover&&p.coverBg?` style="background:${p.coverBg}"`:'')+`>${media}</span>`+
       `<span class="entry-body">`+
         `<span class="entry-brand">${brandMark(p)}<em class="entry-year">${p.year}</em>${note}</span>`+
         `<span class="entry-title">${p.mark}</span>`+
