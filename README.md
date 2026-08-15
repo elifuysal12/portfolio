@@ -74,7 +74,7 @@ python3 src/build_demo_jotform.py     # reads ../jotform-dashboard/index.html
 
 **`/demo/jotform`** is the Jotform AI Chatbot analytics dashboard: Elif's Figma
 prototype **running inside a monitor** on a dark desk, under the site's own nav
-— the desktop counterpart of the phone in `/demo/alti`. The screen is cut to
+— the desktop counterpart of the phone in `/case/alti/demo`. The screen is cut to
 the frame's own 1440×900, so `scale-down-width` lands it exactly: no letterbox,
 no scrolling inside the player. `hide-ui=1` takes Figma's restart away with the
 rest of the chrome, so the caption under the desk carries *Start over* and
@@ -89,10 +89,10 @@ designer's own artefact, not a faithful copy of it. That source is kept outside
 the repo at `~/Projects/jotform-dashboard`.
 
 ```bash
-python3 src/build_demo_alti.py        # /demo/alti — ALTI, in a phone
+python3 src/build_demo_alti.py        # /case/alti/demo — ALTI, in a phone
 ```
 
-**`/demo/alti`** is the same second choice for the same reason — 79 screens
+**`/case/alti/demo`** is the same second choice for the same reason — 79 screens
 across five flows, wired in Figma, with no coded twin — but it is a separate
 room rather than an entry in the file above, because the stage there is a
 1440×900 dashboard and this is a phone. A phone is an object, not a stage, so
@@ -103,12 +103,24 @@ on **flow 2** — `node-id` picks the frame but the player still starts the flow
 at its own starting point, so `starting-point-node-id` and `page-id` both have
 to be said.
 
+**It is the only room not in the `/demo` yard**, and that is the point: the
+others are separate exhibits, this one is a case study's own demo, so it sits
+under it. *See demo* opens it **in the same tab** — every demo runs on this
+domain and every room carries the way back, so taking a tab buys nothing.
+
 It wears **the site's own nav** — same pill, same order, same EN/TR switch,
 carried into the dark the way `body.case-open` carries it on a case study — so
 the demo reads as a room in the site rather than a page that links back to one.
 The section links are absolute (`/#work`, `/cv/`, `/#contact`) because this is
-a separate address. The room's own three controls sit under the phone instead:
-the bar belongs to the site, those belong to the prototype.
+a separate address.
+
+The room's own controls sit to the **right of the phone**, ranked: one filled
+ramp button (*Read the case study* — the step after playing, and the mirror of
+*See demo* on the case) and two quiet icon rows. They started as three
+identical outlined pills under the phone, which cost the prototype ~190px of
+height and gave the page three equal things to press; an outline-only control
+is also on the list of tells to keep off this site. The copy and ALTI's own
+mark take the left column. Below 1000px it all goes back under the phone.
 
 Fonts in the rooms are **linked, not inlined** (`assets/font/`, written by
 whichever demo build runs last — each writes them, so no build depends on

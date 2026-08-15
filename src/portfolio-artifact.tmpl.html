@@ -1102,6 +1102,12 @@ body.case-open:not(.case-light) nav a:hover{background:rgba(255,255,255,.09);col
 body.case-open:not(.case-light) .lang{background:rgba(255,255,255,.08)}
 body.case-open:not(.case-light) .lang button{color:#8A8B90}
 body.case-open:not(.case-light) .lang button.on{background:#EFEAE7;color:#15161A}
+/* A case study is a page, not a dialog, so it does not get a dismiss button in
+   the corner. There are five ways out already — the elif. wordmark, the nav
+   links, Escape, "back to the work" at the end, and the browser's own Back,
+   which these sheets push state for. The CV keeps its pill: that one really is
+   a panel over the page. */
+body.case-open .cv-close{display:none}
 body.case-open:not(.case-light) .cv-close{
   background:rgba(28,29,34,.74);border-color:rgba(255,255,255,.12);color:#B9BABF;
 }
@@ -1248,12 +1254,11 @@ const PROJECTS = [
    year:'2026', disc:['ai','product','uiux']},
 
   {key:'chatbot', mark:'Chatbot Dashboard', style:'font-size:19px;font-weight:600;letter-spacing:-.01em',
-   /* kapak: diğerlerinin diliyle — koyu zemin, harf aralıklı üst başlık,
-      Bricolage cümle (ikinci satır vurguda), ürün kompozisyonun içinde. İddia
-      panelin kendi iddiası: sayıları okumak zorunda değilsin, kart sana ne
-      yapacağını söylüyor. O yüzden "Change Tone of Voice" kartı base360'ın
-      yorum sayfası gibi ekranın üstüne kaldırıldı — cümlenin kanıtı. */
-   cover:'{{ASSET:cover/chatbot.webp}}', coverBg:'#0A1551',
+   /* kapak: Overview ekranının 3× export'u, sağdan ve alttan taşacak şekilde
+      yerleştirilmiş. Bütün ekranı karta sığdırmak yazıyı okunmaz yapıyordu;
+      taşırınca "Hello Designware!", iki gösterge ve WP kenar çubuğu kart
+      boyunda okunuyor. Zemin ürünün kendi mavisi. */
+   cover:'{{ASSET:cover/chatbot.webp}}', coverBg:'#E7F0FF',
    logo:null,                                       client:'Jotform',          clientLogo:null,  /* ← Elif: Jotform logosu */
    year:'2025', disc:['web','product','ai']},
 
@@ -1267,15 +1272,17 @@ const PROJECTS = [
       hiçbir parçası yer değiştirmedi. make_cover.py kullanılmadı: o düz zeminle
       genişletiyor, buradaki kenarlarda mesh degrade var, dikiş bırakırdı. */
    cover:'{{ASSET:cover/whallet.webp}}', coverBg:'#050F2B',
-   logo:null,      /* ← Elif: Whallet logosu */     client:'Whallet',          clientLogo:null,
-   year:'—',    disc:['web3','product','uiux']},
+   /* self-initiated, so the line above the title names the context rather than
+   repeating the project — same as Cursor Assistant and Shutter Echoes */
+   logo:null,      /* ← Elif: Whallet logosu */     client:'Personal',         clientLogo:null,
+   year:'2025', disc:['web3','product','uiux']},
 
   {key:'base360', mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
    /* kapak: 262:744 frame'inin 4× export'u — src/make_cover.py kendi zeminini
       (#ECF1F9) okuyup 16:10'a genişletiyor, görsel kırpılmıyor. */
    cover:'{{ASSET:cover/base360.webp}}', coverBg:'#ECF1F9',
    logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
-   year:'—',    disc:['web','uiux']},
+   year:'2026', disc:['web','uiux']},
 
   {key:'shutter', mark:'Shutter Echoes',    style:'font-size:19px;font-weight:800;letter-spacing:.02em',
    logo:null,                                       client:'Personal',         clientLogo:null,
@@ -2305,7 +2312,9 @@ const CASES = {
      flows have no coded twin, and a video would not be a prototype. */
   alti:{
     theme:'alti', light:true, cover:'alti',
-    demo:'https://elifbeyzauysal.com/demo/alti/',
+    /* not in the /demo yard with the others: this prototype is not a separate
+       exhibit, it is this case study's own demo, so it sits under it. */
+    demo:'https://elifbeyzauysal.com/case/alti/demo/',
     en:{
       kicker:'Location-based discovery app',
       eyebrow:'Cultural heritage, on foot',
@@ -2507,8 +2516,11 @@ const ARROW = '<svg viewBox="0 0 44 52" aria-hidden="true">'+
   ' fill="url(#cgr)" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>';
 const EXT = '<svg viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>';
 
+/* Same tab. Every demo runs on this domain now, so opening one in a new window
+   is a tab stolen from the reader for a page they were going to come back
+   from anyway — and the rooms carry the site's nav, so there is a way back. */
 const demoBtn = (href,label) =>
-  `<a class="demo-btn" href="${href}" target="_blank" rel="noopener noreferrer">${label}${EXT}</a>`;
+  `<a class="demo-btn" href="${href}">${label}${EXT}</a>`;
 
 /* one screen with its caption — `k` switches the caption to the tracked
    small-caps label the board uses under the solution screens. A shot may

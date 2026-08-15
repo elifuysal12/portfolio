@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>@font-face{font-family:'Poppins';font-style:italic;font-weight:500;font-display:swap;src:url(/assets/font/sn-po-500i.woff2) format('woff2')}@font-face{font-family:'Poppins';font-style:italic;font-weight:600;font-display:swap;src:url(/assets/font/sn-po-600i.woff2) format('woff2')}@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url(/assets/font/sn-po-400.woff2) format('woff2')}@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url(/assets/font/sn-po-500.woff2) format('woff2')}@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url(/assets/font/sn-po-600.woff2) format('woff2')}@font-face{font-family:'Poppins';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/font/sn-po-700.woff2) format('woff2')}</style>
+<link rel="stylesheet" href="style.css?v=9">
+<title>Sun Ninja — live prototype · Elif Beyza Uysal</title>
+<meta name="description" content="A landing page redesign for Sun Ninja, the beach shade brand — the running prototype, with the sky and the palette moving as you scroll. By Elif Beyza Uysal.">
+<meta property="og:title" content="Sun Ninja — live prototype · Elif Beyza Uysal">
+<meta property="og:description" content="A landing page redesign for Sun Ninja, the beach shade brand — the running prototype, with the sky and the palette moving as you scroll. By Elif Beyza Uysal.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://elifbeyzauysal.com/demo/sunninja/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E">
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "589b26a9898440e583a7272ff182a1e4"}'></script>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true"></div>
+<div class="sun" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<header class="nav">
+  <a class="brand" href="#" aria-label="Sun Ninja">
+    <span class="logo"><svg fill="currentColor" aria-hidden="true" viewBox="0 0 116.96 42.59" xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" id="Layer_2"> <g data-name="Layer 2" id="Layer_2-2"> <g id="ARTWORK"> <g> <g> <path d="M62.83,19.24c1.16-.61,1.5-2.27.76-3.71s-2.28-2.11-3.44-1.5-1.5,2.27-.76,3.71,2.28,2.11,3.44,1.5Z"></path> <path d="M74.87,15.71c1.07-.12,1.82-1.29,1.68-2.61-.14-1.33-1.12-2.31-2.19-2.19-1.07.12-1.82,1.29-1.68,2.61.14,1.33,1.12,2.31,2.19,2.19Z"></path> <path d="M29.68,25.17c2.29-1.76,4.89-3.05,7.66-3.82.03,1.29.21,2.57.53,3.82h41.76c.7-1.7,1.07-3.51,1.1-5.35,0-2.02-.31-4.03-.91-5.96-3.72,5.39-16.69,9.34-23.48,9.34-3.06,0-7.23-1.14-7.23-4.33,0-4.7,12.13-9.97,22.87-9.97,2.99,0,4.99.54,6.19,1.03-2.98-5.49-8.66-9.93-17.48-9.93-11.3,0-20.1,7.48-22.63,15.96-1.38-2.33-3.37-4.23-5.76-5.46-1.37,2.27-3.92,6.09-3.92,6.09,3.77-.36,5.96.93,7.59,2.17-5.55-1.19-10.29,1.39-12.02,3.36.4.71,1.23,1.96,1.97,3.06h3.76Z"></path> </g> <g> <path d="M42.48,28.62v10.02l-6.43-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.34Z"></path> <path d="M63.3,28.62v10.02l-6.42-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.35Z"></path> <path d="M84.87,28.62v10.02l-6.43-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.34Z"></path> <path d="M72.1,28.62h-3.34v13.96h3.34v-13.96Z"></path> <path d="M97.08,28.62v9.08c0,.84-.39,2.26-1.99,2.26h-5.81v2.62h5.81c2.84,0,5.33-1.65,5.33-4.89v-9.07h-3.34Z"></path> <path d="M115.62,42.58l-5.68-13.97h-3.62l-5.68,13.97h3.54l1.18-3.06c.76.07,1.46.42,1.97.98.51.57.8,1.3.81,2.07,0-1.62,1.32-2.55,2.8-3.02l1.16,3.02h3.53-.01ZM108.14,36.4c0,.77-.29,1.51-.8,2.08-.51.57-1.22.92-1.97,1l2.77-7.22,2.77,7.22c-.76-.07-1.46-.43-1.97-1s-.8-1.31-.8-2.08Z"></path> <path d="M26.4,28.62v9.1c0,1.37-1.18,2.38-3.42,2.38s-3.41-1.01-3.41-2.38v-9.1h-3.34v9.27c0,3.32,3.38,4.7,6.75,4.7s6.74-1.38,6.74-4.7v-9.27h-3.33,0Z"></path> <path d="M9.3,34.13l-3.57.05c-.21.02-.43,0-.63-.07-.2-.07-.39-.18-.55-.32s-.28-.32-.37-.52-.13-.41-.13-.63.04-.43.13-.63c.09-.2.21-.37.37-.52.16-.14.34-.25.55-.32.2-.07.42-.09.63-.07h8.07v-2.52H5.41C1.72,28.58.06,30.06.06,32.62s1.66,4.04,5.35,4.04h3.56c.22,0,.44.02.65.1.21.08.4.2.56.35.16.16.29.34.38.55.09.21.13.43.13.66s-.05.45-.13.66c-.09.21-.22.39-.38.55s-.35.28-.56.35c-.21.08-.43.11-.65.1H0v2.56h9.28c4.16,0,5.6-1.55,5.6-4.22s-1.72-4.22-5.58-4.22v.03Z"></path> <path d="M113.91,29.51c.08-.19.2-.36.34-.51.15-.15.32-.26.51-.34.39-.16.84-.16,1.23,0,.19.08.36.19.5.34.15.15.27.33.35.52.08.2.12.41.12.62s-.04.44-.13.65c-.08.19-.2.37-.34.51-.14.15-.32.26-.5.34-.4.16-.84.16-1.23,0-.19-.08-.37-.19-.51-.34-.15-.15-.26-.32-.34-.51-.09-.2-.13-.42-.13-.65s.04-.43.13-.63ZM114.17,30.7c.06.16.16.31.28.44.12.12.27.22.43.29.16.07.34.11.52.1.18,0,.35-.03.51-.1s.31-.17.43-.29c.12-.13.21-.28.28-.44.07-.18.1-.36.1-.55,0-.18-.03-.37-.1-.54-.06-.16-.16-.31-.28-.44-.12-.12-.27-.22-.43-.29-.16-.07-.34-.11-.51-.11-.18,0-.36.03-.52.11-.16.06-.31.16-.43.29-.12.13-.22.27-.28.44-.07.17-.1.35-.1.54s.03.37.1.55ZM115.46,29.21c.17-.01.35.03.49.14.05.05.1.11.13.18s.04.14.03.22c0,.07,0,.14-.03.2-.02.07-.06.12-.11.17-.1.08-.22.13-.35.14l.53.83h-.31l-.5-.81h-.31v.81h-.29v-1.88h.72ZM115.33,30.05h.19s.11-.02.16-.04c.04-.02.08-.05.11-.1.03-.05.05-.11.04-.17,0-.05-.01-.1-.04-.15-.02-.04-.06-.07-.09-.09-.04-.02-.08-.03-.13-.04h-.53v.58h.3,0Z"></path> </g> </g> </g> </g> </svg></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#noon">Shop</a>
+    <a href="#golden">Collections</a>
+    <a href="#kit">Bundle and save</a>
+    <a href="#sunset">News</a>
+  </nav>
+  <a class="nav-cart" href="#" aria-label="Cart, 2 items"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 7.5h11.6l-1.15 10.7a2.1 2.1 0 0 1-2.09 1.88H9.44a2.1 2.1 0 0 1-2.09-1.88L6.2 7.5Z"/><path d="M9.3 7.5V5.9a2.7 2.7 0 0 1 5.4 0v1.6"/></svg><em>2</em></a>
+</header>
+
+
+<main>
+
+<!-- ═══════════════ ACT 1 — 06:10 FIRST LIGHT ═══════════════ -->
+<section class="act act--hero" id="dawn">
+  <div class="wrap hero">
+    <div class="hero-copy">
+      <h1 class="display">From first light<br><em>to last.</em></h1>
+      <p class="lede">One tent, eight people, a whole day of shade. It blocks <b>98%</b> of the UV,
+      goes up in <b>three minutes</b>, and weighs <b>8.8&nbsp;lbs</b> on the walk down.</p>
+      <div class="cta-row">
+        <a class="btn btn--solid" href="#">Shop the tent — $170</a>
+        <a class="btn btn--ghost" href="#setup">See the 3-minute setup</a>
+      </div>
+
+      <p class="reassure">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <b>4.8</b> from 3,214 reviews
+        <i>·</i> Free 2-day shipping over $99
+        <i>·</i> 30-night sand trial
+      </p>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="img/life_aerial.webp" alt="A Sun Ninja tent pitched on an empty beach at first light">
+    </figure>
+  </div>
+
+</section>
+
+<!-- ═══════════════ ACT 2 — 09:20 THE SETUP ═══════════════ -->
+<section class="act act--pin" id="setup">
+  <div class="pin">
+    <div class="wrap split">
+      <div class="split-copy">
+        <h2 class="display display--md">Three minutes.<br>Then the day <em>is yours.</em></h2>
+
+        <div class="stepstack">
+          <article class="step is-active" data-step="0">
+            <b>01</b><h3>Spread</h3>
+            <p>Unroll the canopy and lay it flat on the sand. It weighs less than a full cooler.</p>
+          </article>
+          <article class="step" data-step="1">
+            <b>02</b><h3>Anchor</h3>
+            <p>Fill the four sand bags with the shovel that comes in the bag. No stakes, no digging, no borrowed mallet.</p>
+          </article>
+          <article class="step" data-step="2">
+            <b>03</b><h3>Lift</h3>
+            <p>Slide the poles in and stand it up. That is the whole thing. Go swim.</p>
+          </article>
+        </div>
+
+        <div class="stepbar" aria-hidden="true">
+          <span class="is-on"></span><span></span><span></span>
+        </div>
+        <p class="footnote">On grass? Four steel pegs are already in the bag.</p>
+      </div>
+
+      <figure class="split-media" data-media>
+        <img src="img/life_couple.webp" data-step="0" class="is-shown" alt="The canopy laid flat on the sand">
+        <img src="img/life_mom.webp"    data-step="1" alt="Filling the sand anchor with the shovel">
+        <img src="img/life_volley.webp" data-step="2" alt="The tent standing, the day underway">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACT 3 — 12:40 HIGH NOON ═══════════════ -->
+<section class="act act--noon" id="noon">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>UPF 50+ ✳ Blocks 98% of UV ✳ Wind-tested to 25 mph ✳ Machine washable ✳ 8.8 lbs ✳ Fits in a carry-on ✳ Sand anchors, no stakes ✳</span>
+      <span>UPF 50+ ✳ Blocks 98% of UV ✳ Wind-tested to 25 mph ✳ Machine washable ✳ 8.8 lbs ✳ Fits in a carry-on ✳ Sand anchors, no stakes ✳</span>
+    </div>
+  </div>
+
+  <div class="wrap noon-head">
+    <h2 class="display">The sun is at its worst.<br><em>You are completely fine.</em></h2>
+    <p class="lede lede--wide">The canopy is a stretch-knit UPF 50+ fabric. It stops 98% of UVA and UVB — and it keeps stopping it when it is wet, stretched and full of salt.</p>
+  </div>
+
+  <div class="panel"><div class="wrap sizes">
+    <article class="size">
+      <figure class="plan"><img src="img/cut_size_2p.webp" alt="The 2-person tent, drawn to scale against 2 people"></figure>
+      <div class="size-body">
+        <h3>2-Person</h3>
+        <dl><div><dt>Footprint</dt><dd>7 × 7 ft</dd></div><div><dt>Packed</dt><dd>4.2 lbs</dd></div></dl>
+        <p class="size-price">$90</p>
+        <a class="btn btn--line" href="#">Add — $90</a>
+      </div>
+    </article>
+    <article class="size">
+      <figure class="plan"><img src="img/cut_size_4p.webp" alt="The 4-person tent, drawn to scale against 4 people"></figure>
+      <div class="size-body">
+        <h3>4-Person</h3>
+        <dl><div><dt>Footprint</dt><dd>7.5 × 7 ft</dd></div><div><dt>Packed</dt><dd>6.4 lbs</dd></div></dl>
+        <p class="size-price">$135</p>
+        <a class="btn btn--line" href="#">Add — $135</a>
+      </div>
+    </article>
+    <article class="size size--pick">
+      <span class="pick">Customer's Favorite</span>
+      <figure class="plan"><img src="img/cut_size_8p.webp" alt="The 8-person tent, drawn to scale against 8 people"></figure>
+      <div class="size-body">
+        <h3>8-Person</h3>
+        <dl><div><dt>Footprint</dt><dd>10 × 10 ft</dd></div><div><dt>Packed</dt><dd>8.8 lbs</dd></div></dl>
+        <p class="size-price">$170</p>
+        <a class="btn btn--solid btn--sm" href="#">Add — $170</a>
+      </div>
+    </article>
+  </div>
+  <ul class="wrap promises">
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 18V6.8a1 1 0 0 0-1-1H2.6a1 1 0 0 0-1 1V17a1 1 0 0 0 1 1H4"/><path d="M14 9.4h3.8l4 4V17a1 1 0 0 1-1 1h-1"/><circle cx="7" cy="18" r="2.2"/><circle cx="17.4" cy="18" r="2.2"/></svg><b>Free 2-day shipping</b><span>On everything over $99</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.6-6.1L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.6 6.1L3 16"/><path d="M3 21v-5h5"/></svg><b>30-night sand trial</b><span>Take it to the beach. Send it back if it is not for you.</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4 4.2 5.2v6c0 5 3.3 9.2 7.8 10.6 4.5-1.4 7.8-5.6 7.8-10.6v-6L12 2.4z"/><path d="m8.8 12 2.3 2.3 4.4-4.4"/></svg><b>Two-year warranty</b><span>Poles, seams and fabric, all covered.</span></li>
+  </ul>
+  </div>
+
+</section>
+
+<!-- ═══════════════ ACT 4 — 16:30 GOLDEN HOUR ═══════════════ -->
+<section class="act act--rail" id="golden">
+  <div class="pin">
+    <div class="wrap golden-head">
+      <h2 class="display display--md">The beach is only <em>the beginning.</em></h2>
+      <p class="rail-now"><b data-rail-index>01</b><span data-rail-name>Park picnic</span></p>
+      <p class="rail-note" data-rail-note>Twelve people, one long table, zero sunburn.</p>
+    </div>
+    <div class="rail-track" data-rail>
+      <figure class="is-focus"><img src="img/life_park.webp" alt="Sun Ninja tent over a park table"><figcaption><b>Park picnic</b><span>Twelve people, one long table, zero sunburn.</span></figcaption></figure>
+      <figure><img src="img/life_bbq.webp" alt="Sun Ninja tent over a backyard barbecue"><figcaption><b>Backyard</b><span>Shade over the grill, up before the coals are.</span></figcaption></figure>
+      <figure><img src="img/life_lawn.webp" alt="Friends under a navy Sun Ninja tent on grass"><figcaption><b>Lawn day</b><span>Steel pegs in the bag for grass and dirt.</span></figcaption></figure>
+      <figure><img src="img/life_yoga.webp" alt="Woman under a Sun Ninja tent on a lawn"><figcaption><b>Anywhere quiet</b><span>Eight and a half kilos of personal weather.</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<div class="stack">
+<section class="act stack-under" id="kit">
+  <div class="wrap kit">
+    <div class="kit-head">
+      <div>
+        <h3 class="display display--sm">Everything else <em>in the bag.</em></h3>
+      </div>
+      <a class="btn btn--line" href="#">Shop all 35 products</a>
+    </div>
+    <div class="kit-grid">
+      <a href="#"><img src="img/prod_chair.webp" alt="Sun Ninja beach chair"><b>Beach Chair</b><span>Five positions · $100</span></a>
+      <a href="#"><img src="img/cut_cooler.webp" alt="Sun Ninja backpack cooler"><b>Backpack Cooler</b><span>36 cans, 48 hours · $180</span></a>
+      <a href="#"><img src="img/prod_shower.webp" alt="Sun Ninja portable shower"><b>Portable Shower</b><span>2.1 gallons, pressurised · $80</span></a>
+      <a href="#"><img src="img/cut_blanket.webp" alt="Sun Ninja beach blanket"><b>Beach Blanket</b><span>Sand-free, 7 × 7 ft · $35</span></a>
+      <a href="#"><img src="img/prod_tote.webp" alt="Sun Ninja rubber beach tote"><b>Rubber Tote</b><span>Rinses clean · $80</span></a>
+      <a href="#"><img src="img/prod_towel_turkish.webp" alt="Turkish beach towel"><b>Turkish Towel</b><span>Dries in minutes · $20</span></a>
+      <a href="#"><img src="img/prod_tumbler.webp" alt="Sun Ninja tumbler"><b>30 oz Tumbler</b><span>Cold until sundown · $20</span></a>
+      <a href="#"><img src="img/prod_hammock.webp" alt="Sun Ninja floating hammock"><b>Floating Hammock</b><span>Fits six · $500</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACT 5 — 19:45 SUNSET ═══════════════ -->
+<section class="act stack-over" id="sunset">
+  <div class="wrap sunset-head">
+    <h2 class="display display--md">Sixty thousand<br><em>beach days later.</em></h2>
+    <div class="score"><b>4.8</b><span class="stars">★★★★★</span><span>3,214 verified reviews</span></div>
+  </div>
+
+  <div class="wrap quotes">
+    <blockquote>
+      <p class="q-stars" aria-label="5 out of 5 stars"><span aria-hidden="true">★★★★★</span></p>
+      <p>“Up in the time it took my husband to find the parking meter. It did not move once, and it was properly windy.”</p>
+      <cite><i class="who" style="--img:url(img/life_lawn.webp); --pos:22% 51%" aria-hidden="true"></i><span>Dana Rivera</span></cite>
+    </blockquote>
+    <blockquote>
+      <p class="q-stars" aria-label="5 out of 5 stars"><span aria-hidden="true">★★★★★</span></p>
+      <p>“We have taken it to the beach, two parks and a football tailgate. It is the only thing everybody asks about.”</p>
+      <cite><i class="who" style="--img:url(img/life_lawn.webp); --pos:56% 53%" aria-hidden="true"></i><span>Marcus Tate</span></cite>
+    </blockquote>
+    <blockquote>
+      <p class="q-stars" aria-label="4 out of 5 stars"><span aria-hidden="true">★★★★<i>★</i></span></p>
+      <p>“Third summer. Washed it maybe ten times. The colour has not gone anywhere.”</p>
+      <cite><i class="who" style="--img:url(img/life_lawn.webp); --pos:67% 55%" aria-hidden="true"></i><span>Priya Nair</span></cite>
+    </blockquote>
+  </div>
+
+  <div class="wrap review-cta">
+    <a class="btn btn--solid" href="#">Shop the beach tent — from $90</a>
+  </div>
+
+</section>
+</div>
+
+<!-- ═══════════════ ACT 6 — 21:30 AFTER DARK ═══════════════ -->
+<section class="act act--night" id="night">
+  <div class="wrap night-head">
+    <h2 class="display">Tomorrow,<br><em>same time?</em></h2>
+    <form class="signup" onsubmit="return false">
+      <input type="email" placeholder="you@email.com" aria-label="Email">
+      <button type="submit">Get 15% off</button>
+    </form>
+    <p class="footnote">One email a month. Mostly about where to go.</p>
+  </div>
+
+  <footer class="wrap foot">
+    <div class="foot-brand">
+      <span class="logo logo--lg"><svg fill="currentColor" aria-hidden="true" viewBox="0 0 116.96 42.59" xmlns="http://www.w3.org/2000/svg" data-name="Layer 2" id="Layer_2"> <g data-name="Layer 2" id="Layer_2-2"> <g id="ARTWORK"> <g> <g> <path d="M62.83,19.24c1.16-.61,1.5-2.27.76-3.71s-2.28-2.11-3.44-1.5-1.5,2.27-.76,3.71,2.28,2.11,3.44,1.5Z"></path> <path d="M74.87,15.71c1.07-.12,1.82-1.29,1.68-2.61-.14-1.33-1.12-2.31-2.19-2.19-1.07.12-1.82,1.29-1.68,2.61.14,1.33,1.12,2.31,2.19,2.19Z"></path> <path d="M29.68,25.17c2.29-1.76,4.89-3.05,7.66-3.82.03,1.29.21,2.57.53,3.82h41.76c.7-1.7,1.07-3.51,1.1-5.35,0-2.02-.31-4.03-.91-5.96-3.72,5.39-16.69,9.34-23.48,9.34-3.06,0-7.23-1.14-7.23-4.33,0-4.7,12.13-9.97,22.87-9.97,2.99,0,4.99.54,6.19,1.03-2.98-5.49-8.66-9.93-17.48-9.93-11.3,0-20.1,7.48-22.63,15.96-1.38-2.33-3.37-4.23-5.76-5.46-1.37,2.27-3.92,6.09-3.92,6.09,3.77-.36,5.96.93,7.59,2.17-5.55-1.19-10.29,1.39-12.02,3.36.4.71,1.23,1.96,1.97,3.06h3.76Z"></path> </g> <g> <path d="M42.48,28.62v10.02l-6.43-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.34Z"></path> <path d="M63.3,28.62v10.02l-6.42-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.35Z"></path> <path d="M84.87,28.62v10.02l-6.43-10.02h-4.34v13.96h3.34v-9.96l6.38,9.96h4.39v-13.96h-3.34Z"></path> <path d="M72.1,28.62h-3.34v13.96h3.34v-13.96Z"></path> <path d="M97.08,28.62v9.08c0,.84-.39,2.26-1.99,2.26h-5.81v2.62h5.81c2.84,0,5.33-1.65,5.33-4.89v-9.07h-3.34Z"></path> <path d="M115.62,42.58l-5.68-13.97h-3.62l-5.68,13.97h3.54l1.18-3.06c.76.07,1.46.42,1.97.98.51.57.8,1.3.81,2.07,0-1.62,1.32-2.55,2.8-3.02l1.16,3.02h3.53-.01ZM108.14,36.4c0,.77-.29,1.51-.8,2.08-.51.57-1.22.92-1.97,1l2.77-7.22,2.77,7.22c-.76-.07-1.46-.43-1.97-1s-.8-1.31-.8-2.08Z"></path> <path d="M26.4,28.62v9.1c0,1.37-1.18,2.38-3.42,2.38s-3.41-1.01-3.41-2.38v-9.1h-3.34v9.27c0,3.32,3.38,4.7,6.75,4.7s6.74-1.38,6.74-4.7v-9.27h-3.33,0Z"></path> <path d="M9.3,34.13l-3.57.05c-.21.02-.43,0-.63-.07-.2-.07-.39-.18-.55-.32s-.28-.32-.37-.52-.13-.41-.13-.63.04-.43.13-.63c.09-.2.21-.37.37-.52.16-.14.34-.25.55-.32.2-.07.42-.09.63-.07h8.07v-2.52H5.41C1.72,28.58.06,30.06.06,32.62s1.66,4.04,5.35,4.04h3.56c.22,0,.44.02.65.1.21.08.4.2.56.35.16.16.29.34.38.55.09.21.13.43.13.66s-.05.45-.13.66c-.09.21-.22.39-.38.55s-.35.28-.56.35c-.21.08-.43.11-.65.1H0v2.56h9.28c4.16,0,5.6-1.55,5.6-4.22s-1.72-4.22-5.58-4.22v.03Z"></path> <path d="M113.91,29.51c.08-.19.2-.36.34-.51.15-.15.32-.26.51-.34.39-.16.84-.16,1.23,0,.19.08.36.19.5.34.15.15.27.33.35.52.08.2.12.41.12.62s-.04.44-.13.65c-.08.19-.2.37-.34.51-.14.15-.32.26-.5.34-.4.16-.84.16-1.23,0-.19-.08-.37-.19-.51-.34-.15-.15-.26-.32-.34-.51-.09-.2-.13-.42-.13-.65s.04-.43.13-.63ZM114.17,30.7c.06.16.16.31.28.44.12.12.27.22.43.29.16.07.34.11.52.1.18,0,.35-.03.51-.1s.31-.17.43-.29c.12-.13.21-.28.28-.44.07-.18.1-.36.1-.55,0-.18-.03-.37-.1-.54-.06-.16-.16-.31-.28-.44-.12-.12-.27-.22-.43-.29-.16-.07-.34-.11-.51-.11-.18,0-.36.03-.52.11-.16.06-.31.16-.43.29-.12.13-.22.27-.28.44-.07.17-.1.35-.1.54s.03.37.1.55ZM115.46,29.21c.17-.01.35.03.49.14.05.05.1.11.13.18s.04.14.03.22c0,.07,0,.14-.03.2-.02.07-.06.12-.11.17-.1.08-.22.13-.35.14l.53.83h-.31l-.5-.81h-.31v.81h-.29v-1.88h.72ZM115.33,30.05h.19s.11-.02.16-.04c.04-.02.08-.05.11-.1.03-.05.05-.11.04-.17,0-.05-.01-.1-.04-.15-.02-.04-.06-.07-.09-.09-.04-.02-.08-.03-.13-.04h-.53v.58h.3,0Z"></path> </g> </g> </g> </g> </svg></span>
+      <p>Portable shade,<br>built for the shoreline.</p>
+    </div>
+    <div class="foot-col"><h4>Shop</h4><a href="#">Beach tents</a><a href="#">Chairs</a><a href="#">Coolers &amp; bags</a><a href="#">Bundles</a></div>
+    <div class="foot-col"><h4>Help</h4><a href="#">Shipping</a><a href="#">Returns</a><a href="#">Warranty</a><a href="#">Washing</a></div>
+    <div class="foot-col"><h4>Sun Ninja</h4><a href="#">Our story</a><a href="#">Journal</a><a href="#">Wholesale</a><a href="#">Store locator</a></div>
+  </footer>
+  <p class="wrap fineprint"><span>Unofficial concept redesign · not affiliated with Sun Ninja</span><span>(844) 000-0000</span><span>hello@example.com</span></p>
+</section>
+
+</main>
+
+<div class="buybar" data-buybar aria-hidden="true">
+  <img src="img/cut_tent_turq.webp" alt="">
+  <span class="buybar-name">Beach Tent <i>8-Person · Turquoise</i></span>
+  <span class="buybar-rating"><em class="stars">★★★★★</em> 4.8</span>
+  <span class="buybar-price">$170</span>
+  <a class="btn btn--solid btn--sm" href="#">Add to cart</a>
+</div>
+
+<script src="app.js?v=9"></script>
+</body>
+</html>

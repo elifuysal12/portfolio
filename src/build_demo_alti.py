@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the ALTI prototype room into ../demo/alti/.
+"""Build the ALTI prototype room into ../case/alti/demo/.
 
 Unlike NORE and base360, ALTI has no coded prototype to serve: it is a
 79-screen mobile app whose five flows are wired in Figma, and rebuilding that
@@ -35,7 +35,10 @@ from urllib.parse import quote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-OUT = os.path.join(ROOT, 'demo', 'alti')
+# The room lives *under* the case study rather than in the /demo yard the
+# other prototypes share: this one is not a separate exhibit, it is the case
+# study's own demo, and the address should say so — /case/alti/demo/.
+OUT = os.path.join(ROOT, 'case', 'alti', 'demo')
 
 # straight off the prototype's own share link (Present → Share prototype):
 #   .../proto/<file>/<name>?node-id=<node>&page-id=<page>&starting-point-node-id=<start>
@@ -83,6 +86,27 @@ for src, dst in (('f4.woff2', 'is-latin.woff2'), ('f5.woff2', 'is-latinext.woff2
                  ('poppins-700-ext.woff2', 'po-700-ext.woff2')):
     shutil.copyfile(os.path.join(HERE, 'assets', src), os.path.join(FONT_DIR, dst))
 
+# ALTI's own mark (3958:7788), inline so it takes the page's own colour space
+# rather than arriving as one more request. The board's export carries a
+# #F5F5F5 backing plate and 20px of air on the left — both dropped here, so the
+# viewBox is the artwork itself and the logo can be sized by width alone.
+LOGO = (
+  '<svg class="logo" viewBox="15 0 409 254" fill="none" '
+  'xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ALTI">'
+  '<path d="M218.789 252.771H15.8124V124.939H165.486V50.9014L133.427 31.8135L117.783 34.7051L20.6405 0H218.789V252.771ZM54.7616 169.489V195.713H166.211V169.489H54.7616Z" fill="url(#al0)"/>'
+  '<path d="M254.237 253.721V116.738H281.634V253.721H254.237Z" fill="url(#al1)"/>'
+  '<path d="M324.469 253.721V194.361H306.205V173.175H324.469V142.49H351.683V173.175H369.948V194.361H351.683V253.721H324.469Z" fill="url(#al1)"/>'
+  '<path d="M395.594 253.721V173.175H422.99V253.721H395.594Z" fill="url(#al1)"/>'
+  '<path d="M218.883 0H20.4014L115.487 46.0606L165.736 51.0714V72.9291L218.883 95.783V0Z" fill="url(#al2)"/>'
+  '<defs>'
+  '<linearGradient id="al0" x1="163.384" y1="26.7985" x2="576.971" y2="186.824" gradientUnits="userSpaceOnUse">'
+  '<stop stop-color="#FF325F"/><stop offset="1" stop-color="#FF751D"/></linearGradient>'
+  '<linearGradient id="al1" x1="141.254" y1="48.9289" x2="422.99" y2="185.229" gradientUnits="userSpaceOnUse">'
+  '<stop stop-color="#FF325F"/><stop offset="1" stop-color="#FF751D"/></linearGradient>'
+  '<linearGradient id="al2" x1="85.8881" y1="26.9578" x2="396.122" y2="218.34" gradientUnits="userSpaceOnUse">'
+  '<stop stop-color="#FF325F"/><stop offset="1" stop-color="#FF751D"/></linearGradient>'
+  '</defs></svg>')
+
 LATIN = ('U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,'
          'U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,'
          'U+2193,U+2212,U+2215,U+FEFF,U+FFFD')
@@ -118,7 +142,7 @@ PAGE = f"""<!doctype html>
 <meta property="og:title" content="{TITLE}">
 <meta property="og:description" content="{DESC}">
 <meta property="og:type" content="website">
-<link rel="canonical" href="https://elifbeyzauysal.com/demo/alti/">
+<link rel="canonical" href="https://elifbeyzauysal.com/case/alti/demo/">
 <link rel="icon" href="{FAVICON}">
 <style>
 {FONTS}
@@ -186,20 +210,37 @@ main{{flex:1; display:grid; grid-template-columns:1fr auto 1fr; align-items:cent
 .side{{max-width:34ch}}
 .side.left{{justify-self:end}}      /* hugs the phone, but the copy stays ragged-right */
 .side.right{{justify-self:start}}
-.room b{{display:block; font-family:'Bricolage Grotesque',system-ui,sans-serif;
-  font-weight:800; font-size:26px; letter-spacing:.24em; color:#fff}}
-.room span{{display:block; margin-top:6px; font-size:12px; letter-spacing:.14em;
+/* the product's own mark, not the word set in the site's display face */
+.room .logo{{display:block; width:clamp(112px,11vw,152px); height:auto}}
+.room span{{display:block; margin-top:16px; font-size:12px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--dim)}}
 
-/* the room's own three controls — out of the bar, which belongs to the site
-   now, and off the stack, which belongs to the phone */
-.acts{{display:flex; flex-direction:column; align-items:flex-start; gap:9px}}
-.acts a,.acts button{{
-  font-family:inherit; font-size:13px; color:#D7DCF5; text-decoration:none; cursor:pointer;
-  border:1px solid rgba(255,255,255,.16); background:transparent; border-radius:999px;
-  padding:9px 16px; transition:color .2s ease,border-color .2s ease,background .2s ease;
+/* THE ACTIONS, ranked. Three identical outlined pills gave the page three
+   equal-weight things to press and no answer to "what now" — and an
+   outline-only control is the tell Elif has asked to keep off this site. So:
+   one filled control, which is the step after playing with the prototype, and
+   two utilities that read as what they are. */
+.acts{{display:flex; flex-direction:column; align-items:flex-start; gap:6px}}
+.go{{
+  display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+  font-size:14.5px; color:#fff; background-image:var(--ramp);
+  padding:14px 22px; border-radius:999px; margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(255,85,123,.30);
+  transition:transform .45s cubic-bezier(.34,1.4,.5,1), box-shadow .3s ease;
 }}
-.acts a:hover,.acts button:hover{{color:#fff; border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.06)}}
+.go:hover{{transform:translateY(-2px); box-shadow:0 16px 40px rgba(255,85,123,.40)}}
+.quiet{{
+  display:inline-flex; align-items:center; gap:11px; text-decoration:none; cursor:pointer;
+  font-family:inherit; font-size:13.5px; color:var(--dim);
+  border:0; background:none; padding:9px 10px 9px 0; border-radius:10px;
+  transition:color .2s ease;
+}}
+.quiet:hover{{color:#fff}}
+.acts svg{{width:15px; height:15px; flex:0 0 auto; fill:none; stroke:currentColor;
+  stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .3s cubic-bezier(.34,1.4,.5,1)}}
+.quiet:hover svg{{transform:translateX(2px)}}
+#restart:hover svg{{transform:rotate(-40deg)}}
 
 /* the shell is sized off the frame ratio, so `contain` lands at 1:1 and the
    whole thing shrinks together instead of the player letterboxing itself */
@@ -261,7 +302,7 @@ footer a{{color:rgba(142,151,207,.8)}}
 
 <main>
   <div class="side left">
-    <p class="room"><b>ALTI</b><span data-i18n="sub">Ankara · on foot</span></p>
+    <p class="room">{LOGO}<span data-i18n="sub">Ankara · on foot</span></p>
     <p class="hint" data-i18n-html="hint">This is the real thing, not a video.
        <b>Tap the screen to move.</b> Wander, Gather and Capsule are all wired —
        79 screens, five flows.</p>
@@ -284,9 +325,14 @@ footer a{{color:rgba(142,151,207,.8)}}
 
   <div class="side right">
     <p class="acts">
-      <button type="button" id="restart" data-i18n="restart">Start over</button>
-      <a href="{FIGMA}" target="_blank" rel="noopener noreferrer" data-i18n="figma">Open in Figma</a>
-      <a href="https://elifbeyzauysal.com/case/alti/" data-i18n="case">Read the case study</a>
+      <a class="go" href="https://elifbeyzauysal.com/case/alti/"><span data-i18n="case">Read the case study</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15"/><path d="M13 6l6 6-6 6"/></svg></a>
+      <button class="quiet" type="button" id="restart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg>
+        <span data-i18n="restart">Start over</span></button>
+      <a class="quiet" href="{FIGMA}" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>
+        <span data-i18n="figma">Open in Figma</span></a>
     </p>
   </div>
 </main>

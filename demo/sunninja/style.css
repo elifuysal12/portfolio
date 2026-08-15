@@ -1,0 +1,1085 @@
+/* ══════════════════════════════════════════════════════════════
+   SUN NINJA — "One Day"
+   The page is a single beach day. Scroll position is the clock:
+   colour, light and the sea all move with it.
+   ══════════════════════════════════════════════════════════════ */
+
+:root{
+  /* driven live by app.js */
+  --pop:#E0361F;
+  --sky-1:#E8EDEE;
+  --sky-2:#D9E6E9;
+  --ink:#16262E;
+  --accent:#0E7C9B;
+  --sea:#BBD3D8;
+
+  --paper:#FFFFFF;
+  --wrap:1320px;
+  --gut:clamp(20px, 4vw, 64px);
+
+  /* ── the one measure everything lines up on ──────────────────
+     .wrap is a centred 1320 box with --gut of padding, so real
+     content lives in a column 1192 wide. Anything positioned off
+     the VIEWPORT edge instead (the hero photograph was) drifts
+     further out of alignment the wider the screen gets.
+     --measure is that column's width, --edge is the distance from
+     the viewport edge to its side. Absolutely-positioned things
+     use --edge; full-width bars use --measure. */
+  --measure:calc(var(--wrap) - 2 * var(--gut));
+  --edge:max(var(--gut), calc((100vw - var(--measure)) / 2));
+
+  /* shared by the page-wide grain layer and the nav glass, so the
+     two never drift apart */
+  --grain-src:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* one family, two voices: upright for the facts, italic for the feeling */
+  --sans:'Poppins', system-ui, sans-serif;
+  --disp:'Poppins', system-ui, sans-serif;
+  --mono:'Poppins', system-ui, sans-serif;   /* labels earn their look from case + tracking */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--sky-2);
+  overflow-x:clip;              /* not hidden — hidden would kill every sticky on the page */
+  -webkit-font-smoothing:antialiased;
+  transition:color .18s linear;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ── the sky: one continuous, always-changing field ───────── */
+.sky{
+  position:fixed; inset:0; z-index:-2;
+  background:linear-gradient(168deg, var(--sky-1) 0%, var(--sky-2) 100%);
+}
+/* when the sun is low the sky stops being a gradient and starts
+   being strata — the thing that makes a sunrise look like a sunrise */
+.sky::after{
+  content:''; position:absolute; inset:0;
+  opacity:calc(var(--lowness, 0) * .55);
+  background:
+    linear-gradient(to bottom,
+      transparent 34%,
+      color-mix(in srgb, var(--sun-c) 40%, transparent) 47%,
+      transparent 52%,
+      color-mix(in srgb, var(--sun-c) 26%, transparent) 61%,
+      transparent 66%,
+      color-mix(in srgb, var(--sun-c) 34%, transparent) 74%,
+      transparent 80%);
+  filter:blur(14px);
+}
+.sun{
+  position:fixed; z-index:-1; pointer-events:none;
+  left:var(--sun-x,50%); top:var(--sun-y,20%);
+  width:var(--sun-r,320px); aspect-ratio:1;
+  transform:translate(-50%,-50%) scaleY(calc(1 - var(--lowness,0) * .13));
+  /* ── legibility beats the sun ──────────────────────────────
+     A low sun sits at 76% down the screen, which is exactly where
+     the reviews and the rating line are. At sundown the type is
+     #FFEDE2 and the disc is #FFB35A: light on light, and the
+     rating became unreadable every time the sun came back.
+     So the lower it gets, the more it gives way — it is still
+     plainly a sun, it just stops being a light source pointed at
+     the copy. */
+  opacity:calc(var(--sun-o,1) * (1 - var(--lowness,0) * .55));
+  /* a disc you can actually see, with a halo tight enough that it
+     never spreads across a headline */
+  /* a real disc with a soft rim, so it reads as the sun rather
+     than a lens flare — the halo stays tight enough to stay out
+     of the way of the type */
+  /* the disc reads as a disc: an almost hard edge with a soft rim,
+     then a short halo. A long falloff turns it into a wash. */
+  background:
+    radial-gradient(circle at 50% 50%,
+      color-mix(in srgb, var(--sun-c,#fff) 42%, transparent) 0 62%,
+      transparent 82%),
+    radial-gradient(circle at 50% 50%,
+      color-mix(in srgb, var(--sun-c,#fff) 76%, transparent) 0 45%,
+      color-mix(in srgb, var(--sun-c,#fff) 42%, transparent) 50%,
+      transparent 55%);
+  filter:blur(20px);
+}
+
+
+/* film grain — the single cheapest premium cue there is */
+.grain{
+  position:fixed; inset:-50%; z-index:60; pointer-events:none;
+  opacity:.055; mix-blend-mode:overlay;
+  background-image:var(--grain-src);
+}
+
+.wrap{width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--gut)}
+
+/* ── type ─────────────────────────────────────────────────── */
+.display{
+  font-family:var(--disp);
+  text-shadow:0 2px 26px color-mix(in srgb, var(--sky-2) 55%, transparent);
+  font-weight:700;
+  font-size:clamp(46px, 7.4vw, 116px);
+  line-height:1.00;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+}
+.display--md{font-size:clamp(38px, 5.0vw, 78px); line-height:1.04; letter-spacing:-.03em}
+.display em{
+  font-style:italic; font-weight:600;
+  letter-spacing:-.02em;
+  color:var(--accent);
+}
+.lede{
+  font-size:clamp(16px, 1.35vw, 20px);
+  line-height:1.6; max-width:46ch; opacity:.72; font-weight:400;
+}
+.lede--wide{max-width:62ch}
+
+.stamp{
+  font-family:var(--sans); font-size:11px; font-weight:600;
+  letter-spacing:.24em; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px; opacity:.62;
+}
+.stamp--plain{opacity:.5}
+.tick{width:24px; height:2px; background:var(--pop); display:block; flex:none; border-radius:2px}
+
+.footnote{font-size:12.5px; font-weight:500; letter-spacing:.01em; opacity:.55}
+
+/* ── buttons ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   Three weights, and not one of them is a bare outline. A ring of
+   1.5px around empty space is the cheapest possible "secondary" —
+   it reads as a placeholder rather than a decision, and next to a
+   solid primary it looks like the same button switched off.
+   So: primary is filled, secondary is a real surface that borrows
+   the sky through it, and the third weight drops the box entirely
+   and is just words with a line under them.
+
+   Sentence case throughout. Uppercase with tracked-out letters is
+   signage, and at 12px it is also slower to read.
+   ══════════════════════════════════════════════════════════════ */
+.btn{
+  font-family:var(--sans); font-size:15px; font-weight:600;
+  letter-spacing:-.005em;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  height:54px; padding:0 28px; border-radius:999px; white-space:nowrap;
+  transition:transform .35s cubic-bezier(.2,.9,.25,1), background .3s, color .3s, box-shadow .35s;
+}
+
+/* primary — the single action that matters on this screen */
+.btn--solid{
+  background:var(--ink); color:var(--sky-1);
+  box-shadow:0 12px 30px -14px color-mix(in srgb, var(--ink) 75%, transparent);
+}
+.btn--solid:hover{
+  transform:translateY(-2px);
+  box-shadow:0 20px 40px -16px color-mix(in srgb, var(--ink) 85%, transparent);
+}
+
+/* secondary — a surface, not a ring. Tinted ink over a blur, so it
+   picks up whatever sky is behind it and stays legible in all six
+   moments without ever competing with the primary. */
+/* currentColor, not --ink: this button also has to work inside the
+   deep panel, where the type is light. Tinting with the text
+   colour makes it correct in both places without a second rule. */
+.btn--ghost,
+.btn--line{
+  background:color-mix(in srgb, currentColor 12%, transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, currentColor 16%, transparent);
+  backdrop-filter:blur(10px) saturate(1.4); -webkit-backdrop-filter:blur(10px) saturate(1.4);
+}
+.btn--ghost:hover,
+.btn--line:hover{
+  background:color-mix(in srgb, currentColor 19%, transparent);
+  transform:translateY(-2px);
+}
+
+/* text — no box at all, for the third-priority action */
+.btn--text{
+  height:auto; padding:0; border-radius:0; background:none;
+  color:var(--ink);
+  box-shadow:inset 0 -1.5px 0 color-mix(in srgb, var(--ink) 32%, transparent);
+}
+.btn--text:hover{box-shadow:inset 0 -1.5px 0 currentColor; transform:none}
+
+.cta-row{display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:38px}
+
+/* ── nav ──────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   A bar that floats on the page, not a banner painted across the
+   top of it. Full-bleed and filled with sky/1 meant the header was
+   a second, flatter sky sitting on the real one — the seam showed
+   all day and it made the page feel like a template.
+
+   So: inset from every edge, glass rather than paint. The blur and
+   the saturation bump let the actual sky through, which means the
+   nav re-colours itself through all six moments for free, and a
+   single hairline of ink is all that declares where it ends.
+   ══════════════════════════════════════════════════════════════ */
+/* ── how the glass actually works ─────────────────────────────
+   A blur alone does nothing here. `backdrop-filter:blur()` blurs
+   whatever is behind the element, and behind the nav is a smooth
+   sky gradient — blurring a smooth gradient returns the same
+   smooth gradient. Add an opaque-ish tint on top of that and you
+   have not made glass, you have made a second flat bar.
+
+   So the tint is almost gone (8%), and the material is carried by
+   three things that DO survive a flat backdrop:
+     · a saturation and brightness shift, so the sky visibly
+       changes state where the bar crosses it
+     · a specular top edge and a darker bottom edge, which is what
+       actually reads as "a pane with thickness"
+     · a soft drop shadow, so it is lit from somewhere
+   Over the hero photograph the blur then does show up for real.
+   ────────────────────────────────────────────────────────────── */
+.nav{
+  position:fixed; z-index:50;
+  top:clamp(14px,1.8vh,22px); left:50%; transform:translateX(-50%);
+  /* exactly the content column, so the bar's ends sit over the
+     same verticals as the headline and the photograph */
+  width:min(var(--measure), calc(100vw - 2 * var(--gut)));
+  min-height:68px;
+  display:flex; align-items:center; gap:clamp(18px,2.4vw,34px);
+  padding:10px 16px 10px 34px;
+  border-radius:999px;
+  color:var(--ink); transition:color .18s linear;
+  background:color-mix(in srgb, #fff 14%, transparent);
+  /* saturate was at 1.9, which on a peach sky pushed the pane
+     khaki — the bar looked dirty rather than clear. Just enough
+     lift to register as a different material. */
+  backdrop-filter:blur(24px) saturate(1.25) brightness(1.1);
+  -webkit-backdrop-filter:blur(24px) saturate(1.25) brightness(1.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .55),
+    inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--ink) 12%, transparent),
+    0 22px 48px -30px color-mix(in srgb, var(--ink) 72%, transparent);
+}
+/* a faint top-lit sheen across the pane, plus the page grain, so
+   the blur does not read as a smear of flat plastic */
+/* overlay, not paint. Without the blend mode the raw noise SVG is
+   grey speckle sitting on top of the bar, which is what was making
+   the glass look muddy. */
+.nav::after{
+  content:''; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; mix-blend-mode:overlay; opacity:.5;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / .5), rgb(255 255 255 / 0) 60%),
+    var(--grain-src);
+  background-size:auto, 170px 170px;
+}
+.brand{display:flex; align-items:center; position:relative; z-index:1}
+/* inlined so it survives being opened straight off disk — an
+   external SVG used as a CSS mask is blocked over file:// */
+/* the mark is stacked (ninja over wordmark), so at 132px it stood
+   ~48px tall inside a 68px bar and became the heaviest thing in
+   the nav — heavier than the links it is meant to sit beside.
+   108px puts it at roughly 40px, which leaves the bar some air. */
+.logo{display:block; width:108px; color:inherit}
+.logo svg{display:block; width:100%; height:auto; fill:currentColor}
+.logo--lg{width:176px}
+/* centred between the mark and the cart, so the bar is symmetrical
+   rather than left-weighted with a gap on the right */
+.nav-links{
+  display:flex; gap:clamp(16px,2vw,30px); margin-inline:auto;
+  position:relative; z-index:1;
+  font-size:14px; font-weight:500; letter-spacing:0;
+}
+.nav-links a{
+  opacity:.78; transition:opacity .25s;
+  padding:6px 2px; border-radius:8px;
+}
+.nav-links a:hover{opacity:1}
+
+/* the cart is a mark, not a word — at this size "Cart" was doing
+   no work the icon does not already do, and dropping it is what
+   buys the bar its breathing room on the right */
+.nav-cart{
+  display:grid; place-items:center;
+  position:relative; z-index:1; flex:none;
+  width:48px; height:48px; border-radius:999px;
+  background:color-mix(in srgb, var(--ink) 9%, transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ink) 14%, transparent);
+  transition:background .25s;
+}
+.nav-cart:hover{background:color-mix(in srgb, var(--ink) 16%, transparent)}
+.nav-cart svg{
+  width:21px; height:21px; display:block;
+  fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round;
+}
+/* the count rides the rim of the button */
+.nav-cart em{
+  position:absolute; top:-3px; right:-3px;
+  font-style:normal; font-weight:700; font-size:11px; line-height:1;
+  min-width:20px; height:20px; padding:0 6px; border-radius:999px;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--pop); color:#fff;
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--sky-1) 85%, transparent);
+}
+
+/* ── acts ─────────────────────────────────────────────────── */
+.act{position:relative; padding-block:clamp(112px,14vh,180px)}
+.act > .wrap:first-of-type{padding-top:26px}
+.act--hero{min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding-top:132px; padding-bottom:0}
+
+/* ── hero ─────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   THE HERO
+   Not two columns with a picture card in one of them. The sun is a
+   real object, cropped by the right edge of the screen. The
+   photograph bleeds off that same edge and off the bottom, so it
+   is a view rather than a card. The headline runs wide enough to
+   cross in front of it. Nothing lines up with anything.
+   ══════════════════════════════════════════════════════════════ */
+.act--hero{
+  position:relative; min-height:100svh; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-top:clamp(104px,12vh,140px); padding-bottom:clamp(40px,6vh,72px);
+}
+
+/* the copy is not the positioning context — the section is, so the
+   view can run the full height of the hero rather than the height
+   of a paragraph */
+.hero{position:static}
+
+/* ══════════════════════════════════════════════════════════════
+   The photograph used to be pinned to the right and bottom edges
+   of the viewport with a single rounded corner — a wedge whose
+   shape and size came from the window rather than from the layout.
+   It read as a background that had slipped, and it forced the
+   headline to run across it.
+
+   It is a picture now: a contained panel, vertically centred,
+   ending on the same gutter every other element on the page ends
+   on, with an even radius on all four corners.
+   ══════════════════════════════════════════════════════════════ */
+.hero-shot{
+  position:absolute; z-index:1; margin:0;
+  /* --edge, not --gut: the photograph's right side now lands on
+     the same vertical as the nav's right end and the copy's left */
+  left:auto; right:var(--edge);
+  top:50%; transform:translateY(-50%);
+  width:min(46%, 620px);
+  height:min(66vh, 580px);
+  border-radius:clamp(16px,2vw,26px);
+  overflow:hidden;
+  box-shadow:0 46px 90px -46px color-mix(in srgb, var(--ink) 72%, transparent);
+}
+.hero-shot img{width:100%; height:100%; object-fit:cover; object-position:52% 50%}
+/* the caption sat on bare sand and vanished — a short scrim along
+   the bottom edge is enough to hold it without dimming the photo */
+.hero-shot::after{
+  content:''; position:absolute; inset:auto 0 0 0; height:112px; z-index:1;
+  background:linear-gradient(to top, rgb(0 0 0 / .46), transparent);
+  pointer-events:none;
+}
+.hero-shot figcaption{
+  position:absolute; left:20px; bottom:15px; color:#fff; z-index:2;
+  font-size:12.5px; font-weight:500; letter-spacing:.02em;
+}
+
+/* the copy column now stops short of the picture instead of being
+   overrun by it */
+.hero-copy{position:relative; z-index:2; max-width:min(48%, 620px)}
+/* ══════════════════════════════════════════════════════════════
+   The headline was set to min(58vw, 840px) at up to 122px so that
+   it would deliberately cross in front of the photograph. Across
+   the seam it changed from navy-on-peach to navy-on-surf and the
+   line stopped being readable in the middle — the exact place the
+   eye lands first. The blur behind it was a patch over that.
+
+   It stays inside the column now, and it is sized to the column
+   rather than to the viewport.
+   ══════════════════════════════════════════════════════════════ */
+.hero .display{
+  width:auto; max-width:100%;
+  font-size:clamp(44px, 5.2vw, 84px); line-height:1.02; letter-spacing:-.035em;
+  text-shadow:none;
+}
+.hero .display em{color:var(--accent)}
+.hero .lede{margin-top:24px; max-width:100%}
+.hero .lede b{font-weight:700; opacity:1; color:var(--accent); white-space:nowrap}
+.hero .cta-row{margin-top:30px}
+/* the column is narrower than it was, so this wraps to two rows —
+   the separators stay, they are what keep the three claims from
+   reading as one run-on sentence */
+.hero .reassure{
+  justify-content:flex-start; margin-top:20px; max-width:100%;
+  row-gap:5px;
+}
+
+@media (max-width:860px){
+  .act--hero{padding-top:120px}
+  .hero{display:flex; flex-direction:column; gap:32px; padding-bottom:0}
+  .hero-copy{max-width:100%}
+  .hero-shot{
+    position:relative; left:auto; right:calc(var(--gut) * -1); top:auto; bottom:auto;
+    height:52vh; border-radius:24px 0 0 24px;
+  }
+  .hero .display{font-size:clamp(40px, 11vw, 78px)}
+}
+
+/* ── split (setup) ────────────────────────────────────────── */
+.split{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.92fr); gap:clamp(32px,5vw,88px); align-items:start}
+.split-copy .stamp{margin-bottom:26px}
+.split-copy .display{margin-bottom:44px}
+.steps{list-style:none; display:flex; flex-direction:column}
+.steps li{
+  display:grid; grid-template-columns:64px 1fr; gap:18px;
+  padding:clamp(30px,5vh,56px) 0 clamp(30px,5vh,56px) 18px;
+  min-height:clamp(280px, 46vh, 460px); align-content:center;
+  opacity:.34; transition:opacity .6s cubic-bezier(.16,.84,.28,1);
+  position:relative;
+}
+.steps li::before{
+  content:''; position:absolute; left:0; top:clamp(30px,5vh,56px); bottom:clamp(30px,5vh,56px);
+  width:3px; border-radius:3px; background:var(--pop);
+  transform:scaleY(0); transform-origin:top;
+  transition:transform .7s cubic-bezier(.16,.84,.28,1);
+}
+.steps li.is-active{opacity:1}
+.steps li.is-active::before{transform:scaleY(1)}
+.steps li.is-active b{opacity:1; color:var(--pop)}
+.steps li.is-active h3{font-size:30px}
+.steps h3{transition:font-size .55s cubic-bezier(.16,.84,.28,1)}
+.steps b{font-family:var(--sans); font-size:12px; letter-spacing:.14em; opacity:.42; padding-top:4px}
+.steps h3{font-family:var(--disp); font-size:23px; font-weight:700; letter-spacing:-.02em; margin-bottom:7px}
+.steps p{font-size:15.5px; line-height:1.62; opacity:.68; max-width:42ch}
+.split-copy .footnote{margin-top:22px}
+.split-media{border-radius:22px; overflow:hidden}
+.split-media{
+  position:sticky; top:max(112px, calc(50vh - 32vh));
+  aspect-ratio:4/5; max-height:64vh; border-radius:22px; overflow:hidden;
+  box-shadow:0 30px 60px -24px rgb(10 30 44 / .28);
+}
+.split-media img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transform:scale(1.05);
+  transition:opacity .85s cubic-bezier(.16,.84,.28,1), transform 1.6s cubic-bezier(.16,.84,.28,1);
+}
+.split-media img.is-shown{opacity:1; transform:scale(1)}
+.split-media figcaption{
+  position:absolute; left:18px; bottom:16px; color:#fff;
+  font-size:10px; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+  text-shadow:0 1px 12px rgb(0 0 0 / .6);
+}
+
+/* ── noon ─────────────────────────────────────────────────── */
+.marquee{overflow:hidden; max-width:100vw; background:var(--ink); color:var(--sky-2); padding:11px 0; margin-bottom:clamp(18px,2.2vh,30px)}
+.marquee-track{display:flex; gap:0; width:max-content; animation:slide 42s linear infinite}
+.marquee-track span{
+  font-family:var(--sans); font-size:12.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  padding-right:36px; white-space:nowrap; opacity:.8;
+}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ── it lines up with the cards, and nothing else ─────────────
+   Two wrong answers before the right one. max-width:1060 made this
+   NARROWER than the .wrap the cards sit in, so it centred and the
+   heading started 30px right of the first card. max-width:none made
+   it WIDER than .wrap, so the heading started 60px LEFT of it.
+
+   The card grid is a plain .wrap: 1320 centred, --gut of padding,
+   first card at 118 on a 1440 screen. So this must be a plain .wrap
+   too — no override at all. Only the type inside is allowed to run
+   the full width of that column. */
+.noon-head .display{font-size:clamp(32px,3.9vw,56px); line-height:1.05; max-width:none}
+.noon-head .lede{max-width:74ch}
+.noon-head .stamp{margin-bottom:26px}
+.noon-head .lede{margin-top:14px}
+
+.noon-foot{display:flex; align-items:center; gap:26px; flex-wrap:wrap; margin-top:clamp(44px,6vh,72px)}
+
+/* ── golden ───────────────────────────────────────────────── */
+.golden-head .stamp{margin-bottom:26px}
+.golden-head .lede{margin-top:24px}
+.scenes{
+  width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--gut);
+  display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,1.6vw,22px);
+  margin-top:clamp(52px,7vh,88px);
+}
+.scenes figure{position:relative; overflow:hidden; border-radius:20px;
+  box-shadow:0 22px 44px -20px rgb(10 30 44 / .28)}
+.scenes img{width:100%; height:clamp(320px,46vh,520px); object-fit:cover; transition:transform .8s cubic-bezier(.2,.9,.25,1)}
+.scenes figure:hover img{transform:scale(1.06)}
+.scenes figcaption{
+  position:absolute; inset:auto 0 0 0; padding:22px 20px 20px; color:#fff;
+  background:linear-gradient(to top, rgb(8 22 30 / .82), transparent);
+  display:flex; flex-direction:column; gap:6px;
+}
+.scenes figcaption b{font-family:var(--disp); font-size:20px; font-weight:700; letter-spacing:-.01em}
+.scenes figcaption span{font-size:13px; line-height:1.5; opacity:.82}
+
+/* ── sunset ───────────────────────────────────────────────── */
+.sunset-head .stamp{margin-bottom:26px}
+.score{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-top:30px}
+.score b{font-family:var(--disp); font-size:44px; font-weight:800; letter-spacing:-.03em}
+.stars{color:var(--accent); font-size:19px; letter-spacing:.12em}
+.score span:last-child{font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; opacity:.6}
+
+/* ══════════════════════════════════════════════════════════════
+   The reviews were three columns of type separated by hairlines,
+   floating straight on a sundown sky that is mid-tone and busy —
+   so the quotes had nothing to sit on and the attributions, at
+   10.5px and 55% opacity, were the least readable text on the page.
+
+   They are panes now, the same material as the nav: a light tint
+   over a real blur, a specular top edge, a darker bottom one. The
+   glass gives the type its own ground at every hour of the day,
+   which is what the rules were failing to do — and each review
+   shows the rating it actually left.
+   ══════════════════════════════════════════════════════════════ */
+.quotes{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(14px,1.6vw,22px); margin-top:clamp(40px,5vh,64px);
+}
+.quotes blockquote{
+  position:relative; isolation:isolate;
+  display:flex; flex-direction:column; gap:14px;
+  padding:clamp(22px,2vw,30px); border-radius:24px;
+  background:color-mix(in srgb, currentColor 8%, transparent);
+  backdrop-filter:blur(20px) saturate(1.25) brightness(1.08);
+  -webkit-backdrop-filter:blur(20px) saturate(1.25) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 42%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, currentColor 11%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 12%, transparent),
+    0 20px 44px -30px color-mix(in srgb, #000 62%, transparent);
+}
+.quotes blockquote::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; z-index:-1;
+  pointer-events:none; mix-blend-mode:overlay; opacity:.45;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / .45), rgb(255 255 255 / 0) 55%),
+    var(--grain-src);
+  background-size:auto, 170px 170px;
+}
+.q-stars{color:var(--pop); font-size:15px; letter-spacing:.16em; line-height:1}
+.q-stars i{font-style:normal; opacity:.28}
+.quotes p:not(.q-stars){
+  font-family:var(--disp); font-style:italic;
+  font-size:clamp(17px,1.35vw,20px); font-weight:500;
+  line-height:1.44; letter-spacing:-.012em;
+}
+.quotes cite{
+  display:flex; align-items:center; gap:11px;
+  margin-top:auto; padding-top:8px;
+  font-family:var(--sans); font-style:normal;
+  font-size:12.5px; letter-spacing:.02em;
+}
+/* the reviewer's face, cropped out of the brand's own photography.
+   An <img> could not do this: the sources are square, so object-fit
+   had nothing to crop and every avatar came out as a wide shot of a
+   tent. A background lets it zoom in on the face. */
+.quotes cite .who{
+  width:40px; height:40px; flex:none; border-radius:50%;
+  background-image:var(--img);
+  background-size:640%;
+  background-position:var(--pos,50% 50%);
+  background-repeat:no-repeat;
+  box-shadow:0 0 0 1px color-mix(in srgb, currentColor 22%, transparent);
+}
+.quotes cite span{opacity:.82}
+
+.range{margin-top:clamp(72px,10vh,128px)}
+.range-row{display:grid; grid-template-columns:repeat(5,1fr); gap:clamp(14px,2vw,30px); margin-top:26px}
+.range-row a{display:flex; flex-direction:column; gap:4px}
+.range-row img{width:100%; aspect-ratio:1; object-fit:contain; background:color-mix(in srgb, currentColor 8%, transparent); border-radius:18px; margin-bottom:14px; transition:transform .5s cubic-bezier(.2,.9,.25,1)}
+.range-row a:hover img{transform:translateY(-8px)}
+.range-row b{font-family:var(--disp); font-size:17px; font-weight:700; letter-spacing:-.01em}
+.range-row span{font-size:11px; font-weight:500; letter-spacing:.12em; opacity:.6}
+
+/* ── night ────────────────────────────────────────────────── */
+.act--night{padding-bottom:64px}
+.night-head{text-align:center; display:flex; flex-direction:column; align-items:center}
+.night-head .stamp{margin-bottom:26px; justify-content:center}
+.signup{display:flex; gap:10px; margin-top:44px; width:min(520px,100%)}
+.signup input{
+  flex:1; height:58px; padding:0 22px; border-radius:999px;
+  border:1.3px solid color-mix(in srgb, currentColor 34%, transparent);
+  background:transparent; color:inherit; font-family:var(--sans); font-size:12.5px; letter-spacing:.08em;
+}
+.signup input::placeholder{color:inherit; opacity:.42}
+.signup input:focus{outline:none; border-color:var(--accent)}
+.signup button{
+  height:58px; padding:0 28px; border:0; border-radius:999px; cursor:pointer;
+  background:var(--accent); color:var(--sky-2);
+  font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  transition:transform .3s cubic-bezier(.2,.9,.25,1);
+}
+.signup button:hover{transform:translateY(-2px)}
+.night-head .footnote{margin-top:16px}
+
+.foot{
+  display:grid; grid-template-columns:1.6fr repeat(3,1fr); gap:40px;
+  margin-top:clamp(96px,13vh,160px); padding-top:44px;
+}
+.foot-brand{display:flex; flex-direction:column; gap:18px}
+.foot-brand p{font-family:var(--disp); font-size:22px; font-weight:600; line-height:1.24; letter-spacing:-.02em}
+.foot-col{display:flex; flex-direction:column; gap:11px}
+.foot-col h4{font-family:var(--sans); font-size:10.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; opacity:.5; margin-bottom:6px}
+.foot-col a{font-size:14.5px; opacity:.75; transition:opacity .25s}
+.foot-col a:hover{opacity:1}
+.fineprint{
+  display:flex; gap:26px; flex-wrap:wrap; margin-top:52px;
+  font-size:10.5px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; opacity:.42;
+}
+
+/* ── responsive ───────────────────────────────────────────── */
+@media (max-width:860px){
+  .hero .display{font-size:clamp(38px, 10vw, 76px); max-width:100%}
+  .split{grid-template-columns:1fr}
+  .split-media{position:relative; top:auto}
+  .steps li{padding-block:26px; min-height:0}
+  .scenes{grid-template-columns:repeat(2,1fr)}
+  .quotes{grid-template-columns:1fr}
+  .quotes blockquote + blockquote{padding-left:0}
+  .range-row{grid-template-columns:repeat(3,1fr)}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+          .scenes{grid-template-columns:1fr}
+  .range-row{grid-template-columns:repeat(2,1fr)}
+  .nav-links{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+}
+
+/* ── reveal (added by app.js) ─────────────────────────────── */
+.reveal{
+  opacity:0; transform:translateY(28px) scale(.995);
+  transition:opacity .95s cubic-bezier(.16,.84,.28,1), transform 1.05s cubic-bezier(.16,.84,.28,1);
+  will-change:opacity, transform;
+}
+.reveal.is-in{opacity:1; transform:none}
+
+
+/* capacity, drawn in the page so it can always be read ── */
+
+/* ══════════════════════════════════════════════════════════════
+   THE PANEL
+   Product shots need a field that is not the colour of the product.
+   So the panel always runs the opposite temperature to the sky:
+   warm sand under a cyan noon, deep water under a golden sky.
+   The rule holds all day, so nothing is ever blue on blue.
+   ══════════════════════════════════════════════════════════════ */
+.panel{
+  position:relative;
+  background:var(--panel);
+  color:var(--on-panel);
+  padding-block:clamp(22px,2.6vh,32px) clamp(20px,2.4vh,28px);
+  margin-top:clamp(22px,2.6vh,34px);
+  border-radius:28px;
+}
+.panel::before{
+  content:''; position:absolute; inset:0; z-index:-1;
+  left:50%; width:100vw; transform:translateX(-50%);
+  background:var(--panel);
+}
+/* ══════════════════════════════════════════════════════════════
+   BUYING
+   The page tells a story for six thousand pixels, so the way to
+   act on it has to travel with you rather than wait at the end.
+   ══════════════════════════════════════════════════════════════ */
+
+/* proof, where the decision is actually being made */
+.reassure{
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap; justify-content:center;
+  margin-top:26px; font-size:13.5px; font-weight:500; letter-spacing:.005em; opacity:.85;
+}
+.reassure b{font-weight:700}
+.reassure i{font-style:normal; opacity:.4}
+.reassure .stars{font-size:13px; letter-spacing:.06em; color:var(--pop)}
+
+/* size modifiers only — the ring that used to live on .btn--line is
+   gone, it now inherits the filled secondary surface above */
+.btn--sm{height:46px; padding:0 20px; font-size:13.5px}
+.btn--line{height:46px; padding:0 20px; font-size:13.5px}
+
+/* the three promises, said once and said properly */
+.promises{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,3vw,48px);
+  margin-top:clamp(16px,2vh,24px); list-style:none;
+}
+/* the hairlines are gone — one long rule across the top and three
+   short ones under it was four thin grey lines doing the job that
+   whitespace and the icons already do */
+.panel .promises{
+  margin-top:clamp(18px,2.2vh,26px); padding-top:clamp(8px,1vh,14px);
+}
+.panel .promises svg{stroke:var(--on-panel); opacity:.85}
+.panel .promises span{opacity:.7}
+.promises li{display:flex; flex-direction:column; gap:7px; padding-top:14px}
+.promises svg{width:24px; height:24px; fill:none; stroke:var(--accent); stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; margin-bottom:4px}
+.promises b{font-family:var(--disp);
+  font-size:19px; font-weight:700; letter-spacing:-.015em}
+.promises span{font-size:14px; line-height:1.55; opacity:.62; max-width:30ch}
+
+.review-cta{display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  margin-top:clamp(48px,6vh,76px)}
+
+/* the bar that follows you down the day */
+.buybar{
+  position:fixed; left:50%; bottom:22px; z-index:55;
+  transform:translate(-50%, 140%); opacity:0;
+  display:flex; align-items:center; gap:18px;
+  padding:10px 10px 10px 16px; border-radius:999px;
+  width:min(720px, calc(100vw - 32px));
+  /* fixed brand colours — this is the one thing on the page that
+     must not drift with the light */
+  background:rgb(32 54 108 / .94);
+  color:#FFF7EE;
+  border:1px solid rgb(255 255 255 / .14);
+  box-shadow:0 24px 50px -18px rgb(6 20 30 / .45);
+  backdrop-filter:blur(18px) saturate(1.4); -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  transition:transform .7s cubic-bezier(.16,.84,.28,1), opacity .5s ease;
+}
+.buybar.is-up{transform:translate(-50%, 0); opacity:1}
+.buybar img{width:54px; height:auto; flex:none; filter:drop-shadow(0 6px 8px rgb(0 0 0 / .25))}
+.buybar-name{font-family:var(--disp);
+  font-size:18px; font-weight:700; letter-spacing:-.02em; display:flex; flex-direction:column; line-height:1.15}
+.buybar-name i{font-style:normal; font-family:var(--sans); font-size:10px;
+  letter-spacing:.14em; text-transform:uppercase; opacity:.6; font-weight:400}
+.buybar-rating{margin-left:auto; font-size:11px; font-weight:500; letter-spacing:.1em; opacity:.75;
+  display:flex; align-items:center; gap:7px}
+.buybar-rating .stars{color:#FFD24A; font-size:12px; font-style:normal}
+.buybar-price{font-family:var(--disp); font-size:22px; font-weight:700; letter-spacing:-.02em}
+.buybar .btn--solid{background:#FFD24A; color:#20366C; box-shadow:none}
+.buybar .btn--solid:hover{background:#FFDC6B}
+
+@media (max-width:820px){
+  .promises{grid-template-columns:1fr}
+  .buybar{gap:12px; padding-left:12px}
+  .buybar-rating, .buybar-name i{display:none}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   THE RANGE
+   The tent starts the day; it does not finish it. By late afternoon
+   the rest of the catalogue is what is actually in use, so that is
+   where it belongs on the page.
+   ══════════════════════════════════════════════════════════════ */
+.display--sm{font-size:clamp(28px,3.1vw,46px); line-height:1.1; letter-spacing:-.025em}
+
+.kit{margin-top:clamp(64px,8vh,104px)}
+.kit-head{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:32px; flex-wrap:wrap;
+  margin-bottom:30px;
+}
+.kit-head .stamp{margin-bottom:16px}
+/* the row gap has to clear a caption AND a price line, not just the
+   images — at 24px the spec line of one row sat almost against the
+   photograph of the next and the grid read as one dense block */
+.kit-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(36px,4vw,58px) clamp(12px,1.4vw,20px)}
+.kit-grid a{display:flex; flex-direction:column; gap:4px}
+.kit-grid img{
+  width:100%; aspect-ratio:5/4; object-fit:cover; border-radius:16px; margin-bottom:11px;
+  background:color-mix(in srgb, currentColor 8%, transparent);
+  transition:transform .55s cubic-bezier(.16,.84,.28,1), box-shadow .55s;
+}
+.kit-grid a:hover img{transform:translateY(-8px);
+  box-shadow:0 24px 44px -20px rgb(10 30 44 / .28)}
+.kit-grid b{font-family:var(--disp);
+  font-size:18px; font-weight:700; letter-spacing:-.015em}
+.kit-grid span{font-size:10.5px; font-weight:500; letter-spacing:.1em; opacity:.62}
+
+@media (max-width:860px){ .kit-grid{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:680px){ .kit-grid{grid-template-columns:repeat(2,1fr)} }
+
+
+/* ══════════════════════════════════════════════════════════════
+   THE PINNED SETUP
+   Three minutes is the promise, so the section takes three beats
+   to tell. The page stops, the picture stays, and only the step
+   itself changes — you are watching a tent go up, not scrolling
+   past a list.
+   ══════════════════════════════════════════════════════════════ */
+.act--pin{height:320vh; padding-block:0}
+.pin{
+  position:sticky; top:0; height:100svh;
+  display:flex; align-items:center; overflow:hidden;
+}
+.act--pin .split{align-items:center; width:100%}
+.act--pin .split-copy{position:static}
+.act--pin .split-media{position:relative; top:auto; max-height:62vh; aspect-ratio:4/5}
+.act--pin .display{margin-bottom:0}
+
+.stepstack{position:relative; min-height:clamp(190px, 26vh, 240px); margin-top:clamp(28px,4vh,48px)}
+.step{
+  position:absolute; inset:0 0 auto 0; align-content:start;
+  display:grid; grid-template-columns:56px 1fr; gap:4px 16px;
+  opacity:0; transform:translateY(22px); pointer-events:none;
+  transition:opacity .55s cubic-bezier(.16,.84,.28,1), transform .7s cubic-bezier(.16,.84,.28,1);
+}
+.step.is-active{opacity:1; transform:none; pointer-events:auto}
+.step b{
+  grid-column:1; grid-row:1 / span 2; font-size:13px; font-weight:600; letter-spacing:.16em;
+  color:var(--pop); padding-top:9px;
+}
+.step h3{grid-column:2; font-family:var(--disp); font-size:clamp(26px,3vw,40px); font-weight:700; letter-spacing:-.03em; line-height:1.1}
+.step p{grid-column:2; font-size:16px; line-height:1.62; opacity:.68; max-width:40ch; margin-top:12px}
+
+.stepbar{display:flex; gap:7px; margin-top:8px}
+.stepbar span{
+  width:46px; height:3px; border-radius:3px;
+  background:color-mix(in srgb, currentColor 22%, transparent);
+  transition:background .5s ease, width .5s cubic-bezier(.16,.84,.28,1);
+}
+.stepbar span.is-on{background:var(--pop); width:74px}
+.act--pin .footnote{margin-top:22px}
+
+@media (max-width:860px){
+  .act--pin{height:auto}
+  .pin{position:relative; height:auto; padding-block:clamp(80px,12vh,120px)}
+  .act--pin .split{grid-template-columns:1fr}
+  .stepstack{min-height:210px}
+}
+
+.clock{display:none}
+
+
+/* ══════════════════════════════════════════════════════════════
+   CHOOSING A SIZE
+   The three tents are the same object at three scales, so three
+   photographs of them tell you nothing. What you are actually
+   choosing is floor area — so that is what is drawn, all three to
+   one scale, and the eight-person is visibly twice the two.
+   ══════════════════════════════════════════════════════════════ */
+.sizes{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,1.8vw,26px); align-items:stretch}
+
+/* the same pane the nav is made of: a light tint, a real blur, a
+   specular top edge and a darker bottom one. Sitting on the deep
+   panel it finally reads as a card with thickness instead of a
+   slightly-lighter rectangle with a grey outline. */
+.size{
+  position:relative; isolation:isolate;
+  display:grid; grid-template-rows:clamp(94px,9.8vw,124px) auto; align-items:end;
+  padding:clamp(16px,1.5vw,22px);
+  border-radius:24px; border:0;
+  background:color-mix(in srgb, var(--on-panel) 7%, transparent);
+  backdrop-filter:blur(18px) saturate(1.25) brightness(1.06);
+  -webkit-backdrop-filter:blur(18px) saturate(1.25) brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--on-panel) 34%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--on-panel) 11%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 14%, transparent),
+    0 20px 44px -30px rgb(0 0 0 / .6);
+  transition:background .4s ease, transform .45s cubic-bezier(.16,.84,.28,1);
+}
+/* the sheen + grain, clipped to the card, same recipe as the bar */
+.size::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; z-index:-1;
+  pointer-events:none; mix-blend-mode:overlay; opacity:.45;
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / .45), rgb(255 255 255 / 0) 55%),
+    var(--grain-src);
+  background-size:auto, 170px 170px;
+}
+.size:hover{background:color-mix(in srgb, var(--on-panel) 11%, transparent); transform:translateY(-3px)}
+/* the picked one is heavier glass, not a different colour */
+.size--pick{
+  background:color-mix(in srgb, var(--on-panel) 14%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--on-panel) 52%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--on-panel) 26%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 16%, transparent),
+    0 26px 54px -30px rgb(0 0 0 / .7);
+}
+
+/* the hatched square with dots in it was a diagram of a tent
+   standing in for a photograph of a tent. The catalogue shot
+   already carries the scale — the canopy and the people are in
+   the same frame — so it does the job the diagram was invented to
+   do, and it looks like the product you are buying. */
+/* height, not aspect-ratio: a square that fills the card's width
+   made each card 170px taller than the row it sits in, which is
+   most of why this act stopped fitting on a screen */
+/* height:100% was indefinite here — the card is align-items:end, so
+   the row never stretches and the photograph fell back to its own
+   size and hung over the title. An explicit height plus a clip is
+   what keeps a guy-line off the word "2-Person". */
+.plan{
+  position:relative; width:100%;
+  height:clamp(96px,10vw,126px);
+  align-self:end; margin:0; overflow:hidden;
+  display:grid; place-items:end center;
+}
+.plan img{
+  width:var(--w); max-width:100%; height:100%;
+  object-fit:contain; object-position:bottom center;
+  filter:drop-shadow(0 10px 16px rgb(0 0 0 / .22));
+}
+
+.size-body{padding-top:12px}
+.size-body h3{
+  font-family:var(--disp); font-size:clamp(20px,1.9vw,26px); font-weight:700;
+  letter-spacing:-.03em; margin-bottom:8px;
+}
+.size-body dl{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:12px}
+.size-body dt{font-size:11.5px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; opacity:.74; margin-bottom:2px}
+.size-body dd{font-size:14px; font-weight:600}
+.size-price{
+  font-family:var(--disp); font-size:clamp(23px,2.2vw,30px); font-weight:700;
+  letter-spacing:-.03em; margin-bottom:12px;
+}
+/* ── a label, not a button ────────────────────────────────────
+   A fat gold pill with tracked-out caps, floating half-on and
+   half-off the top edge near the middle, looked like the primary
+   action on the card — which is a problem when the actual action
+   is the "Add" button underneath it.
+
+   So it is a badge now: smaller, sat on the top-right CORNER so
+   it reads as something pinned to the card rather than something
+   sitting in the layout, and in sentence case so it stops
+   shouting at the buttons. */
+.pick{
+  position:absolute; top:-11px; right:-9px; z-index:2;
+  font-size:11.5px; font-weight:700; letter-spacing:.01em;
+  background:var(--pop); color:var(--ink);
+  padding:6px 13px; border-radius:14px 14px 14px 4px;
+  white-space:nowrap;
+  box-shadow:0 8px 18px -8px rgb(0 0 0 / .5);
+}
+@media (max-width:820px){ .sizes{grid-template-columns:1fr} .size{grid-template-rows:auto auto} }
+
+
+/* ══════════════════════════════════════════════════════════════
+   GOLDEN HOUR, SIDEWAYS
+   Four places the same tent ends up. The page holds still and the
+   row travels instead, so each one gets the screen to itself for
+   a moment rather than competing in a grid.
+   ══════════════════════════════════════════════════════════════ */
+.act--rail{height:400vh; padding-block:0}
+.act--rail .pin{
+  position:sticky; top:0; height:100svh;
+  display:flex; flex-direction:column; justify-content:center; gap:clamp(28px,4vh,52px);
+  overflow:hidden;
+}
+.golden-head .display{max-width:16ch}
+
+.rail-track{
+  display:flex; gap:clamp(16px,2vw,32px);
+  /* the first and last tile must each be able to reach the middle */
+  padding-inline:calc(50vw - min(21vw, 300px));
+  will-change:transform;   /* locked to scroll — a transition here only adds lag */
+}
+.rail-track figure{
+  position:relative; flex:none;
+  width:min(42vw, 600px); height:clamp(320px, 52vh, 560px);
+  border-radius:22px; overflow:hidden;
+  opacity:.7; transform:scale(.84);
+  filter:grayscale(.72) brightness(.92);
+  transition:opacity .55s cubic-bezier(.16,.84,.28,1),
+             transform .65s cubic-bezier(.16,.84,.28,1),
+             filter .55s ease;
+  box-shadow:0 26px 50px -24px rgb(10 30 44 / .45);
+}
+.rail-track figure.is-focus{opacity:1; transform:scale(1); filter:none}
+.rail-track img{width:100%; height:100%; object-fit:cover}
+/* the scene is already named above the rail, under the heading —
+   printing it a second time over the photograph said the same
+   two lines twice on one screen and put a scrim over the only
+   thing in the section anyone came to look at.
+   The element stays so the rail can read the copy out of it. */
+.rail-track figcaption{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap;
+}
+
+/* the four-segment progress bar is gone. The rail already moves
+   horizontally under the cursor — you can see how many cards there
+   are and where you are in them by looking at them. A row of
+   ticking lines underneath was restating that, and thin rules like
+   it were the main thing making the page feel generated. */
+
+@media (max-width:820px){
+  .act--rail{height:auto}
+  .act--rail .pin{position:relative; height:auto; padding-block:clamp(80px,12vh,120px)}
+  .rail-track{overflow-x:auto; scroll-snap-type:x mandatory; transform:none !important}
+  .rail-track figure{opacity:1; transform:none; scroll-snap-align:center}
+  .rail-prog{display:none}
+}
+
+/* noon carries more content than any other act, so it runs tighter */
+/* this act carries the marquee, a headline, three cards and the
+   three promises — it has to be the tightest on the page, not the
+   loosest, or it stops fitting on one screen */
+.act--noon{padding-block:clamp(24px,2.6vh,38px)}
+.act--noon .noon-head{padding-top:0}
+
+/* ══════════════════════════════════════════════════════════════
+   THE HANDOVER
+   Sundown does not scroll up next to the range — it scrolls up
+   OVER it. The range holds its place and sinks back slightly as
+   it is covered, so the two acts feel stacked rather than queued.
+   ══════════════════════════════════════════════════════════════ */
+.stack{position:relative}
+
+/* ══════════════════════════════════════════════════════════════
+   These two acts used to hand over by stacking: the kit pinned
+   itself, shrank, dimmed and blurred while the reviews slid up
+   over it on a rounded card with its own sky painted on.
+
+   Nothing else on the page moves like that. Everywhere else the
+   day simply continues past you, and one section becoming a card
+   that slides over another broke that — it read as a modal, and
+   it put a hard edge and a second gradient in the middle of a sky
+   that is supposed to be continuous.
+
+   They are ordinary sections now. The sky keeps moving with the
+   scroll, which is the transition, and it is the same one every
+   other act gets.
+   ══════════════════════════════════════════════════════════════ */
+.stack-under{position:relative}
+.stack-over{position:relative}
+/* the sky's low-sun strata have to carry across, or the incoming
+   panel reads as a flat block against a banded sky */
+.stack-over::before{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  opacity:calc(var(--lowness, 0) * .5);
+  background:linear-gradient(to bottom,
+    transparent 30%,
+    color-mix(in srgb, var(--sun-c) 34%, transparent) 46%,
+    transparent 54%,
+    color-mix(in srgb, var(--sun-c) 24%, transparent) 68%,
+    transparent 78%);
+  filter:blur(14px);
+}
+.stack-over > *{position:relative; z-index:1}
+
+
+
+
+/* the focused frame says its own name, at a size you cannot miss */
+.rail-now{
+  display:flex; align-items:baseline; gap:16px; margin-top:20px;
+  font-family:var(--disp); letter-spacing:-.02em;
+}
+.rail-now b{
+  font-size:14px; font-weight:600; letter-spacing:.14em;
+  color:var(--pop); font-variant-numeric:tabular-nums;
+}
+.rail-now span{font-size:clamp(22px,2.4vw,34px); font-weight:700}
+
+
+/* ── a retina laptop reports around 1000 CSS px, so the desktop
+      composition has to be genuinely comfortable at that width ── */
+@media (max-width:1180px){
+  :root{--wrap:1120px; --gut:clamp(20px, 3.4vw, 44px)}
+  .split{grid-template-columns:minmax(0,1fr) minmax(0,.82fr); gap:clamp(26px,3.4vw,52px)}
+  .act--pin .split-media{max-height:56vh}
+  .step h3{font-size:clamp(24px,2.8vw,32px)}
+  .stepstack{min-height:clamp(200px,24vh,230px)}
+  .hero-shot{left:50%}
+  .hero .display{font-size:clamp(44px, 6.6vw, 92px)}
+  .hero-copy{max-width:min(43vw, 520px)}
+  .rail-track figure{width:min(48vw, 520px)}
+  .rail-track{padding-inline:calc(50vw - min(24vw, 260px))}
+  .kit-grid{gap:14px 12px}
+  .sizes{gap:14px}
+}
