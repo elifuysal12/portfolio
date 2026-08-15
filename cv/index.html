@@ -447,6 +447,7 @@ html{scroll-snap-type:y proximity}
 .entry:hover .entry-title{-webkit-text-fill-color:transparent}
 .entry-line{font-size:15px;line-height:1.55;color:var(--ink-2);max-width:52ch}
 .entry-with{display:block;margin-top:7px;font-size:13.5px;color:#8A8B92;letter-spacing:.005em}
+.entry-with{display:block;margin-top:7px;font-size:13.5px;color:#8A8B92;letter-spacing:.005em}
 
 .entry-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
 .entry-tags i{
@@ -1345,6 +1346,10 @@ const PROJECTS = [
    year:'2026', disc:['web','uiux','product']},
 
   {key:'shutter', mark:'Shutter Echoes',    style:'font-size:19px;font-weight:800;letter-spacing:.02em',
+   /* kapak: oyunun kendi başlık ekranı (Video Game Design dosyası, 3006:1976),
+      2× export. 16:9'dan 16:10'a yandan simetrik kırpılıyor — başlık ve menü
+      ortada olduğu için hiçbir şey kaybolmuyor. */
+   cover:'/assets/cover/shutter.webp', coverBg:'#3D2021',
    logo:null,                                       client:'Personal',         clientLogo:null,
    /* Made by three people, so the card says so. The names go on their own line
       rather than into the client slot — that slot answers "who was it for",
@@ -1426,6 +1431,7 @@ const T = {
     },
     notes:{grad:'Graduation project'},
     withLine:a=>'With '+a.slice(0,-1).join(', ')+(a.length>1?' and ':'')+a[a.length-1],
+    withLine:a=>'With '+a.slice(0,-1).join(', ')+(a.length>1?' and ':'')+a[a.length-1],
     cta_tile:'View case →',
     cta_demo:'Open the prototype →',   /* no case study yet, but it runs */
     disc:{
@@ -1472,6 +1478,7 @@ const T = {
       shutter: {i:'gamepad', t:'Üç kişilik bir oyun. Oyun tasarımı ve oyun arayüzü bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
+    withLine:a=>a.slice(0,-1).join(', ')+(a.length>1?' ve ':'')+a[a.length-1]+' ile birlikte',
     withLine:a=>a.slice(0,-1).join(', ')+(a.length>1?' ve ':'')+a[a.length-1]+' ile birlikte',
     cta_tile:'Vakayı gör →',
     cta_demo:'Prototipi aç →',
@@ -1635,6 +1642,7 @@ function buildIndex(){
         `<span class="entry-brand">${brandMark(p)}<em class="entry-year">${p.year}</em>${note}</span>`+
         `<span class="entry-title">${p.mark}</span>`+
         `<span class="entry-line">${line}</span>`+
+        (p.team ? `<span class="entry-with">${t().withLine(p.team)}</span>` : '')+
         (p.team ? `<span class="entry-with">${t().withLine(p.team)}</span>` : '')+
         `<span class="entry-tags">${p.disc.map(d=>`<i>${icoSvg(DISC_ICON[d])}${t().disc[d].l}</i>`).join('')}</span>`+
       `</span>`+
