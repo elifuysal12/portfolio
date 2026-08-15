@@ -59,10 +59,13 @@ body{background:#0A1551}
   display:flex; align-items:flex-start; gap:58px;
 }
 .rack img{
-  display:block; width:auto; height:840px; border-radius:32px;
-  box-shadow:0 26px 70px rgba(4,8,32,.5);
+  display:block; width:auto; height:840px;
+  /* the screens arrive as transparent PNGs cut to the bezel's own outline, so
+     the shadow has to follow the alpha — a box-shadow would draw the corners
+     the phone does not have, which is what a border-radius here got wrong */
+  filter:drop-shadow(0 26px 46px rgba(4,8,32,.55));
 }
-.rack img.mid{height:920px; border-radius:35px; margin-top:-58px}
+.rack img.mid{height:920px; margin-top:-58px}
 </style>
 <div class="cover">
   <p class="eyebrow">Cultural heritage, on foot</p>
@@ -72,7 +75,7 @@ body{background:#0A1551}
        third of these and came out as an almost empty navy rectangle on a navy
        ground; the map carries colour, so the row reads light / photo / dark. -->
   <div class="rack">
-    <img class="side" src="w1.png" alt="">
+    <img class="side" src="w3.png" alt="">
     <img class="mid"  src="d2.png" alt="">
     <img class="side" src="d3.png" alt="">
   </div>

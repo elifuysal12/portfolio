@@ -29,17 +29,52 @@ SHOT = os.path.join(WORK, '_render.png')
 
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 W, H = 2600, 1113                      # the featured card's band (coverRatio)
-SCREENS = ('w1', 'd2', 'd3')
+# w1 was the light screen here and it carries a defect from the board: the
+# phones on that section are clones that were rescaled, and the map's own
+# marker did not come down with the rest — it sits over the map at full
+# size. w3 is the same flow one step on, and clean.
+SCREENS = ('w3', 'd2', 'd3')
 
 
 def trim(name):
-    """the phone, cut free of the section band it was exported on"""
+    """The phone, cut free of the section band it was exported on — as a
+    transparent PNG following the bezel's real outline.
+
+    A bounding-box crop plus a CSS border-radius was the first attempt and it
+    clipped the corners: the rounded rectangle the browser draws is not the one
+    the phone has, so the gradient bezel came away in notches. The background
+    is a flat band, so flooding it from the four corners marks exactly what is
+    outside the phone and the rest is the phone, corners included.
+    """
     im = Image.open(os.path.join(SRC, name + '.webp')).convert('RGB')
-    a = np.array(im).astype(int)
+    a = np.array(im).astype(np.int16)
     band = a[im.height // 2, 2]
-    ys, xs = np.where(np.abs(a - band).sum(2) > 40)
-    im.crop((xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)).save(
-        os.path.join(WORK, name + '.png'))
+
+    outside = Image.new('L', im.size, 0)
+    flood = Image.fromarray(
+        (np.abs(a - band).sum(2) < 40).astype(np.uint8) * 255)   # band-coloured
+    px = flood.load()
+    # only the band that reaches a corner is outside; a white area inside the
+    # screen must not be punched through
+    stack = [(0, 0), (im.width - 1, 0), (0, im.height - 1),
+             (im.width - 1, im.height - 1)]
+    seen = np.zeros(im.size[::-1], bool)
+    op = outside.load()
+    while stack:
+        x, y = stack.pop()
+        if not (0 <= x < im.width and 0 <= y < im.height) or seen[y, x]:
+            continue
+        if px[x, y] != 255:
+            continue
+        seen[y, x] = True
+        op[x, y] = 255
+        stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+
+    rgba = im.convert('RGBA')
+    alpha = np.array(outside)
+    rgba.putalpha(Image.fromarray(255 - alpha))
+    rgba = rgba.crop(rgba.getbbox())
+    rgba.save(os.path.join(WORK, name + '.png'))
 
 
 if not os.path.isfile(CHROME):
