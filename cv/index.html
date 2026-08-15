@@ -122,7 +122,12 @@ nav{
   background:rgba(248,246,241,.72); backdrop-filter:blur(14px) saturate(1.3);
   border:1px solid var(--line); box-shadow:0 6px 24px rgba(23,20,15,.06);
 }
-nav .mark{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.02em;margin-right:14px}
+/* the wordmark is the way home from every page — it has to shed everything
+   `nav a` puts on the section links (mono type, pill padding, hover fill) */
+nav .mark{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:-.02em;margin-right:14px;
+  color:var(--ink);text-decoration:none;padding:0;border-radius:0;background:none;
+  transition:opacity .25s ease}
+nav a.mark:hover{background:none;color:var(--ink);opacity:.6}
 nav .mark i{color:var(--accent);font-style:normal}
 nav a{
   font-family:var(--mono); font-size:11px; letter-spacing:.01em;
@@ -540,13 +545,15 @@ html{scroll-snap-type:y proximity}
 }
 .entry:hover .plate-img{opacity:1}
 
-.band{overflow:hidden;border-bottom:1px solid var(--line);padding:13px 0;background:var(--paper)}
+/* the discipline marquee runs on black — one dark rule across the cream, so the
+   list reads as a strip of its own rather than as more page */
+.band{overflow:hidden;padding:15px 0;background:var(--ink)}
 .band .track{gap:0}
 .band i{
-  font-style:normal;font-size:13px;color:var(--muted);
+  font-style:normal;font-size:13px;color:rgba(243,239,231,.66);
   padding-inline:26px;white-space:nowrap;display:inline-flex;align-items:center;gap:26px;
 }
-.band i:after{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.55}
+.band i:after{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.9}
 
 /* ============================================================
    FEATURED ENTRY — same stacked card as the others, only scaled
@@ -966,8 +973,8 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
 .alti-cover:before{
   content:'';position:absolute;inset:0;z-index:-1;
   background:
-    radial-gradient(58% 56% at 68% 42%, rgba(255,85,123,.30), rgba(10,21,81,0) 68%),
-    linear-gradient(180deg, rgba(10,21,81,.80), rgba(10,21,81,.66) 42%, rgba(5,12,51,.94));
+    radial-gradient(58% 56% at 68% 42%, rgba(255,85,123,.32), rgba(10,21,81,0) 68%),
+    linear-gradient(180deg, rgba(10,21,81,.88), rgba(10,21,81,.74) 42%, rgba(5,12,51,.96));
 }
 .alti-cover .cover-top,.alti-cover .cover-foot{position:relative}
 .alti-cover .cover-kicker{color:rgba(255,255,255,.72)}
@@ -1016,18 +1023,21 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
   font-family:var(--display);font-weight:600;letter-spacing:-.012em;
   font-size:clamp(17px,1.7vw,23px);line-height:1.45;color:var(--c-ink)}
 
-/* ---- the gap: the one dark band, full-bleed, where the page turns ---- */
-.band{
+/* ---- the gap: the one dark band, full-bleed, where the page turns ----
+   Kept on `.cs-sec.band`, not `.band`: the home page's discipline marquee is
+   already called `.band`, further up this stylesheet, and a bare rule here
+   wins on order and paints the strip navy. */
+.cs-sec.band{
   position:relative;isolation:isolate;color:#fff;text-align:center;
   background:#0A1551;overflow:hidden;
 }
-.band:before{
+.cs-sec.band:before{
   content:'';position:absolute;inset:0;z-index:-1;
   background:
     radial-gradient(70% 120% at 50% 50%, rgba(255,85,123,.26), rgba(10,21,81,0) 68%),
     radial-gradient(50% 90% at 86% 8%, rgba(255,117,29,.16), rgba(10,21,81,0) 70%);
 }
-.band .cs-eyebrow{color:var(--c-o)}
+.cs-sec.band .cs-eyebrow{color:var(--c-o)}
 .band-q{
   font-family:var(--display);font-weight:600;letter-spacing:-.015em;line-height:1.28;
   font-size:clamp(22px,2.9vw,38px);color:#fff;margin:clamp(16px,2.4vh,26px) auto 0;max-width:24ch;
@@ -1130,7 +1140,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
 <div class="glow" id="glow"></div>
 
 <nav>
-  <span class="mark">elif<i>.</i></span>
+  <a class="mark" id="navHome" href="/" aria-label="Elif Uysal — home">elif<i>.</i></a>
   <a href="#work" data-i18n="nav_work">Work</a>
   <a href="#cv" id="navAbout" data-i18n="nav_about">About</a>
   <a href="#contact" data-i18n="nav_contact">Contact</a>
@@ -1233,6 +1243,11 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
    `disc` is a list now: one project can be service + UI/UX + product at once. */
 const PROJECTS = [
   {key:'alti',    mark:'ALTI',              style:'letter-spacing:.26em;font-size:21px;font-weight:800',
+   /* kapak: board'un 01 · Cover frame'inin (3940:375) 4× export'u, 16:10 için
+      yalnızca alttan kırpıldı — orada sadece cephe var, kompozisyondan bir şey
+      gitmiyor. make_cover.py kullanılmadı: o düz zeminle genişletiyor, bu bir
+      fotoğraf, dikiş bırakırdı. */
+   cover:'/assets/cover/alti.webp', coverBg:'#0A1551',
    logo:null,      /* ← Elif: ALTI logosu */        client:'Commencis',        clientLogo:null,
    year:'2026', note:'grad', disc:['service','uiux','product']},
 
@@ -1836,6 +1851,15 @@ function closeCV(){
   syncRoute();
 }
 navAbout.addEventListener('click',e=>{ e.preventDefault(); cvOpen ? closeCV() : openCV(); });
+/* the wordmark goes home from wherever you are: it closes whichever sheet is
+   open (which puts the address back to /) and returns to the top. Handled in
+   JS rather than left to the href so a case study folds away instead of the
+   browser reloading the whole page under it. */
+navHome.addEventListener('click',e=>{
+  e.preventDefault();
+  closeCV(); closeCase();
+  scrollTo({top:0,behavior:RM?'auto':'smooth'});
+});
 /* one pill for both sheets — it used to call closeCV alone, so pressing Close
    on a case study did nothing at all */
 cvCloseBtn.addEventListener('click',()=>{ closeCV(); closeCase(); });
@@ -1898,6 +1922,63 @@ const A = {
   gap:'/assets/case/gap.webp', hover:'/assets/case/hover.webp', me:'/assets/case/avatar.webp',
   s1:'/assets/case/s1.webp', s2:'/assets/case/s2.webp', s3:'/assets/case/s3.webp',
   s4:'/assets/case/s4.webp', s5:'/assets/case/s5.webp', s6:'/assets/case/s6.webp',
+};
+
+/* ALTI — cut out of the board's own 4× section exports (src/assets/alti):
+   d1–d3 are the three solution devices, w1–w5 the Wander walk, g1–g5 the
+   Gather flow. They carry the band they were drawn on, which is why the
+   sections they sit in paint the same two greys. */
+const B = {
+  cover:'/assets/alti/cover.webp',
+  d1:'/assets/alti/d1.webp', d2:'/assets/alti/d2.webp', d3:'/assets/alti/d3.webp',
+  w1:'/assets/alti/w1.webp', w2:'/assets/alti/w2.webp', w3:'/assets/alti/w3.webp',
+  w4:'/assets/alti/w4.webp', w5:'/assets/alti/w5.webp',
+  g1:'/assets/alti/g1.webp', g2:'/assets/alti/g2.webp', g3:'/assets/alti/g3.webp',
+  g4:'/assets/alti/g4.webp', g5:'/assets/alti/g5.webp',
+};
+
+/* the board's two problem illustrations and its three model icons, kept as
+   the vectors they are — a museum behind a rope, a pin on an empty grid, and
+   the marks for now · together · later */
+const ILL = {
+  museum:'<svg viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A museum behind a rope">'+
+    '<rect x=".5" y=".5" width="559" height="319" rx="19.5" fill="#fff" stroke="#E4E8F5"/>'+
+    '<path d="M280 84 400 140H160z" fill="#DDE3F5"/><rect x="176" y="140" width="208" height="112" fill="#E7ECFA"/>'+
+    '<rect x="196" y="152" width="18" height="92" fill="#D3DAF2"/><rect x="238" y="152" width="18" height="92" fill="#D3DAF2"/>'+
+    '<rect x="304" y="152" width="18" height="92" fill="#D3DAF2"/><rect x="346" y="152" width="18" height="92" fill="#D3DAF2"/>'+
+    '<rect x="262" y="176" width="36" height="76" fill="#C3CBEC"/><rect x="140" y="252" width="280" height="7" rx="3.5" fill="#E7ECFA"/>'+
+    '<rect x="176" y="218" width="9" height="34" rx="4.5" fill="#0A1551"/><rect x="375" y="218" width="9" height="34" rx="4.5" fill="#0A1551"/>'+
+    '<rect x="182" y="226" width="196" height="4" rx="2" fill="url(#rope)"/>'+
+    '<defs><linearGradient id="rope" x1="182" y1="228" x2="378" y2="228" gradientUnits="userSpaceOnUse">'+
+    '<stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient></defs></svg>',
+  map:'<svg viewBox="0 0 560 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A pin on an otherwise empty map">'+
+    '<rect width="560" height="320" rx="20" fill="#EEF2FB"/>'+
+    '<g stroke="#fff" stroke-width="10">'+
+    '<path d="M0 96h560M0 200h560M148 0v320M340 0v320"/></g>'+
+    '<path d="M280 132c-13.8 0-25 11.2-25 25 0 17.3 25 41 25 41s25-23.7 25-41c0-13.8-11.2-25-25-25Z" fill="url(#pin)"/>'+
+    '<circle cx="280" cy="156" r="8.5" fill="#EEF2FB"/>'+
+    '<defs><linearGradient id="pin" x1="255" y1="165" x2="305" y2="165" gradientUnits="userSpaceOnUse">'+
+    '<stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient></defs></svg>',
+};
+const MICO = {
+  wander:'<svg class="ico" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<rect width="60" height="60" rx="18" fill="#FFF0F3"/>'+
+    '<path d="M30 15c-6.07 0-11 4.95-11 11.05C19 33.64 30 44 30 44s11-10.36 11-17.95C41 19.95 36.07 15 30 15Z" fill="url(#mw)"/>'+
+    '<circle cx="30" cy="27" r="4" fill="#FFF0F3"/>'+
+    '<defs><linearGradient id="mw" x1="19" y1="29.5" x2="41" y2="29.5" gradientUnits="userSpaceOnUse">'+
+    '<stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient></defs></svg>',
+  gather:'<svg class="ico" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<rect width="60" height="60" rx="18" fill="#FFF0F3"/>'+
+    '<circle cx="27" cy="29" r="7.75" stroke="#FF557B" stroke-width="2.5"/>'+
+    '<circle cx="41" cy="29" r="7.75" stroke="#FF557B" stroke-width="2.5"/>'+
+    '<rect x="14.25" y="41.25" width="31.5" height="9.5" rx="4.75" stroke="#FF557B" stroke-width="2.5"/></svg>',
+  capsule:'<svg class="ico" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<rect width="60" height="60" rx="18" fill="#FFF0F3"/>'+
+    '<path d="M18 15h24L30 29 18 15Z" fill="url(#mc1)"/><path d="M30 31l12 14H18l12-14Z" fill="url(#mc2)"/>'+
+    '<defs><linearGradient id="mc1" x1="30" y1="15" x2="30" y2="29" gradientUnits="userSpaceOnUse">'+
+    '<stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient>'+
+    '<linearGradient id="mc2" x1="30" y1="31" x2="30" y2="45" gradientUnits="userSpaceOnUse">'+
+    '<stop stop-color="#FF751D"/><stop offset="1" stop-color="#FF557B"/></linearGradient></defs></svg>',
 };
 
 /* Whallet, off the board in Figma (page `case study page`, node 265:50).
@@ -2215,6 +2296,207 @@ const CASES = {
         {k:'end', eyebrow:'Hepsi bu kadar', h:'Teşekkürler.'},
       ],
     },
+  },
+
+  /* ALTI — the graduation project, and the one case here whose board is a
+     light page. Same job as above: her board rebuilt as HTML, in her order,
+     with the sections that only exist here (four people, three speeds, two
+     flows end to end) given their own kinds rather than bent into Cursor's.
+     Section kinds: claim · two · personas · band · trio · devices · flow ·
+     rows · end.
+     The demo is Figma's player with its chrome off — 79 screens across five
+     flows have no coded twin, and a video would not be a prototype. */
+  alti:{
+    theme:'alti', light:true, cover:'alti',
+    demo:'https://elifbeyzauysal.com/demo/alti/',
+    en:{
+      kicker:'Location-based discovery app',
+      eyebrow:'Cultural heritage, on foot',
+      word:'ALTI', sub:'Cultural Heritage Case Study',
+      line:'Ankara · Location-based discovery app · Graduation project',
+      role:'Service design · Product design · UI/UX',
+      kind:'Graduation project with Commencis',
+      sections:[
+        {k:'claim', lead:'What did I do?',
+         h:'Made a city tell its own story.<br>Not from a museum label, from the streets you pass.'},
+
+        {k:'two', alt:1, eyebrow:'The problem', h:'Heritage is kept behind a door',
+         shots:[
+           {svg:ILL.museum, t:'The museum visit',
+            p:'Heritage waits inside a building you have to decide to enter. You go once a year, read a label, and leave it there.'},
+           {svg:ILL.map, t:'The pin on the map',
+            p:'Travel apps mark the monument and skip the street it stands on. Everything in between stays unnamed.'}]},
+
+        {k:'personas', eyebrow:'The research', h:'Visitors weren’t the only ones stuck',
+         intro:'Four interviews: two professionals who tell these stories for a living, and two people who go looking for them. The two professionals were blocked by something the visitor side of the product never touches — reaching the people who would come.',
+         cards:[
+           {pro:1, i:'Tells the stories', b:'Tour guide, 36',
+            p:'“Information panels are often insufficient, and visitors lose interest during long explanations.”'},
+           {pro:1, i:'Tells the stories', b:'Art historian, 42',
+            p:'“Tired of using multiple platforms to announce workshops and trips to participants.”'},
+           {i:'Goes looking', b:'Industrial designer, 24',
+            p:'Builds her own route before visiting, draws what she sees on paper, and collects the brochures.'},
+           {i:'Goes looking', b:'Parent, 44',
+            p:'Wants a suggested route and something to interact with, so the trip works without doing the work.'}],
+         intentLead:'What it turned into',
+         intent:'“A hybrid physical–digital service system that enables visitors of cultural heritage to discover, understand and engage — through interactive digital exploration and on-site experience.”'},
+
+        {k:'band', lead:'What is the gap?',
+         q:'“Tunalı Hilmi is Ankara’s most-walked street. Almost nobody stops at number 44 — a head of state lived behind that door.”',
+         lab:'The gap',
+         p:'Keep the discovery, drop the detour.<br>Put the story where the feet already are.'},
+
+        {k:'trio', eyebrow:'The model', h:'One city, three speeds',
+         items:[
+           {ico:MICO.wander, h:'Wander', lab:'Now',
+            p:'The wall you are standing in front of. A route, its stops, and the marker that opens each one.'},
+           {ico:MICO.gather, h:'Gather', lab:'Together',
+            p:'A walk hosted by a guide — one place for them to announce it, one place for you to join it.'},
+           {ico:MICO.capsule, h:'Capsule', lab:'Later',
+            p:'The photos you took develop hours after you get home, so the walk lands a second time.'}]},
+
+        {k:'devices', eyebrow:'My solution', h:'The street itself answers',
+         shots:[
+           {img:B.d1, t:'Scan the marker',
+            p:'You point at the ALTI mark on the wall. No search field, no ticket desk, no detour.'},
+           {img:B.d2, t:'The building answers',
+            p:'The story arrives on top of the façade you are already standing in front of.'},
+           {img:B.d3, t:'It develops later',
+            p:'Your photo opens hours after the walk, so the same afternoon is remembered twice.'}]},
+
+        {k:'flow', alt:1, eyebrow:'Wander · end to end', h:'Pick a route, walk it, finish it',
+         steps:[
+           {img:B.w1, p:'Stops around you, with walking times.'},
+           {img:B.w2, p:'Choose your stops; the route builds itself.'},
+           {img:B.w3, p:'Turn by turn, at walking pace.'},
+           {img:B.w4, p:'The marker on the wall opens the story.'},
+           {img:B.w5, p:'Distance, points, and what you missed nearby.'}]},
+
+        {k:'flow', eyebrow:'Gather · end to end', h:'The guides got one place to post',
+         intro:'This flow exists because of the interviews, not because a marketplace looked good on a slide. A guide announces the walk once; a visitor joins, sees who else is coming, and pays without leaving the app.',
+         steps:[
+           {img:B.g1, p:'Walks hosted by guides, with dates and prices.'},
+           {img:B.g2, p:'The route, the stops, and who is hosting it.'},
+           {img:B.g3, p:'See the group before you commit.'},
+           {img:B.g4, p:'Card details on a single screen.'},
+           {img:B.g5, p:'Ticket, plus a reminder before the walk.'}]},
+
+        {k:'trio', alt:1, eyebrow:'The decision', h:'A mark on the wall, not a geofence',
+         items:[
+           {h:'Marker', lab:'What I chose',
+            p:'A physical mark you have to find with your eyes. The walking stays inside the product — the city is the interface, not the phone.'},
+           {h:'Geofence', lab:'What I dropped', off:1,
+            p:'Auto-triggering by GPS fires while you are still on the bus, drains the battery, and turns discovery into notification noise.'},
+           {h:'1 district', lab:'The risk I took',
+            p:'No marker means no story. So the first release covers Küçükesat end to end instead of covering all of Ankara thinly.'}]},
+
+        {k:'rows', alt:1, eyebrow:'Looking back', h:'What this still owes',
+         items:[
+           {b:'The marker needs a field test',
+            p:'The whole product rests on someone noticing a small mark on a wall. Before another screen gets drawn, a printed marker should go up on a real street to see if anyone looks twice.'},
+           {b:'Day one is still empty',
+            p:'Every screen here assumes stops, hosts and walks already exist. The version a guide opens when the map is still blank isn’t designed yet — and that is the version that decides whether the rest ever fills up.'},
+           {b:'The capsule delay is a feeling, not a finding',
+            p:'Develop-later is the most charming idea in the product and the least verified one. How long can a photo wait before charming turns into forgotten? That number should come from people, not from me.'}]},
+
+        {k:'end', mesh:1, eyebrow:'That was all', h:'Thank you.',
+         stats:['5 flows','79 screens','4 interviews','Fully wired prototype']},
+      ],
+    },
+    tr:{
+      kicker:'Konum tabanlı keşif uygulaması',
+      eyebrow:'Kültürel miras, yürüyerek',
+      word:'ALTI', sub:'Kültürel Miras Case Study',
+      line:'Ankara · Konum tabanlı keşif uygulaması · Bitirme projesi',
+      role:'Servis tasarımı · Ürün tasarımı · UI/UX',
+      kind:'Commencis ile bitirme projesi',
+      sections:[
+        {k:'claim', lead:'Ne yaptım?',
+         h:'Bir şehri kendi hikâyesini anlatır hâle getirdim.<br>Müze etiketinden değil, önünden geçtiğin sokaklardan.'},
+
+        {k:'two', alt:1, eyebrow:'Problem', h:'Miras bir kapının ardında tutuluyor',
+         shots:[
+           {svg:ILL.museum, t:'Müze ziyareti',
+            p:'Miras, girmeye karar vermen gereken bir binanın içinde bekliyor. Yılda bir gidiyorsun, bir etiket okuyup orada bırakıyorsun.'},
+           {svg:ILL.map, t:'Haritadaki iğne',
+            p:'Gezi uygulamaları anıtı işaretliyor, üstünde durduğu sokağı atlıyor. Aradaki her şey adsız kalıyor.'}]},
+
+        {k:'personas', eyebrow:'Araştırma', h:'Tıkanan yalnızca ziyaretçi değildi',
+         intro:'Dört görüşme: bu hikâyeleri anlatarak geçinen iki profesyonel, bir de onları aramaya çıkan iki kişi. İki profesyoneli tıkayan şey, ürünün ziyaretçi tarafının hiç dokunmadığı yerdeydi — gelecek insanlara ulaşmak.',
+         cards:[
+           {pro:1, i:'Hikâyeyi anlatıyor', b:'Tur rehberi, 36',
+            p:'“Bilgi panoları çoğu zaman yetersiz, uzun anlatımlarda ziyaretçinin ilgisi kaçıyor.”'},
+           {pro:1, i:'Hikâyeyi anlatıyor', b:'Sanat tarihçisi, 42',
+            p:'“Atölye ve gezileri katılımcılara duyurmak için birden fazla platform kullanmaktan bıktım.”'},
+           {i:'Aramaya çıkıyor', b:'Endüstriyel tasarımcı, 24',
+            p:'Gitmeden önce kendi rotasını kuruyor, gördüğünü kâğıda çiziyor, broşürleri biriktiriyor.'},
+           {i:'Aramaya çıkıyor', b:'Ebeveyn, 44',
+            p:'Hazır bir rota ve etkileşime girebileceği bir şey istiyor; gezi, uğraşmadan yürüsün.'}],
+         intentLead:'Neye dönüştü',
+         intent:'“Kültürel mirasın ziyaretçilerinin keşfetmesini, anlamasını ve dahil olmasını sağlayan — etkileşimli dijital keşif ile yerinde deneyimi birleştiren, fiziksel–dijital hibrit bir hizmet sistemi.”'},
+
+        {k:'band', lead:'Boşluk nerede?',
+         q:'“Tunalı Hilmi Ankara’nın en çok yürünen caddesi. 44 numarada neredeyse kimse durmuyor — o kapının ardında bir devlet başkanı yaşamış.”',
+         lab:'Boşluk',
+         p:'Keşfi koru, sapmayı bırak.<br>Hikâyeyi ayakların zaten olduğu yere koy.'},
+
+        {k:'trio', eyebrow:'Model', h:'Tek şehir, üç hız',
+         items:[
+           {ico:MICO.wander, h:'Wander', lab:'Şimdi',
+            p:'Önünde durduğun duvar. Bir rota, durakları ve her birini açan işaret.'},
+           {ico:MICO.gather, h:'Gather', lab:'Birlikte',
+            p:'Bir rehberin düzenlediği yürüyüş — onun duyuracağı tek yer, senin katılacağın tek yer.'},
+           {ico:MICO.capsule, h:'Capsule', lab:'Sonra',
+            p:'Çektiğin fotoğraflar eve döndükten saatler sonra develop oluyor; yürüyüş ikinci kez düşüyor.'}]},
+
+        {k:'devices', eyebrow:'Çözümüm', h:'Sokağın kendisi cevap veriyor',
+         shots:[
+           {img:B.d1, t:'İşareti tara',
+            p:'Duvardaki ALTI işaretine kameranı tutuyorsun. Arama kutusu yok, bilet gişesi yok, sapma yok.'},
+           {img:B.d2, t:'Bina cevap veriyor',
+            p:'Hikâye, zaten önünde durduğun cephenin üstüne geliyor.'},
+           {img:B.d3, t:'Sonra develop oluyor',
+            p:'Fotoğrafın yürüyüşten saatler sonra açılıyor; aynı öğleden sonra iki kez hatırlanıyor.'}]},
+
+        {k:'flow', alt:1, eyebrow:'Wander · uçtan uca', h:'Rotanı seç, yürü, bitir',
+         steps:[
+           {img:B.w1, p:'Çevrendeki duraklar, yürüme süreleriyle.'},
+           {img:B.w2, p:'Duraklarını seç; rota kendini kuruyor.'},
+           {img:B.w3, p:'Adım adım, yürüme hızında.'},
+           {img:B.w4, p:'Duvardaki işaret hikâyeyi açıyor.'},
+           {img:B.w5, p:'Mesafe, puan ve yakınında kaçırdıkların.'}]},
+
+        {k:'flow', eyebrow:'Gather · uçtan uca', h:'Rehberler tek bir yere kavuştu',
+         intro:'Bu akış bir pazaryeri sunumda iyi durduğu için değil, görüşmeler yüzünden var. Rehber yürüyüşü bir kez duyuruyor; ziyaretçi katılıyor, kimlerin geleceğini görüyor ve uygulamadan çıkmadan ödüyor.',
+         steps:[
+           {img:B.g1, p:'Rehberlerin düzenlediği yürüyüşler; tarih ve fiyatlarıyla.'},
+           {img:B.g2, p:'Rota, duraklar ve yürüyüşü kimin yönettiği.'},
+           {img:B.g3, p:'Katılmadan önce grubu gör.'},
+           {img:B.g4, p:'Kart bilgileri tek ekranda.'},
+           {img:B.g5, p:'Bilet, üstüne yürüyüş öncesi bir hatırlatma.'}]},
+
+        {k:'trio', alt:1, eyebrow:'Karar', h:'Duvarda bir işaret, geofence değil',
+         items:[
+           {h:'İşaret', lab:'Seçtiğim',
+            p:'Gözünle bulman gereken fiziksel bir işaret. Yürümek ürünün içinde kalıyor — arayüz telefon değil, şehrin kendisi.'},
+           {h:'Geofence', lab:'Bıraktığım', off:1,
+            p:'GPS ile otomatik tetikleme sen daha otobüsteyken çalışıyor, pili bitiriyor ve keşfi bildirim gürültüsüne çeviriyor.'},
+           {h:'1 semt', lab:'Aldığım risk',
+            p:'İşaret yoksa hikâye de yok. Bu yüzden ilk sürüm Ankara’nın tamamını ince ince kaplamak yerine Küçükesat’ı uçtan uca kaplıyor.'}]},
+
+        {k:'rows', alt:1, eyebrow:'Dönüp bakınca', h:'Bunun hâlâ borcu var',
+         items:[
+           {b:'İşaretin sahada denenmesi gerek',
+            p:'Ürünün tamamı, birinin duvardaki küçük bir işareti fark etmesine yaslanıyor. Bir ekran daha çizilmeden önce gerçek bir sokağa basılı bir işaret asılmalı ve dönüp bakan oluyor mu görülmeli.'},
+           {b:'İlk gün hâlâ boş',
+            p:'Buradaki her ekran durakların, rehberlerin ve yürüyüşlerin zaten var olduğunu varsayıyor. Bir rehberin harita bomboşken açtığı sürüm henüz tasarlanmadı — geri kalanın dolup dolmayacağına karar veren de o sürüm.'},
+           {b:'Kapsül gecikmesi bir his, bulgu değil',
+            p:'Sonra-develop, üründeki en sevimli fikir ve en az doğrulanmış olanı. Bir fotoğraf, sevimlilik unutulmaya dönmeden ne kadar bekleyebilir? O sayı benden değil, insanlardan gelmeli.'}]},
+
+        {k:'end', mesh:1, eyebrow:'Hepsi bu kadar', h:'Teşekkürler.',
+         stats:['5 akış','79 ekran','4 görüşme','Tamamen bağlı prototip']},
+      ],
+    },
   }
 };
 
@@ -2232,22 +2514,30 @@ const demoBtn = (href,label) =>
   `<a class="demo-btn" href="${href}" target="_blank" rel="noopener noreferrer">${label}${EXT}</a>`;
 
 /* one screen with its caption — `k` switches the caption to the tracked
-   small-caps label the board uses under the solution screens */
+   small-caps label the board uses under the solution screens. A shot may
+   carry a drawing rather than a photograph (`svg`), which is how ALTI's two
+   problem panels stay vectors instead of becoming one more export. */
 const shotHTML = (s,k,cls) =>
-  `<figure class="cs-shot rv${cls?' '+cls:''}"><img src="${s.img}" alt="" loading="lazy" decoding="async">`+
+  `<figure class="cs-shot rv${cls?' '+cls:''}">`+
+  (s.svg || `<img src="${s.img}" alt="" loading="lazy" decoding="async">`)+
   `<figcaption class="cs-cap${k?' k':''}"><b>${s.t}</b><p>${s.p}</p></figcaption></figure>`;
 
 const headHTML = s =>
   `<p class="cs-eyebrow rv">${s.eyebrow}</p><h2 class="cs-h rv">${s.h}</h2>`;
 
+/* ALTI's board alternates white and #F7F8FC band by band, and the exported
+   phones carry whichever one they were drawn on — so `alt` is not decoration,
+   it is what keeps the screens from sitting in a visible rectangle. */
+const secCls = s => 'cs cs-sec' + (s.alt ? ' alt' : '');
+
 function sectionHTML(s,d,u){
   switch(s.k){
     case 'claim':
-      return `<section class="cs cs-sec"><div class="cs-in mid">`+
+      return `<section class="${secCls(s)}"><div class="cs-in mid">`+
         `<p class="cs-lead rv">${s.lead}</p><p class="cs-claim rv">${s.h}</p></div></section>`;
 
     case 'two':
-      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
         `<div class="cs-shots two">${s.shots.map(x=>shotHTML(x)).join('')}</div></div></section>`;
 
     case 'mid':
@@ -2301,8 +2591,64 @@ function sectionHTML(s,d,u){
           `<div class="rv"><i>0${i+1}</i><b>${n.t}</b><p>${n.p}</p></div>`).join('')}</div>`+
         `</div></section>`;
 
+    /* ---- ALTI's own kinds ---- */
+
+    /* four people, then the one sentence they turned into. The two who tell
+       these stories for a living are marked: the research's finding is that
+       they were stuck too, and the cards have to carry that before the
+       headline is believed. */
+    case 'personas':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        `<p class="cs-body rv" style="margin-top:clamp(18px,2.6vh,28px)">${s.intro}</p>`+
+        `<div class="pcards">${s.cards.map(c=>
+          `<div class="pcard rv${c.pro?' pro':''}"><span class="tick"></span>`+
+            `<i>${c.i}</i><b>${c.b}</b><p>${c.p}</p></div>`).join('')}</div>`+
+        `<p class="cs-eyebrow rv" style="margin-top:clamp(38px,6vh,68px)">${s.intentLead}</p>`+
+        `<div class="intent rv"><p>${s.intent}</p></div>`+
+        `</div></section>`;
+
+    /* the gap: the one dark band on a light page, full-bleed, centred —
+       the page stops arguing for a moment and states the turn */
+    case 'band':
+      return `<section class="cs cs-sec band"><div class="cs-in mid">`+
+        `<p class="cs-eyebrow rv">${s.lead}</p><p class="band-q rv">${s.q}</p>`+
+        `<p class="band-lab rv">${s.lab}</p><p class="band-p rv">${s.p}</p>`+
+        `</div></section>`;
+
+    /* three columns that are not screens: the model's three speeds, and later
+       the fork the project turned on. `off` is the road not taken. */
+    case 'trio':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        `<div class="trio">${s.items.map(t=>
+          `<div class="ti rv${t.off?' off':''}">${t.ico||''}`+
+            `<h3>${t.h}</h3><span class="rule"></span><i>${t.lab}</i><p>${t.p}</p></div>`).join('')}</div>`+
+        `</div></section>`;
+
+    /* three devices across, captioned the way the board captions them */
+    case 'devices':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots three">${s.shots.map(x=>shotHTML(x,1)).join('')}</div></div></section>`;
+
+    /* a flow end to end: five phones, numbered, read left to right */
+    case 'flow':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        (s.intro?`<p class="cs-body rv" style="margin-top:clamp(18px,2.6vh,28px)">${s.intro}</p>`:'')+
+        `<div class="flow">${s.steps.map((x,i)=>
+          `<figure class="rv"><img src="${x.img}" alt="" loading="lazy" decoding="async">`+
+            `<b>0${i+1}</b><p>${x.p}</p></figure>`).join('')}</div>`+
+        `</div></section>`;
+
+    /* what the project still owes — numbered, stacked, nothing left to show */
+    case 'rows':
+      return `<section class="${secCls(s)}"><div class="cs-in">${headHTML(s)}`+
+        `<div class="rows">${s.items.map((n,i)=>
+          `<div class="row rv"><i>0${i+1}</i><div><b>${n.b}</b><p>${n.p}</p></div></div>`).join('')}</div>`+
+        `</div></section>`;
+
     case 'end':
-      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+      return `<section class="${secCls(s)}${s.mesh?' cs-mesh':''}"><div class="cs-in">`+
+        (s.stats?`<p class="stats rv">${s.stats.map(x=>`<span>${x}</span>`).join('')}</p>`:'')+
+        headHTML(s)+
         `<div class="case-end rv">${CASES[caseKey].demo?demoBtn(CASES[caseKey].demo,u.demo):''}`+
           `<button class="case-back" type="button">${u.back}</button></div>`+
         `</div></section>`;
@@ -2369,9 +2715,57 @@ function wireCover(){
   addEventListener('resize', () => { live ? follow() : goPark(false); });
 }
 
+/* ALTI's cover is the board's cover: her photograph of the façade, the navy
+   poured over it, the viewfinder where the product's own gesture happens, and
+   the type at the foot. The scrim and the type are CSS rather than baked into
+   the export, so the cover reflows instead of shrinking to a postcard. */
+const SCAN = '<svg class="alti-scan" viewBox="0 0 320 320" fill="none" aria-hidden="true">'+
+  '<g stroke="rgba(255,255,255,.8)" stroke-width="4" stroke-linecap="round">'+
+  '<path d="M8 62V12h50M262 12h50v50M312 258v50h-50M58 308H8v-50"/></g>'+
+  '<circle cx="160" cy="160" r="98" stroke="rgba(255,255,255,.28)" stroke-width="2"/>'+
+  '<path d="M160 96c-22.6 0-41 18.4-41 41.1C119 165.4 160 204 160 204s41-38.6 41-66.9c0-22.7-18.4-41.1-41-41.1Z"'+
+  ' fill="url(#sg)"/><circle cx="160" cy="136" r="14" fill="#fff"/>'+
+  '<defs><linearGradient id="sg" x1="119" y1="150" x2="201" y2="150" gradientUnits="userSpaceOnUse">'+
+  '<stop stop-color="#FF557B"/><stop offset="1" stop-color="#FF751D"/></linearGradient></defs></svg>';
+
+const altiCover = (key,d,p,u) =>
+  `<section class="cs cover alti-cover">`+
+    `<img class="cover-bg" src="${B.cover}" alt="" fetchpriority="high">`+
+    `<div class="cover-top">`+
+      `<p class="cover-kicker">${d.kicker}</p>`+
+      `<span class="sig"><span class="eu">EU</span><span>Elif Beyza Uysal</span></span>`+
+    `</div>`+
+    `<div class="alti-copy">${SCAN}`+
+      `<p class="alti-eyebrow">${d.eyebrow}</p>`+
+      `<h1 class="alti-word">${d.word}</h1>`+
+      `<p class="alti-sub">${d.sub}</p>`+
+      `<p class="alti-line">${d.line}</p>`+
+    `</div>`+
+    `<div class="cover-foot">`+
+      (CASES[key].demo?demoBtn(CASES[key].demo,u.demo):'')+
+      `<div class="cs-meta">`+
+        `<span>${u.role} <b>${d.role}</b></span>`+
+        `<span>${u.year} <b>${p.year}</b></span>`+
+        `<span>${u.kind} <b>${d.kind}</b></span>`+
+      `</div>`+
+    `</div>`+
+  `</section>`;
+
 function buildCase(key){
   const p = PROJECTS.find(x=>x.key===key); if(!p) return;
   const u = CASE_UI[L], d = CASES[key][L];
+
+  /* the sheet carries the case's own art direction; `light` also tells the
+     nav and the close pill to stay on paper instead of following it dark */
+  caseEl.dataset.theme = CASES[key].theme || '';
+  document.body.classList.toggle('case-light', !!CASES[key].light);
+
+  if(CASES[key].cover === 'alti'){
+    caseSheet.innerHTML = altiCover(key,d,p,u) + d.sections.map(s=>sectionHTML(s,d,u)).join('');
+    caseSheet.querySelector('.case-back').onclick=()=>closeCase();
+    revealCase();
+    return;
+  }
 
   caseSheet.innerHTML =
     `<section class="cs cover cs-mesh">`+
@@ -2404,9 +2798,12 @@ function buildCase(key){
 
   caseSheet.querySelector('.case-back').onclick=()=>closeCase();
   wireCover();
+  revealCase();
+}
 
-  /* the sheet scrolls inside itself, so its own reveal observer replaces the
-     page-level one, which only ever saw the markup present at boot */
+/* the sheet scrolls inside itself, so its own reveal observer replaces the
+   page-level one, which only ever saw the markup present at boot */
+function revealCase(){
   const o=new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting){ e.target.classList.add('in'); o.unobserve(e.target); }
   }),{rootMargin:'0px 0px -12% 0px',threshold:.06});
@@ -2430,7 +2827,7 @@ function closeCase(){
   if(!caseOpen) return;
   caseOpen=false; caseKey=null;
   caseEl.classList.remove('open');
-  document.body.classList.remove('case-open','sheet-open');
+  document.body.classList.remove('case-open','sheet-open','case-light');
   caseEl.setAttribute('aria-hidden','true');
   resumeLine();
   syncRoute();
@@ -2492,6 +2889,10 @@ addEventListener('resize',()=>{ stripX=0; cardW=0; });
 
 /* routes come last: applyRoute reaches for CASES and the sheets, which are
    declared above this line but only initialised once the script has run */
+/* in the Artifact the root belongs to the host, so the wordmark keeps its
+   click behaviour but stops pointing anywhere a cmd-click could follow */
+if(!ROUTES) navHome.setAttribute('href','#');
+
 if(ROUTES){
   addEventListener('popstate',()=>{ applyRoute(location.pathname); routeNow(); });
   /* landed straight on a sheet's address — build.py stamps which one on <body>,

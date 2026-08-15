@@ -68,6 +68,37 @@ beacon. A Figma embed was tried here first and taken out: an embedded player is
 a picture of the work behind someone else's chrome, and the point of a demo is
 that it runs.
 
+```bash
+python3 src/build_demo_figma.py       # rooms around an embedded Figma prototype
+```
+
+The second choice, for work that has no coded counterpart — **`/demo/jotform`**
+is the Jotform chatbot dashboard. Same room, one hairline of Elif's chrome
+around Figma's player, but dark rather than cream: what is inside the stage is
+somebody else's product at full brightness, and the player's own ground is
+near-black and cannot be changed (`bg=` works on a share link and is ignored on
+`embed.figma.com`). `scaling` decides whether it reads at all — `contain` fits
+a fixed app screen at about half size inside a black surround, so use
+`scale-down-width`, which fills the stage at the size the screen was drawn.
+The file has to be shared publicly in Figma (Share → *Anyone with the link* →
+can view), which is why the room carries a visible *Figma'da aç* escape hatch.
+
+```bash
+python3 src/build_demo_alti.py        # /demo/alti — ALTI, in a phone
+```
+
+**`/demo/alti`** is the same second choice for the same reason — 79 screens
+across five flows, wired in Figma, with no coded twin — but it is a separate
+room rather than an entry in the file above, because the stage there is a
+1440×900 dashboard and this is a phone. A phone is an object, not a stage, so
+it gets a device shell cut to the frame's own 393:852 ratio, in ALTI's navy
+with the pink→orange ramp as its edge, and Poppins inlined so the chrome is set
+in the app's own type. `hide-ui=1` takes Figma's restart away with the rest of
+the chrome, so the room supplies its own.
+
+Both rooms use **`scaling=scale-down-width`**, and neither should be changed to
+`contain` — see the note in `build_demo_figma.py` for what that costs.
+
 ## The work cards
 
 A card goes to the project's case study, or — when that page isn't written yet
@@ -82,15 +113,30 @@ its own *See demo* button.
 - **CV** — opens from the *About* link (`#cv`), printable as PDF.
 - **Case studies** — a project card opens its page (`#case`). Content lives in
   `CASES`, keyed by project, as a list of sections with a `k` (kind) each:
-  `claim · two · mid · gap · play · ladder · grid · end`.
+  `claim · two · mid · gap · play · ladder · grid · four · fork · notes · end`,
+  plus ALTI's own `personas · band · trio · devices · flow · rows`.
+
+Each case carries its board's art direction, not one house style. The colours
+were already tokens (`--c-bg`, `--c-ink`, `--c-ramp`, …), so a case sets
+`theme` and the sheet picks them up from `#case[data-theme="…"]`. ALTI is the
+first **light** one: `light:true` also adds `body.case-light`, which is what
+keeps the nav and the close pill on paper instead of following the sheet into
+the dark. Its sections alternate white and `#F7F8FC` through `alt:1` — not
+decoration, but a requirement: the phones are cut out of the board's own
+section exports and carry whichever band they were drawn on.
+
+New ALTI screens: re-export the whole **section frame** at 4× and cut it with
+`python3 src/slice_alti.py <folder>` — fifteen phones exported one at a time is
+fifteen round-trips through Figma, and the section already holds them at the
+right scale. The node ids and the expected filenames are in that script.
 
 Both are full-screen sheets over the site rather than separate pages. EN/TR
 throughout.
 
 ## Addresses
 
-The sheets are what people come for, so they have their own URLs — `/cv/` and
-`/case/cursor/`. `build.py` writes a real file at each one (the same page, told
+The sheets are what people come for, so they have their own URLs — `/cv/`,
+`/case/cursor/`, `/case/whallet/`, `/case/alti/`. `build.py` writes a real file at each one (the same page, told
 on `<body data-open>` which sheet to open), so a shared link survives a cold
 load and there is no redirect flash; in the browser they are `pushState`, so
 Back closes a sheet instead of leaving the site. `404.html` catches the rest.
