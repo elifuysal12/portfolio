@@ -124,7 +124,9 @@
 
   .band-right { max-width: 250px; display: flex; flex-direction: column; gap: 22px; }
   .stat b { display: block; font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.1; }
-  .stat b em { font-style: normal; color: var(--blue); }
+  /* the unit takes the colour of whichever channel the hero is showing, and
+     crosses over with it — one accent on screen at a time, not two */
+  .stat b em { font-style: normal; color: var(--chan, var(--blue)); transition: color 0.45s var(--spring); }
   .stat span { font-size: 0.86rem; color: var(--mute); }
   .stat + .stat { border-top: 1px solid var(--line-soft); padding-top: 22px; }
 
@@ -203,9 +205,15 @@
   .step { position: relative; display: grid; grid-template-columns: 1fr 64px 1fr; gap: 0 40px; align-items: center; padding: 70px 0; }
   .step-node { grid-column: 2; justify-self: center; align-self: start; position: relative; top: 4px; }
   .node { width: 64px; height: 64px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(14,21,38,0.06); transition: border-color 0.6s var(--spring), box-shadow 0.6s var(--spring), transform 0.6s var(--over); }
-  .node svg { width: 24px; height: 24px; fill: var(--faint); transition: fill 0.6s var(--spring); }
+  /* The glyph takes the step's own colour — never black. Half of these icons
+     are drawn with strokes and `currentColor`, so `color` has to travel with
+     `fill`; and a CSS fill would otherwise override their `fill="none"` and
+     turn an outline into a blob, hence the [stroke] guards. */
+  .node svg { width: 24px; height: 24px; fill: var(--faint); color: var(--faint); transition: fill 0.6s var(--spring), color 0.6s var(--spring); }
+  .node svg[stroke] { fill: none; }
   .step.lit .node { border-color: var(--tint); box-shadow: 0 0 0 5px color-mix(in srgb, var(--tint) 12%, transparent), 0 10px 26px rgba(14,21,38,0.1); transform: scale(1.04); }
-  .step.lit .node svg { fill: var(--tint); }
+  .step.lit .node svg { fill: var(--tint); color: var(--tint); }
+  .step.lit .node svg[stroke] { fill: none; }
 
   .step-text { max-width: 44ch; }
   .step:nth-child(odd) .step-text { grid-column: 1; text-align: right; justify-self: end; }
@@ -871,6 +879,9 @@
     rBadge.innerHTML = s.glyph; rBadge.style.background = s.color;
     rVerb.textContent = s.verb; rVerb.style.color = s.color;
     rTail.textContent = s.tail;
+    /* the hero's colour is published once, here, so anything else keyed to the
+       channel (the stat units) turns over with it instead of being repainted */
+    document.documentElement.style.setProperty('--chan', s.color);
   }
 
   function buildMsgs(s) {
