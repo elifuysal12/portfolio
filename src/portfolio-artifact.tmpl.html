@@ -945,6 +945,42 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
     radial-gradient(84% 74% at 22% 116%, rgba(255,117,29,.14), rgba(255,255,255,0) 72%);
 }
 
+/* =============================================================
+   WHALLET — the wallet's own night. The default sheet is the
+   Cursor page's warm charcoal with a coral light source, which
+   fought every screen on this page: the product is deep navy and
+   its one accent runs lavender → pink → orange. Same tokens, the
+   board's values, and a mesh that is violet instead of coral.
+   ============================================================= */
+#case[data-theme="whallet"]{
+  --c-bg:#050F2B;                        /* the board's canvas */
+  --c-bg-2:#0A1435;                      /* its card surface */
+  --c-ink:#FFFFFF;
+  --c-head:#FFFFFF;                      /* headlines lead here, they do not sit back */
+  --c-body:#8A93C4;
+  --c-line:#232A63;
+  --c-o:#FF63A1;                         /* ramp middle, and the eyebrow */
+  --c-p:#FFAA6C;
+  --c-ramp:linear-gradient(96deg,#D4A8FA,#FF63A1 52%,#FFAA6C);
+  --c-quiet:#5A64A0;                     /* kickers, meta, the source credit */
+}
+#case[data-theme="whallet"] .cover-kicker,
+#case[data-theme="whallet"] .cs-meta,
+#case[data-theme="whallet"] .cs-lead{color:var(--c-quiet)}
+#case[data-theme="whallet"] .case-back{border-color:var(--c-line)}
+/* the light source moves with the page, the way the coral one does — but the
+   fade-out has to land on this ground, not on #0F1115, or it greys out */
+#case[data-theme="whallet"] .cs-mesh:before{
+  background:
+    radial-gradient(126% 104% at -8% 108%, rgba(101,82,254,.60), rgba(137,137,255,.22) 40%, rgba(5,15,43,0) 70%),
+    radial-gradient(86% 76% at 28% 112%, rgba(255,99,161,.26), rgba(5,15,43,0) 70%);
+}
+#case[data-theme="whallet"] .cs-mesh.top:before{
+  background:
+    radial-gradient(126% 104% at -8% -8%, rgba(101,82,254,.52), rgba(137,137,255,.19) 40%, rgba(5,15,43,0) 70%),
+    radial-gradient(86% 76% at 26% -12%, rgba(255,99,161,.22), rgba(5,15,43,0) 70%);
+}
+
 /* ---- the cover: her photograph, the type over it ---- */
 .alti-cover{
   position:relative;overflow:hidden;isolation:isolate;
@@ -1279,11 +1315,15 @@ const PROJECTS = [
    year:'2026', disc:['web','uiux']},
 
   {key:'sunninja',mark:'Sun Ninja',         style:'font-size:19px;font-weight:700;letter-spacing:.02em',
-   /* kapak: Figma değil — prototipin kendi hero'sundan alınmış gerçek ekran
-      görüntüsü (1440×900, headless Chrome, 2×). Zaten 16:10 olduğu için
-      make_cover.py --ratio native ile sadece küçültüldü; genişletme yolu
-      alttaki şeftali degradesini "kural çizgisi" sanıp bant basıyordu. */
-   cover:'{{ASSET:cover/sunninja.webp}}', coverBg:'#FFE1AF',
+   /* kapak: Figma değil, src/cover_sunninja.html — proje kodla yapıldığı için
+      kapağı da prototipin kendi Poppins'i ve kendi DAY tablosundaki Sunrise
+      rampasıyla çiziliyor. Diğerlerinin düzeni: eyebrow, sayfanın kendi
+      cümlesi (ikinci satır vurguda), tek destek satırı, sağ kenardan taşan
+      artefakt. Artefakt öğlen vaktinden bir kesit — zemin şafak, ekran öğlen,
+      yani iddianın kanıtı kartın üstünde duruyor. Zaten 16:10, --ratio native
+      ile sadece küçültülüyor: genişletme yolu alttaki şeftali degradesini
+      "kural çizgisi" sanıp bant basıyor. */
+   cover:'{{ASSET:cover/sunninja.webp}}', coverBg:'#FFE0AE',
    logo:null,                                       client:'Concept',          clientLogo:null,
    year:'2026', disc:['web','uiux','product']},
 
@@ -2147,6 +2187,7 @@ const CASES = {
      Research screens are the four apps' own App Store listings.
      --------------------------------------------------------------- */
   whallet:{
+    theme:'whallet',
     coverShot:W.cover,
     en:{
       kicker:'Web3 wallet',

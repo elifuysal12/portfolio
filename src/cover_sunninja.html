@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sun Ninja — work-card cover</title>
+<!--
+  The work-card cover for Sun Ninja, as a page rather than a Figma frame:
+  the project is a coded prototype, so its cover is drawn in the same type
+  and the same palette the prototype ships with.
+
+  It is composed the way the other covers are — a letter-spaced eyebrow, a
+  claim in the project's own words with the second line in its accent, one
+  support line, and the artefact floating off the right edge — over the
+  Sunrise ramp from the prototype's own DAY table (sky1 #FFE0AE → sky2
+  #FF8A66, ink #20366C, accent #0F7FA8).
+
+  Serve the site and shoot it at 1600×1000 (already 16:10, so the cover is
+  only downscaled from here):
+
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --headless=new --force-device-scale-factor=2 --window-size=1600,1000 \
+      --virtual-time-budget=8000 --screenshot=cover.png \
+      http://localhost:PORT/src/cover_sunninja.html
+    python3 src/make_cover.py sunninja cover.png --ratio native --width 1800
+-->
+<style>
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:block;
+  src:url(/assets/font/sn-po-400.woff2) format('woff2')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:block;
+  src:url(/assets/font/sn-po-600.woff2) format('woff2')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:700;font-display:block;
+  src:url(/assets/font/sn-po-700.woff2) format('woff2')}
+@font-face{font-family:'Poppins';font-style:italic;font-weight:600;font-display:block;
+  src:url(/assets/font/sn-po-600i.woff2) format('woff2')}
+
+:root{
+  --sky-1:#FFE0AE; --sky-2:#FF8A66;
+  --ink:#20366C; --accent:#0F7FA8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1600px;height:1000px;overflow:hidden}
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  background:linear-gradient(176deg,var(--sky-1) 0%,#FFC79A 46%,var(--sky-2) 100%);
+  position:relative;
+}
+/* the sun sits where the page puts it at first light: low, left of centre,
+   a wide soft bloom rather than a disc */
+.sun{
+  position:absolute; left:26%; top:34%; width:1100px; height:1100px;
+  transform:translate(-50%,-50%); border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle,rgba(255,247,214,.85) 0%,rgba(255,236,190,.42) 34%,rgba(255,225,175,0) 68%);
+}
+.wrap{position:relative; height:100%; display:flex; align-items:center; padding:0 0 0 96px}
+
+.copy{width:620px; flex:none}
+.eyebrow{
+  font-size:15px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:34px;
+}
+.claim{
+  font-size:82px; font-weight:700; line-height:1.0; letter-spacing:-.025em;
+  color:var(--ink);
+}
+.claim em{display:block; font-style:italic; font-weight:600; color:var(--accent)}
+.support{
+  margin-top:34px; font-size:20px; line-height:1.55; font-weight:400;
+  color:color-mix(in oklab,var(--ink) 82%,transparent); max-width:480px;
+}
+
+/* the artefact, off the right edge the way the phone runs off base360's */
+.shot{
+  position:absolute; left:790px; top:130px; width:900px; height:740px;
+  border-radius:26px; overflow:hidden;
+  box-shadow:0 46px 90px rgba(32,54,108,.30), 0 4px 14px rgba(32,54,108,.16);
+}
+.shot img{width:100%; height:100%; object-fit:cover; object-position:left top; display:block}
+</style>
+</head>
+<body>
+<div class="sun"></div>
+<div class="wrap">
+  <div class="copy">
+    <p class="eyebrow">Sun Ninja · Storefront redesign</p>
+    <h1 class="claim">From first light<em>to last.</em></h1>
+    <p class="support">A storefront that runs on the sun: sky, type and palette
+      move together from first light to after dark as the page scrolls.</p>
+  </div>
+</div>
+<figure class="shot"><img src="/src/assets/cover/sunninja-shot.png" alt=""></figure>
+</body>
+</html>
