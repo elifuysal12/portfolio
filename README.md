@@ -69,19 +69,23 @@ a picture of the work behind someone else's chrome, and the point of a demo is
 that it runs.
 
 ```bash
-python3 src/build_demo_figma.py       # rooms around an embedded Figma prototype
+python3 src/build_demo_jotform.py     # reads ../jotform-dashboard/index.html
 ```
 
-The second choice, for work that has no coded counterpart — **`/demo/jotform`**
-is the Jotform chatbot dashboard. Same room, one hairline of Elif's chrome
-around Figma's player, but dark rather than cream: what is inside the stage is
-somebody else's product at full brightness, and the player's own ground is
-near-black and cannot be changed (`bg=` works on a share link and is ignored on
-`embed.figma.com`). `scaling` decides whether it reads at all — `contain` fits
-a fixed app screen at about half size inside a black surround, so use
-`scale-down-width`, which fills the stage at the size the screen was drawn.
-The file has to be shared publicly in Figma (Share → *Anyone with the link* →
-can view), which is why the room carries a visible *Figma'da aç* escape hatch.
+**`/demo/jotform`** is the Jotform AI Chatbot analytics dashboard, and it is
+code, not a player: the three sections switch, the segmented tabs swap the
+dataset, the charts are SVG drawn from the data arrays and read out under the
+pointer, the optimisation card is a real queue that ends in *completed*, and
+saving an answer turns *Add Answer* into *Edit Answer*. It started as a Figma
+embed and was rebuilt after Elif asked for a demo that actually runs.
+
+It ships as **two files**: `app/index.html` is the prototype, untouched and
+unsigned, because it is the product's own screen; `index.html` is the room —
+Elif's bar, and a monitor with the prototype live inside it. The screen holds
+the page at its own **1440×900 and scales the whole thing**, never reflowing
+it: a 1440-wide WordPress admin that collapses into a portfolio-sized window
+stops being the thing it is. The beacon is on the room only, so one visit is
+one visit. Below 820px the desk goes away and the note offers full screen.
 
 ```bash
 python3 src/build_demo_alti.py        # /demo/alti — ALTI, in a phone
@@ -92,12 +96,27 @@ across five flows, wired in Figma, with no coded twin — but it is a separate
 room rather than an entry in the file above, because the stage there is a
 1440×900 dashboard and this is a phone. A phone is an object, not a stage, so
 it gets a device shell cut to the frame's own 393:852 ratio, in ALTI's navy
-with the pink→orange ramp as its edge, and Poppins inlined so the chrome is set
-in the app's own type. `hide-ui=1` takes Figma's restart away with the rest of
-the chrome, so the room supplies its own.
+with the pink→orange ramp as its edge. `hide-ui=1` takes Figma's restart away
+with the rest of the chrome, so the room supplies its own, and the player opens
+on **flow 2** — `node-id` picks the frame but the player still starts the flow
+at its own starting point, so `starting-point-node-id` and `page-id` both have
+to be said.
 
-Both rooms use **`scaling=scale-down-width`**, and neither should be changed to
-`contain` — see the note in `build_demo_figma.py` for what that costs.
+It wears **the site's own nav** — same pill, same order, same EN/TR switch,
+carried into the dark the way `body.case-open` carries it on a case study — so
+the demo reads as a room in the site rather than a page that links back to one.
+The section links are absolute (`/#work`, `/cv/`, `/#contact`) because this is
+a separate address. The room's own three controls sit under the phone instead:
+the bar belongs to the site, those belong to the prototype.
+
+Fonts in the rooms are **linked, not inlined** (`assets/font/`, written by
+whichever demo build runs last — each writes them, so no build depends on
+another): the rooms share one cached copy, and a shell about to pull down a
+whole prototype should not carry 150 KB of base64 in front of it.
+
+Where a room still holds a Figma player, the scaling is **`scale-down-width`**
+and should not be changed to `contain`, which fits a frame at about half size
+inside a black surround — see the note in `build_demo_alti.py`.
 
 ## The work cards
 
