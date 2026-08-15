@@ -144,6 +144,9 @@ ROUTE_PAGES = [
     ('case/cursor', 'case:cursor', 'Cursor Assistant — Elif Uysal',
      'An assistant that speaks up when you need it. Not from a window — from '
      'the cursor. A case study by Elif Uysal.'),
+    ('case/whallet', 'case:whallet', 'Whallet — Elif Uysal',
+     'A crypto wallet that answers the two questions that make people leave one: '
+     'what just happened, and is this token real? A case study by Elif Uysal.'),
     ('cv', 'cv', 'CV — Elif Uysal',
      'Elif Uysal — product designer. Experience, education and what she works with.'),
 ]

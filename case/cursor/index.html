@@ -704,7 +704,7 @@ body.sheet-open #stage{z-index:46}
 /* the character stays on the home page: this sheet has its own voice */
 body.case-open #stage{display:none}
 /* grain multiplies, which on near-black is the same as switching it off */
-body.case-open .grain{mix-blend-mode:screen;opacity:.09}
+body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
 
 /* ---- shared rhythm ---- */
 .cs{padding-inline:clamp(20px,5vw,72px)}
@@ -791,12 +791,17 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
    lands first, the sentence catches up */
 #case.open .cover-cursor{animation:curIn .8s cubic-bezier(.22,1.1,.32,1) both}
 #case.open .cover-say{animation:sayIn .7s cubic-bezier(.22,1.3,.36,1) .34s both;transform-origin:0 50%}
+/* the picture cover arrives the same way, but on its own — it must never carry
+   .rv: the sheet's reveal observer runs while #case is still transitioning in,
+   and a cover that misses that pass stays at opacity 0 with nothing to trip it */
+#case.open .cover-shot{animation:shotIn .85s cubic-bezier(.22,1.1,.32,1) both}
 @keyframes curIn{from{opacity:0;transform:translate(-38px,-26px)}to{opacity:1;transform:none}}
 @keyframes sayIn{from{opacity:0;transform:scale(.9) translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes shotIn{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
 /* both keyframes start at opacity 0 — without this the cover would simply be
    blank for anyone who has motion turned off */
 @media (prefers-reduced-motion:reduce){
-  #case.open .cover-cursor,#case.open .cover-say{animation:none}
+  #case.open .cover-cursor,#case.open .cover-say,#case.open .cover-shot{animation:none}
   .rv{opacity:1;transform:none}
   .rung .bar span{transition:none}
 }
@@ -832,6 +837,32 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
 .cs-shots.two{grid-template-columns:1fr 1fr}
 .cs-shots.mid{width:min(760px,100%);margin-inline:auto}
 .cs-shots.tight{width:min(560px,100%)}   /* the gap is a diagram, not a screen */
+/* three across for a fork (chose · dropped · risk), four for a survey of
+   competitors or a screen tour. Same grid, only the column count changes. */
+.cs-shots.three{grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.4vw,38px)}
+.cs-shots.four{grid-template-columns:repeat(4,1fr);gap:clamp(18px,2vw,34px)}
+.cs-shots.four .cs-cap p,.cs-shots.three .cs-cap p{font-size:14px;line-height:1.55}
+/* the source credit under a survey: present, checkable, and not competing
+   with the captions above it */
+.cs-note{margin-top:clamp(22px,3vh,34px);max-width:70ch;
+  font-family:var(--ui);font-size:12.5px;line-height:1.65;color:#7E7A76}
+/* the dropped option is the one she did not build: it reads quieter than the
+   one she did, so the argument is visible before the captions are read */
+.cs-shot.off img{opacity:.68;filter:grayscale(.3)}
+.cs-shot.off .cs-cap b,.cs-shot.off .cs-cap p{color:#7E7A76}
+/* a cover that is a picture rather than a performance */
+.cover-shot{width:var(--cw);margin-inline:auto;display:block;height:auto;
+  border-radius:clamp(10px,1.2vw,20px);box-shadow:0 50px 110px rgba(0,0,0,.5)}
+/* closing notes: text in three columns, no screens left to show */
+.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(22px,3.2vw,54px);
+  margin-top:clamp(34px,5vh,64px)}
+.notes b{display:block;font-family:var(--display);font-weight:800;
+  font-size:clamp(19px,1.7vw,23px);letter-spacing:-.015em;color:var(--c-ink);margin-bottom:12px}
+.notes i{display:block;font-style:normal;font-family:var(--display);font-weight:800;
+  font-size:clamp(28px,3.4vw,42px);line-height:1;letter-spacing:-.03em;
+  background-image:var(--c-ramp);-webkit-background-clip:text;background-clip:text;
+  color:transparent;margin-bottom:16px}
+.notes p{font-size:15px;line-height:1.6;color:var(--c-body)}
 .cs-shots img{width:100%;height:auto;display:block;border-radius:clamp(8px,1vw,14px)}
 .cs-cap{margin-top:clamp(14px,2vh,20px)}
 .cs-cap b{display:block;font-family:var(--display);font-weight:800;text-transform:uppercase;
@@ -870,7 +901,8 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
 .case-back:hover{color:var(--c-ink);border-color:rgba(255,255,255,.28)}
 
 @media (max-width:820px){
-  .cs-shots.two{grid-template-columns:1fr}
+  .cs-shots.two,.cs-shots.three,.cs-shots.four{grid-template-columns:1fr}
+  .notes{grid-template-columns:1fr;gap:34px}
   .ladder{grid-template-columns:1fr;gap:26px}
   .cs-h{max-width:none}
   /* no pointer to hand the arrow to: the rig collapses and the pair goes back
@@ -881,22 +913,204 @@ body.case-open .grain{mix-blend-mode:screen;opacity:.09}
   .cover-say{white-space:normal;justify-content:space-between}
 }
 
-/* the nav and the way out follow the sheet into the dark */
-body.case-open nav{
+/* =============================================================
+   ALTI — the second case study, and the first one whose board is
+   LIGHT. Everything above was written against near-black, but the
+   colours were already tokens, so the theme is mostly a new set of
+   values plus answers for the handful of rules that had a dark
+   ground baked into them. Elif's ALTI board: white and #F7F8FC in
+   alternating bands, navy voice, the pink→orange ramp, and exactly
+   one dark section — the gap — which is where the argument turns.
+   ============================================================= */
+#case[data-theme="alti"]{
+  --c-bg:#fff;
+  --c-bg-2:#F7F8FC;                      /* the board's own second band */
+  --c-ink:#0A1551;
+  --c-head:#0A1551;                      /* on paper the headline leads, so
+                                            it does not sit back the way it
+                                            does on black */
+  --c-body:#6C73A8;
+  --c-line:#E4E8F5;
+  --c-o:#FF557B;                         /* ramp start — the eyebrow colour */
+  --c-p:#FF751D;
+  --c-ramp:linear-gradient(96deg,#FF557B,#FF751D);
+  --c-quiet:#9AA2CE;                     /* labels, numbers, the meta line */
+}
+/* the exported phones carry the band they were drawn on, so the page has to
+   paint the same two greys or every screen sits in a visible rectangle */
+#case[data-theme="alti"] .cs-sec.alt{background:var(--c-bg-2)}
+#case[data-theme="alti"] .cs-lead,
+#case[data-theme="alti"] .cover-kicker,
+#case[data-theme="alti"] .cs-meta,
+#case[data-theme="alti"] .rung i,
+#case[data-theme="alti"] .cs-cap.k b{color:var(--c-quiet)}
+#case[data-theme="alti"] .rung b{color:var(--c-ink)}
+#case[data-theme="alti"] .demo-btn{color:#fff;box-shadow:0 10px 30px rgba(255,85,123,.30)}
+#case[data-theme="alti"] .demo-btn:hover{box-shadow:0 16px 40px rgba(255,85,123,.40)}
+#case[data-theme="alti"] .case-back{color:var(--c-body);border-color:var(--c-line)}
+#case[data-theme="alti"] .case-back:hover{color:var(--c-ink);border-color:#B9C1E8}
+/* the same warm light as on the dark sheet, but it has to fade to paper */
+#case[data-theme="alti"] .cs-mesh:before{
+  background:
+    radial-gradient(120% 96% at -6% 112%, rgba(255,85,123,.20), rgba(255,117,29,.10) 40%, rgba(255,255,255,0) 70%),
+    radial-gradient(84% 74% at 22% 116%, rgba(255,117,29,.14), rgba(255,255,255,0) 72%);
+}
+
+/* ---- the cover: her photograph, the type over it ---- */
+.alti-cover{
+  position:relative;overflow:hidden;isolation:isolate;
+  min-height:min(96svh,880px);display:flex;flex-direction:column;justify-content:space-between;
+  padding-block:clamp(84px,11vh,132px) clamp(34px,5vh,60px);color:#fff;
+}
+.alti-cover .cover-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.alti-cover:before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(58% 56% at 68% 42%, rgba(255,85,123,.30), rgba(10,21,81,0) 68%),
+    linear-gradient(180deg, rgba(10,21,81,.80), rgba(10,21,81,.66) 42%, rgba(5,12,51,.94));
+}
+.alti-cover .cover-top,.alti-cover .cover-foot{position:relative}
+.alti-cover .cover-kicker{color:rgba(255,255,255,.72)}
+.alti-cover .sig span{color:#fff}
+.alti-cover .sig .eu{
+  width:44px;height:44px;border-radius:50%;border:1.5px solid var(--c-o);
+  display:grid;place-items:center;font-family:var(--ui);font-size:13px;letter-spacing:.06em;color:#fff;
+}
+.alti-copy{position:relative;width:var(--cw);margin-inline:auto;padding-block:clamp(28px,6vh,60px)}
+.alti-eyebrow{font-family:var(--ui);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.72)}
+.alti-word{
+  font-family:var(--display);font-weight:800;letter-spacing:.02em;line-height:.92;
+  font-size:clamp(62px,11vw,140px);margin:clamp(10px,1.6vh,18px) 0 clamp(20px,3.4vh,38px);color:#fff;
+}
+.alti-sub{font-family:var(--display);font-weight:600;letter-spacing:-.01em;
+  font-size:clamp(21px,2.4vw,32px);
+  background-image:var(--c-ramp);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;}
+.alti-line{margin-top:12px;font-family:var(--ui);font-size:14.5px;color:rgba(255,255,255,.66)}
+/* the viewfinder: the product's own gesture, sitting where the photograph
+   leaves room for it. It is decoration, so it goes when the column narrows. */
+.alti-scan{position:absolute;right:6%;top:38%;transform:translateY(-50%);width:min(300px,26vw);
+  z-index:-1;opacity:.95}
+.alti-cover .cover-foot{margin-top:0}
+.alti-cover .cs-meta{color:rgba(255,255,255,.62)}
+.alti-cover .cs-meta b{color:#fff}
+@media (max-width:900px){.alti-scan{display:none}}
+
+/* ---- research: four people, then the sentence they turned into ---- */
+.pcards{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,24px);
+  margin-top:clamp(28px,4vh,44px)}
+.pcard{border:1px solid var(--c-line);border-radius:16px;padding:clamp(18px,1.8vw,24px)}
+.pcard.pro{background:var(--c-bg-2)}     /* the two who tell the stories */
+.pcard .tick{display:block;width:22px;height:3px;border-radius:2px;background:#C8CEED;margin-bottom:16px}
+.pcard.pro .tick{background-image:var(--c-ramp);background-color:transparent}
+.pcard i{font-style:normal;display:block;font-family:var(--ui);font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--c-quiet);margin-bottom:9px}
+.pcard.pro i{color:var(--c-o)}
+.pcard b{display:block;font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em;
+  color:var(--c-ink);margin-bottom:14px}
+.pcard p{font-size:14px;line-height:1.6;color:var(--c-body)}
+.intent{display:flex;gap:0;margin-top:clamp(30px,4.6vh,54px);border-radius:0 14px 14px 0;overflow:hidden}
+.intent:before{content:'';flex:0 0 4px;background-image:var(--c-ramp)}
+.intent p{margin:0;padding:clamp(22px,2.6vw,34px);background:var(--c-bg-2);
+  font-family:var(--display);font-weight:600;letter-spacing:-.012em;
+  font-size:clamp(17px,1.7vw,23px);line-height:1.45;color:var(--c-ink)}
+
+/* ---- the gap: the one dark band, full-bleed, where the page turns ---- */
+.band{
+  position:relative;isolation:isolate;color:#fff;text-align:center;
+  background:#0A1551;overflow:hidden;
+}
+.band:before{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(70% 120% at 50% 50%, rgba(255,85,123,.26), rgba(10,21,81,0) 68%),
+    radial-gradient(50% 90% at 86% 8%, rgba(255,117,29,.16), rgba(10,21,81,0) 70%);
+}
+.band .cs-eyebrow{color:var(--c-o)}
+.band-q{
+  font-family:var(--display);font-weight:600;letter-spacing:-.015em;line-height:1.28;
+  font-size:clamp(22px,2.9vw,38px);color:#fff;margin:clamp(16px,2.4vh,26px) auto 0;max-width:24ch;
+}
+.band-lab{margin-top:clamp(34px,6vh,64px);font-family:var(--ui);font-size:12.5px;
+  letter-spacing:.2em;text-transform:uppercase;color:#fff}
+.band-p{margin-top:14px;font-size:clamp(15px,1.35vw,18px);line-height:1.62;
+  color:#B9C1E8;max-width:46ch;margin-inline:auto}
+
+/* ---- the trio: three speeds, and later the fork the project turned on ---- */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,80px);
+  margin-top:clamp(34px,5vh,64px)}
+.ti .ico{display:block;width:60px;height:60px;margin-bottom:26px}
+.ti h3{margin:0;font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(26px,2.9vw,38px);line-height:1;letter-spacing:-.02em;color:var(--c-ink)}
+.ti .rule{display:block;height:5px;border-radius:3px;background-image:var(--c-ramp);
+  margin:clamp(18px,2.4vh,26px) 0 clamp(14px,1.8vh,20px);
+  transform-origin:0 50%;transform:scaleX(0);transition:transform .9s cubic-bezier(.22,1,.3,1) .1s}
+.ti.in .rule{transform:none}
+.ti i{font-style:normal;display:block;font-family:var(--ui);font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--c-o);margin-bottom:14px}
+.ti p{font-size:15px;line-height:1.6;color:var(--c-body)}
+/* the road not taken reads quieter than the one she built, so the fork is
+   visible before a word of it is read */
+.ti.off h3{color:#A8B0D8}
+.ti.off .rule{background-image:none;background-color:#D8DDF0}
+.ti.off i{color:var(--c-quiet)}
+
+/* ---- a flow, end to end: five phones at walking pace ---- */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(14px,1.7vw,26px);
+  margin-top:clamp(30px,4.4vh,52px)}
+.flow figure{margin:0}
+.flow img{width:100%;height:auto;display:block}
+.flow b{display:block;font-family:var(--display);font-weight:800;font-size:15px;
+  letter-spacing:-.01em;color:var(--c-o);margin:16px 0 7px}
+.flow p{margin:0;font-size:13.5px;line-height:1.55;color:var(--c-body)}
+
+/* ---- looking back: numbered, stacked, no screens left to show ---- */
+.rows{margin-top:clamp(30px,4.4vh,52px);display:grid;gap:clamp(24px,3.4vh,38px)}
+.rows .row{display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,2.4vw,34px);align-items:start}
+.rows i{font-style:normal;font-family:var(--display);font-weight:800;font-size:clamp(22px,2.2vw,28px);
+  line-height:1;letter-spacing:-.02em;color:#C8CEED}
+.rows b{display:block;font-family:var(--display);font-weight:600;font-size:clamp(17px,1.6vw,20px);
+  letter-spacing:-.01em;color:var(--c-ink);margin-bottom:9px}
+.rows p{margin:0;font-size:15px;line-height:1.62;color:var(--c-body);max-width:76ch}
+
+/* the count, above the sign-off — what the project actually came to */
+.stats{font-family:var(--ui);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--c-quiet);margin-bottom:clamp(26px,4.4vh,54px)}
+.stats span+span:before{content:'·';margin:0 12px;color:#C8CEED}
+
+@media (max-width:980px){
+  .pcards{grid-template-columns:1fr 1fr}
+  .flow{grid-template-columns:repeat(3,1fr);gap:22px}
+  .trio{grid-template-columns:1fr;gap:38px}
+}
+@media (max-width:560px){
+  .flow{grid-template-columns:1fr 1fr}
+  .pcards{grid-template-columns:1fr}
+  .rows .row{grid-template-columns:1fr;gap:8px}
+}
+@media (prefers-reduced-motion:reduce){.ti .rule{transition:none;transform:none}}
+
+/* the nav and the way out follow the sheet into the dark — but only when the
+   sheet IS dark. ALTI's board is paper, and the nav belongs to it there. */
+body.case-open:not(.case-light) nav{
   background:rgba(28,29,34,.72);border-color:rgba(255,255,255,.10);
   box-shadow:0 6px 24px rgba(0,0,0,.34);
 }
-body.case-open nav .mark{color:var(--paper)}
-body.case-open nav .mark i{color:#FF7643}
-body.case-open nav a{color:#B9BABF}
-body.case-open nav a:hover{background:rgba(255,255,255,.09);color:#fff}
-body.case-open .lang{background:rgba(255,255,255,.08)}
-body.case-open .lang button{color:#8A8B90}
-body.case-open .lang button.on{background:#EFEAE7;color:#15161A}
-body.case-open .cv-close{
+body.case-open:not(.case-light) nav .mark{color:var(--paper)}
+body.case-open:not(.case-light) nav .mark i{color:#FF7643}
+body.case-open:not(.case-light) nav a{color:#B9BABF}
+body.case-open:not(.case-light) nav a:hover{background:rgba(255,255,255,.09);color:#fff}
+body.case-open:not(.case-light) .lang{background:rgba(255,255,255,.08)}
+body.case-open:not(.case-light) .lang button{color:#8A8B90}
+body.case-open:not(.case-light) .lang button.on{background:#EFEAE7;color:#15161A}
+body.case-open:not(.case-light) .cv-close{
   background:rgba(28,29,34,.74);border-color:rgba(255,255,255,.12);color:#B9BABF;
 }
-body.case-open .cv-close:hover{background:#EFEAE7;color:#15161A;border-color:#EFEAE7}
+body.case-open:not(.case-light) .cv-close:hover{background:#EFEAE7;color:#15161A;border-color:#EFEAE7}
+/* ALTI's cover is a photograph, so the nav still has to clear it: it keeps the
+   light chrome but gets a stronger ground than it needs over paper */
+body.case-open.case-light nav{background:rgba(255,255,255,.86)}
 
 /* Save as PDF — the sheet is the document, so printing drops
    everything that belongs to the screen and keeps the paper. */
@@ -1686,11 +1900,38 @@ const A = {
   s4:'/assets/case/s4.webp', s5:'/assets/case/s5.webp', s6:'/assets/case/s6.webp',
 };
 
+/* Whallet, off the board in Figma (page `case study page`, node 265:50).
+   The screens are one 4× export of the four frames, sliced; the crops are cut
+   from those slices rather than exported one by one, so every detail shot is
+   pixel-identical to the screen it came out of. r1–r4 are the four competitors'
+   own App Store listings, cropped below their marketing headline. */
+const W = {
+  cover:'/assets/case/wh-cover.webp',
+  s1:'/assets/case/wh-s1.webp', s2:'/assets/case/wh-s2.webp',
+  s3:'/assets/case/wh-s3.webp', s4:'/assets/case/wh-s4.webp',
+  r1:'/assets/case/wh-r1.webp', r2:'/assets/case/wh-r2.webp',
+  r3:'/assets/case/wh-r3.webp', r4:'/assets/case/wh-r4.webp',
+  d1:'/assets/case/wh-d1.webp', d2:'/assets/case/wh-d2.webp',
+  d3:'/assets/case/wh-d3.webp', d4:'/assets/case/wh-d4.webp',
+  /* the option she did not build (x) and the bill it came with (r), drawn
+     on the board rather than screenshotted — they have no screen to show */
+  d1x:'/assets/case/wh-d1x.webp', d1r:'/assets/case/wh-d1r.webp',
+  d2x:'/assets/case/wh-d2x.webp', d2r:'/assets/case/wh-d2r.webp',
+  d3x:'/assets/case/wh-d3x.webp', d3r:'/assets/case/wh-d3r.webp',
+  d4x:'/assets/case/wh-d4x.webp', d4r:'/assets/case/wh-d4r.webp',
+  news:'/assets/case/wh-news.webp', fear:'/assets/case/wh-fear.webp',
+  chips:'/assets/case/wh-chips.webp', seg:'/assets/case/wh-seg.webp',
+  recv:'/assets/case/wh-recv.webp', scam:'/assets/case/wh-scam.webp',
+};
+
 /* A project whose case study is not written yet, but whose prototype runs:
    the card goes straight to the demo room instead of promising a page that
    isn't there. Absolute, so the link also works from the Artifact build. */
 const DEMOS = {
   base360:'https://elifbeyzauysal.com/demo/base360/',
+  /* no coded counterpart for this one — the prototype is the Figma one,
+     embedded in Elif's own chrome. See src/build_demo_figma.py. */
+  chatbot:'https://elifbeyzauysal.com/demo/jotform/',
 };
 
 /* Every word below is Elif's own, lifted off her board — the page is that
@@ -1806,6 +2047,174 @@ const CASES = {
         {k:'end', eyebrow:'Hepsi bu kadar', h:'Teşekkürler.'},
       ],
     },
+  },
+
+  /* ---------------------------------------------------------------
+     WHALLET — the same board, rebuilt as a page. No prototype runs
+     yet, so there is no demo button: the cover carries the artwork
+     instead of a claim it cannot keep.
+     Research screens are the four apps' own App Store listings.
+     --------------------------------------------------------------- */
+  whallet:{
+    coverShot:W.cover,
+    en:{
+      kicker:'Web3 wallet',
+      say:'<b>Whallet</b> Crypto Wallet Case Study',
+      role:'Product design · UI/UX',
+      kind:'Self-initiated concept',
+      sections:[
+        {k:'claim', lead:'What did I do?',
+         h:'A wallet that answers the two questions that make people leave one:<br>what just happened, and is this token real?'},
+
+        {k:'four', mesh:true, eyebrow:'Research',
+         h:'Four wallets, four blind spots',
+         note:'A desk study, not a user study — no interviews. Screens are the four apps’ own App Store listings, captured August 2026; trademarks belong to their owners.',
+         shots:[
+           {img:W.r1, t:'MetaMask', p:'Bitcoin, Solana, Tesla, SPCXON — the list shows whatever lands in your address.'},
+           {img:W.r2, t:'Trust Wallet', p:'A calm home. Discovery is a separate dApp browser that never mentions what you hold.'},
+           {img:W.r3, t:'Phantom', p:'A clean token list — with the spam already hidden, so you never learn what one looks like.'},
+           {img:W.r4, t:'Binance', p:'Charts, order book, Square. All the context there is, on an exchange holding your keys.'}]},
+
+        {k:'claim', lead:'What is the gap?',
+         h:'No wallet is willing to have an opinion.<br>Whallet tells you what happened, and what got in.'},
+
+        {k:'fork', eyebrow:'Decision 01', h:'Social is a tab, not a widget',
+         shots:[
+           {img:W.d1, t:'What I chose', p:'A whole tab: the day’s headline, a dated sentiment gauge, a feed you can filter.'},
+           {img:W.d1x, t:'What I dropped', p:'A news strip under the balance. Cheap, and it can only ever hold titles.'},
+           {img:W.d1r, t:'The risk I took', p:'A tab is a quarter of the navigation. Stale feed, dead weight.'}]},
+
+        {k:'fork', eyebrow:'Decision 02', h:'Name the scam, don’t hide it',
+         shots:[
+           {img:W.d2, t:'What I chose', p:'It stays in the list — named, priced at $0, set in red.'},
+           {img:W.d2x, t:'What I dropped', p:'Silent filtering, the way Phantom does it. Safer on day one, teaches nothing.'},
+           {img:W.d2r, t:'The risk I took', p:'Red already means −6,7% three rows up. One colour, two meanings.'}]},
+
+        {k:'fork', eyebrow:'Decision 03', h:'One number, all networks',
+         shots:[
+           {img:W.d3, t:'What I chose', p:'Opens on All Wallets · All Networks. One figure, no decision first.'},
+           {img:W.d3x, t:'What I dropped', p:'Pick a chain, then see it. Familiar — and it gates the answer.'},
+           {img:W.d3r, t:'The risk I took', p:'You may not know which chain a token sits on until you try to move it.'}]},
+
+        {k:'fork', eyebrow:'Decision 04', h:'One form for swap, bridge and stake',
+         shots:[
+           {img:W.d4, t:'What I chose', p:'One segmented surface. Same two cards, same fee line, same stated wait.'},
+           {img:W.d4x, t:'What I dropped', p:'Three separate flows for one mental model, three surfaces to keep in step.'},
+           {img:W.d4r, t:'The risk I took', p:'Bridge needs a destination chain; stake needs a lock period.'}]},
+
+        {k:'four', eyebrow:'My solution', h:'Four screens, four jobs',
+         shots:[
+           {img:W.s1, t:'Mainpage', p:'Total balance first, market second. You can answer “how am I doing” without scrolling.'},
+           {img:W.s2, t:'Social', p:'The day’s headline, a sentiment gauge, and a feed you can narrow to what you hold.'},
+           {img:W.s3, t:'Trade', p:'Swap, bridge and stake in one form. The fee and the wait are stated before you commit.'},
+           {img:W.s4, t:'Assets', p:'Everything you own, per wallet — including the things you never asked for.'}]},
+
+        {k:'two', eyebrow:'Spotlight · Social', h:'The feed lives where the money lives',
+         shots:[
+           {img:W.news, t:'One headline, not a feed of them', p:'If you read nothing else in the app, you read this one.'},
+           {img:W.fear, t:'Sentiment, dated', p:'65, greedy, 8 October — a number you are allowed to disagree with.'}]},
+
+        {k:'mid', eyebrow:'Spotlight · Social', h:'Filtered by what you hold',
+         img:W.chips,
+         p:'All · Bitcoin · Altcoins · Allocation · DeFi. The feed narrows to your own bags — the only reason a wallet has any business showing news.'},
+
+        {k:'two', eyebrow:'Spotlight · Trade', h:'One form, three jobs',
+         shots:[
+           {img:W.seg, t:'Swap · Bridge · Stake', p:'All three are “put this in, get that out”. Same two cards, same fee line, same stated wait.'},
+           {img:W.recv, t:'The one place the gradient is allowed', p:'Colour lands only on the amount you receive. The fee and the wait are printed above the button, not after it.'}]},
+
+        {k:'gap', lead:'The row that isn’t like the others',
+         img:W.scam, t:'Name it, don’t sweep it',
+         p:'125,684,905 units, worth $0, sitting between two real holdings. The name says Scammer Token in the slot you were already reading — no badge to decode, and nothing quietly removed on your behalf.'},
+
+        {k:'notes', eyebrow:'Looking back', h:'What I’d do differently',
+         items:[
+           {t:'Red is doing two jobs', p:'Next pass: a hazard band and a struck-through value, and red stays with the market.'},
+           {t:'I only drew the happy path', p:'No empty wallet, no failed swap, no pending transaction. A wallet is mostly waiting, and I drew none of it.'},
+           {t:'Desk research is not people', p:'I can defend every decision here. I can’t tell you one was wanted. Five holders and the asset list would fix that.'}]},
+
+        {k:'end', eyebrow:'That was all', h:'Thank you.'},
+      ],
+    },
+    tr:{
+      kicker:'Web3 cüzdan',
+      say:'<b>Whallet</b> kripto cüzdan case study',
+      role:'Ürün tasarımı · UI/UX',
+      kind:'Kendi başlattığım konsept',
+      sections:[
+        {k:'claim', lead:'Ne yaptım?',
+         h:'İnsanı cüzdandan çıkaran iki soruyu cüzdanın içinde cevaplayan bir cüzdan:<br>az önce ne oldu, ve bu token gerçek mi?'},
+
+        {k:'four', mesh:true, eyebrow:'Araştırma',
+         h:'Dört cüzdan, dört kör nokta',
+         note:'Masabaşı çalışma, kullanıcı araştırması değil — görüşme yapmadım. Ekranlar dört uygulamanın kendi App Store sayfalarından, Ağustos 2026. Markalar sahiplerine aittir.',
+         shots:[
+           {img:W.r1, t:'MetaMask', p:'Bitcoin, Solana, Tesla, SPCXON — adresine ne düşerse listede o var.'},
+           {img:W.r2, t:'Trust Wallet', p:'Sakin bir ana ekran. Keşif, ne tuttuğundan hiç bahsetmeyen ayrı bir dApp tarayıcısında.'},
+           {img:W.r3, t:'Phantom', p:'Tertemiz token listesi — spam zaten gizlenmiş, yani nasıl göründüğünü hiç öğrenmiyorsun.'},
+           {img:W.r4, t:'Binance', p:'Grafik, emir defteri, Square. Var olan tüm bağlam, anahtarlarını tutan bir borsada.'}]},
+
+        {k:'claim', lead:'Boşluk ne?',
+         h:'Hiçbir cüzdan fikir sahibi olmaya yanaşmıyor.<br>Whallet ne olduğunu da söylüyor, içeri ne girdiğini de.'},
+
+        {k:'fork', eyebrow:'Karar 01', h:'Social bir sekme, widget değil',
+         shots:[
+           {img:W.d1, t:'Seçtiğim', p:'Tam bir sekme: günün başlığı, tarihli bir duygu göstergesi, filtreleyebildiğin bir akış.'},
+           {img:W.d1x, t:'Bıraktığım', p:'Bakiyenin altına iliştirilmiş haber şeridi. Ucuz, ve sadece başlık taşıyabiliyor.'},
+           {img:W.d1r, t:'Aldığım risk', p:'Bir sekme, navigasyonun dörtte biri. Akış bayatlarsa ölü ağırlık.'}]},
+
+        {k:'fork', eyebrow:'Karar 02', h:'Dolandırıcıyı gizleme, adını koy',
+         shots:[
+           {img:W.d2, t:'Seçtiğim', p:'Listede kalıyor — adı yazıyor, değeri $0, kırmızı.'},
+           {img:W.d2x, t:'Bıraktığım', p:'Phantom gibi sessizce filtrelemek. İlk gün daha güvenli, ama hiçbir şey öğretmiyor.'},
+           {img:W.d2r, t:'Aldığım risk', p:'Kırmızı üç satır yukarıda zaten −6,7% demek. Tek renk, iki anlam.'}]},
+
+        {k:'fork', eyebrow:'Karar 03', h:'Tek rakam, bütün ağlar',
+         shots:[
+           {img:W.d3, t:'Seçtiğim', p:'All Wallets · All Networks ile açılıyor. Tek rakam, önce karar vermeden.'},
+           {img:W.d3x, t:'Bıraktığım', p:'Önce zinciri seç, sonra gör. Tanıdık — ve cevabı kapının arkasına koyuyor.'},
+           {img:W.d3r, t:'Aldığım risk', p:'Bir token’ın hangi zincirde olduğunu taşımaya kalkana kadar bilmeyebilirsin.'}]},
+
+        {k:'fork', eyebrow:'Karar 04', h:'Swap, bridge ve stake için tek form',
+         shots:[
+           {img:W.d4, t:'Seçtiğim', p:'Tek bir segmentli yüzey. Aynı iki kart, aynı ücret satırı, aynı yazılı bekleme.'},
+           {img:W.d4x, t:'Bıraktığım', p:'Tek bir zihinsel model için üç ayrı akış, sürekli hizada tutulacak üç yüzey.'},
+           {img:W.d4r, t:'Aldığım risk', p:'Bridge hedef zincir ister, stake kilit süresi. Form tam orada çatlayabilir.'}]},
+
+        {k:'four', eyebrow:'Çözümüm', h:'Dört ekran, dört iş',
+         shots:[
+           {img:W.s1, t:'Mainpage', p:'Önce toplam bakiye, sonra piyasa. “Nasıl gidiyorum” sorusunu kaydırmadan cevaplıyorsun.'},
+           {img:W.s2, t:'Social', p:'Günün başlığı, duygu göstergesi ve tuttuğun coin’lere daraltabildiğin bir akış.'},
+           {img:W.s3, t:'Trade', p:'Swap, bridge ve stake tek formda. Ücret ve süre, onaylamadan önce yazıyor.'},
+           {img:W.s4, t:'Assets', p:'Sahip olduğun her şey, cüzdan cüzdan — hiç istemediklerin dahil.'}]},
+
+        {k:'two', eyebrow:'Spotlight · Social', h:'Akış, paranın olduğu yerde',
+         shots:[
+           {img:W.news, t:'Tek başlık, başlık yığını değil', p:'Uygulamada başka bir şey okumayacaksan, bunu okuyorsun.'},
+           {img:W.fear, t:'Tarihli duygu göstergesi', p:'65, açgözlü, 8 Ekim — katılmamakta özgür olduğun bir rakam.'}]},
+
+        {k:'mid', eyebrow:'Spotlight · Social', h:'Tuttuğun coin’lere göre filtreli',
+         img:W.chips,
+         p:'All · Bitcoin · Altcoins · Allocation · DeFi. Akış senin portföyüne daralıyor — bir cüzdanın haber göstermesinin tek meşru sebebi bu.'},
+
+        {k:'two', eyebrow:'Spotlight · Trade', h:'Tek form, üç iş',
+         shots:[
+           {img:W.seg, t:'Swap · Bridge · Stake', p:'Üçü de “şunu ver, bunu al”. Aynı iki kart, aynı ücret satırı, aynı yazılı bekleme.'},
+           {img:W.recv, t:'Degradenin izinli olduğu tek yer', p:'Renk sadece alacağın tutara iniyor. Ücret ve süre butonun üstünde yazıyor, sonrasında değil.'}]},
+
+        {k:'gap', lead:'Diğerlerine benzemeyen satır',
+         img:W.scam, t:'Süpürme, adını koy',
+         p:'125.684.905 adet, değeri $0, iki gerçek varlığın arasında duruyor. Adının olduğu yerde Scammer Token yazıyor — çözülecek bir rozet yok, senin adına sessizce silinen bir şey de yok.'},
+
+        {k:'notes', eyebrow:'Geriye dönüş', h:'Bugün neyi farklı yapardım',
+         items:[
+           {t:'Kırmızı iki iş birden yapıyor', p:'Sonraki turda: tehlike bandı ve üstü çizili değer; kırmızı piyasada kalsın.'},
+           {t:'Sadece mutlu yolu çizdim', p:'Boş cüzdan yok, başarısız swap yok, bekleyen işlem yok. Cüzdan çoğunlukla bekler, ben beklemeyi çizmedim.'},
+           {t:'Masabaşı araştırma insan değildir', p:'Buradaki her kararı savunabilirim. Hiçbirinin istendiğini söyleyemem. Beş kişi ve varlık listesi bunu çözerdi.'}]},
+
+        {k:'end', eyebrow:'Hepsi bu kadar', h:'Teşekkürler.'},
+      ],
+    },
   }
 };
 
@@ -1824,8 +2233,8 @@ const demoBtn = (href,label) =>
 
 /* one screen with its caption — `k` switches the caption to the tracked
    small-caps label the board uses under the solution screens */
-const shotHTML = (s,k) =>
-  `<figure class="cs-shot rv"><img src="${s.img}" alt="" loading="lazy" decoding="async">`+
+const shotHTML = (s,k,cls) =>
+  `<figure class="cs-shot rv${cls?' '+cls:''}"><img src="${s.img}" alt="" loading="lazy" decoding="async">`+
   `<figcaption class="cs-cap${k?' k':''}"><b>${s.t}</b><p>${s.p}</p></figcaption></figure>`;
 
 const headHTML = s =>
@@ -1872,9 +2281,29 @@ function sectionHTML(s,d,u){
       return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
         `<div class="cs-shots two">${s.shots.map(x=>shotHTML(x,1)).join('')}</div></div></section>`;
 
+    /* four across — a survey (the wallets she walked) or a screen tour */
+    case 'four':
+      return `<section class="cs cs-sec${s.mesh?' cs-mesh top':''}"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots four">${s.shots.map(x=>shotHTML(x,1)).join('')}</div>`+
+        (s.note?`<p class="cs-note rv">${s.note}</p>`:'')+`</div></section>`;
+
+    /* a fork: what she chose, what she dropped, what it cost. The dropped
+       column is dimmed by .off, so the choice reads before the captions do. */
+    case 'fork':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="cs-shots three">${s.shots.map((x,i)=>
+          shotHTML(x,1,i===1?'off':'')).join('')}</div></div></section>`;
+
+    /* the closing notes — nothing left to show, so nothing is shown */
+    case 'notes':
+      return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
+        `<div class="notes">${s.items.map((n,i)=>
+          `<div class="rv"><i>0${i+1}</i><b>${n.t}</b><p>${n.p}</p></div>`).join('')}</div>`+
+        `</div></section>`;
+
     case 'end':
       return `<section class="cs cs-sec"><div class="cs-in">${headHTML(s)}`+
-        `<div class="case-end rv">${demoBtn(CASES[caseKey].demo,u.demo)}`+
+        `<div class="case-end rv">${CASES[caseKey].demo?demoBtn(CASES[caseKey].demo,u.demo):''}`+
           `<button class="case-back" type="button">${u.back}</button></div>`+
         `</div></section>`;
   }
@@ -1950,15 +2379,20 @@ function buildCase(key){
         `<p class="cover-kicker">${d.kicker}</p>`+
         `<span class="sig"><img src="${A.me}" alt=""><span>Elif Beyza Uysal</span></span>`+
       `</div>`+
-      `<div class="cover-art">`+
-        `<div class="tiles"><i></i><i></i><i></i><i></i></div>`+
-        `<div class="cover-rig">`+
-          `<div class="cover-cursor">${ARROW}</div>`+
-          `<div class="say-slot"><div class="cover-say">${d.say}<kbd>Enter</kbd></div></div>`+
-        `</div>`+
-      `</div>`+
+      /* two kinds of cover. The Cursor page argues that the assistant should be
+         the pointer, so its cover hands the pointer over. A project that makes
+         no such claim gets the honest thing instead: the artwork itself. */
+      (CASES[key].coverShot
+        ? `<img class="cover-shot" src="${CASES[key].coverShot}" alt="${d.say.replace(/<[^>]+>/g,'')}">`
+        : `<div class="cover-art">`+
+            `<div class="tiles"><i></i><i></i><i></i><i></i></div>`+
+            `<div class="cover-rig">`+
+              `<div class="cover-cursor">${ARROW}</div>`+
+              `<div class="say-slot"><div class="cover-say">${d.say}<kbd>Enter</kbd></div></div>`+
+            `</div>`+
+          `</div>`)+
       `<div class="cover-foot">`+
-        demoBtn(CASES[key].demo,u.demo)+
+        (CASES[key].demo?demoBtn(CASES[key].demo,u.demo):'')+
         `<div class="cs-meta">`+
           `<span>${u.role} <b>${d.role}</b></span>`+
           `<span>${u.year} <b>${p.year}</b></span>`+
