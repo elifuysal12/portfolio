@@ -63,6 +63,10 @@ p = os.path.join(OUT, 'cover.webp')
 fac.save(p, 'WEBP', quality=82, method=6)
 print(f'{"cover":8} {fac.width}x{fac.height}  {os.path.getsize(p)/1024:5.0f} KB')
 
+# CAREFUL: assets/cover/alti.webp is Elif's own cover now — she drew one and it
+# replaced the crop below. Re-running this step overwrites it. Comment the last
+# block out unless you actually mean to go back to a crop of the board.
+#
 # the work card is 16:10 and the board cover is 14:9 — 25 board px off the
 # bottom, where there is only façade, rather than widening a photograph.
 cov = Image.open(os.path.join(SRC, 'cover@4.png')).convert('RGB')
