@@ -367,7 +367,7 @@ html{scroll-snap-type:y proximity}
 .about-description{max-width:46ch;margin:28px auto 0;font-size:clamp(17px,1.7vw,22px);line-height:1.55;color:var(--ink-2);text-wrap:pretty}
 .about-actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 28px;margin-top:34px}
 .about-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;color:var(--ink);text-decoration:none;font-size:15px;font-weight:600;border-radius:999px;transition:background .2s,color .2s}
-.about-actions .about-work{background:var(--ink);color:var(--paper);padding-inline:24px}
+.about-actions .about-work{background:var(--ink);color:var(--paper);padding-inline:24px;gap:6px}
 .about-actions .about-work:hover{background:var(--accent)}
 .about-actions a:not(.about-work):hover{color:var(--accent)}
 @media(max-width:480px){#about .eyebrow{font-size:10px;letter-spacing:.06em}.about-actions{gap:8px 12px}.about-actions a{font-size:14px}}
@@ -1310,7 +1310,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
     <h1 class="statement" id="statement" data-i18n="about_statement">From first sketch<br>to <em>working code.</em></h1>
     <p class="about-description rv" data-i18n="about_description">I design digital products and build their frontends — across web and apps.</p>
     <div class="about-actions rv">
-      <a class="about-work" href="#work" data-i18n="about_work">Explore selected work ↗</a>
+      <a class="about-work" href="#work"><span data-i18n="about_work">Explore selected work</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
       <a href="/cv/" id="aboutCV" data-i18n="about_cv">View CV</a>
     </div>
   </div>
@@ -1493,7 +1493,7 @@ const T = {
     about_eyebrow:'Product Designer & Frontend Developer',
     about_statement:'From first sketch<br>to <em>working code.</em>',
     about_description:'I design digital products and build their frontends — across web and apps.',
-    about_work:'Explore selected work ↗', about_cv:'View CV',
+    about_work:'Explore selected work', about_cv:'View CV',
     band:['product design','prototyping','design systems','motion','service design','game design','industrial design','ui/ux'],
     cta:"Let's talk →",
     lines:{
@@ -1544,7 +1544,7 @@ const T = {
     about_eyebrow:'Ürün Tasarımcısı & Frontend Geliştirici',
     about_statement:'İlk eskizden<br><em>çalışan koda.</em>',
     about_description:'Dijital ürünler tasarlıyor, web siteleri ve uygulamalar için frontend geliştiriyorum.',
-    about_work:'Seçili projeleri keşfet ↗', about_cv:'CV’yi görüntüle',
+    about_work:'Seçili projeleri keşfet', about_cv:'CV’yi görüntüle',
     band:['ürün tasarımı','prototipleme','tasarım sistemi','motion','servis tasarımı','oyun tasarımı','endüstriyel tasarım','ui/ux'],
     cta:'Konuşalım →',
     lines:{
