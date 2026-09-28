@@ -167,6 +167,11 @@ nav a:hover{background:rgba(23,20,15,.06); color:var(--ink)}
   border-radius:0 3px 0 0;
 }
 #say.flip .chips{justify-content:flex-end;padding-left:0;padding-right:2px}
+#say.stacked .say-card:before{
+  top:auto;bottom:-6px;right:30px;
+  border-top:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  border-radius:0 0 3px 0;
+}
 .say-ico{
   flex:0 0 auto; width:30px;height:30px;border-radius:9px;
   background:rgba(214,52,42,.09); display:grid;place-items:center; overflow:hidden; position:relative;
@@ -370,21 +375,8 @@ html{scroll-snap-type:y proximity}
 .about-actions .about-work{background:var(--ink);color:var(--paper);padding-inline:24px;gap:6px}
 .about-actions .about-work:hover{background:var(--accent)}
 .about-actions a:not(.about-work):hover{color:var(--accent)}
-#about .about-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);align-items:center;gap:clamp(40px,5vw,80px);width:100%;max-width:1440px}
-.about-intro{min-width:0}
-#about .statement{font-size:clamp(40px,5.2vw,80px)}
-.about-note{text-align:left;border-left:1px solid var(--line);padding-left:clamp(24px,3vw,40px)}
-.about-note-label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
-.about-note h2{font-family:var(--display);font-size:clamp(26px,2.5vw,36px);font-weight:600;letter-spacing:-.04em;margin:0 0 18px}
-.about-note p{font-size:16px;line-height:1.7;color:var(--ink-2);text-wrap:pretty;margin:0}
-.about-note p+p{margin-top:18px}
-@media(max-width:900px){
-  #about .about-layout{grid-template-columns:1fr;gap:44px;max-width:720px}
-  #about .statement{font-size:clamp(40px,6.5vw,68px)}
-  .about-note{border-left:0;border-top:1px solid var(--line);padding:28px 0 0;max-width:52ch;margin-inline:auto}
-  .about-note-label{margin-bottom:14px}
-}
 
+@media(max-width:820px){#about{padding-top:88px;padding-bottom:260px}}
 @media(max-width:480px){#about .eyebrow{font-size:10px;letter-spacing:.06em}.about-actions{gap:8px 12px}.about-actions a{font-size:14px}}
 
 /* ============================================================
@@ -1304,7 +1296,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   <div id="say">
     <div class="say-card">
       <div class="say-ico" id="sayIco"></div>
-      <div class="say-txt" id="sayTxt"></div>
+      <div class="say-txt" id="sayTxt" role="status" aria-live="polite" aria-atomic="true"></div>
     </div>
     <div class="chips" id="chips"></div>
   </div>
@@ -1320,8 +1312,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   </section>
 
   <!-- ================= ABOUT ================= -->
-  <section id="about" class="pad"><div class="col about-layout">
-    <div class="about-intro">
+  <section id="about" class="pad"><div class="col">
     <div class="eyebrow rv" data-i18n="about_eyebrow">Product Designer &amp; Frontend Developer</div>
     <h1 class="statement" id="statement" data-i18n="about_statement">From first sketch<br>to <em>working code.</em></h1>
     <p class="about-description rv" data-i18n="about_description">I design digital products and build their frontends — across web and apps.</p>
@@ -1329,13 +1320,6 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
       <a class="about-work" href="#work"><span data-i18n="about_work">Explore selected work</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
       <a href="/cv/" id="aboutCV" data-i18n="about_cv">View CV</a>
     </div>
-    </div>
-    <aside class="about-note rv" aria-labelledby="about-note-title">
-      <span class="about-note-label" data-i18n="about_note_label">A little about me</span>
-      <h2 id="about-note-title" data-i18n="about_note_title">Hi, I’m Elif.</h2>
-      <p data-i18n="about_note_body">I combine my design experience with AI to turn ideas into live products — shaping the experience, building it, and bringing it to launch.</p>
-      <p data-i18n="about_note_discovery">When a project calls for it, I also work on SEO and GEO to help people discover it through search engines and AI answers.</p>
-    </aside>
   </div>
   </section>
 
@@ -1479,6 +1463,7 @@ const ICO = {
   scroll:'<rect x="7" y="2" width="10" height="20" rx="5"/><path d="M12 6v3"/><path d="M9 19l3 3 3-3"/>',
   grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
   send:'<path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-8-8-4z"/>',
   phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10.5 18.5h3"/>',
   chart:'<path d="M3 20h18"/><rect x="5" y="11" width="3.5" height="6" rx="1"/><rect x="10.5" y="6" width="3.5" height="11" rx="1"/><rect x="16" y="13" width="3.5" height="4" rx="1"/>',
@@ -1516,10 +1501,6 @@ const T = {
     about_eyebrow:'Product Designer & Frontend Developer',
     about_statement:'From first sketch<br>to <em>working code.</em>',
     about_description:'I design digital products and build their frontends — across web and apps.',
-    about_note_label:'A little about me',
-    about_note_title:'Hi, I’m Elif.',
-    about_note_body:'I combine my design experience with AI to turn ideas into live products — shaping the experience, building it, and bringing it to launch.',
-    about_note_discovery:'When a project calls for it, I also work on SEO and GEO to help people discover it through search engines and AI answers.',
     about_work:'Explore selected work', about_cv:'View CV',
     band:['product design','prototyping','design systems','motion','service design','game design','industrial design','ui/ux'],
     cta:"Let's talk →",
@@ -1527,13 +1508,15 @@ const T = {
       hero1:{i:'hand',   t:"Hey. I'm Elif — that's me standing there."},
       hero2:{i:'scroll', t:"Scroll whenever you're ready. I'll come with you."},
       work: {i:'grid',   t:"These are the ones I'd put in front of a hiring manager first."},
-      about:{i:'compass',t:"The idea, the interface, the frontend — I like connecting all three."},
+      about:{i:'sparkle',t:"I combine my design experience with AI to turn ideas into live products."},
+      build:{i:'compass',t:"I shape the experience, build the frontend, and bring the product to launch."},
+      discovery:{i:'search',t:"When needed, I work on SEO and GEO too — helping people find the product through search engines and AI answers."},
       end:  {i:'send',   t:"You made it to the end of the level. Say hi?"},
       cv1:  {i:'hand',   t:"Haha, that's me! The paper version, anyway."},
       cv2:  {i:'download',t:"Want it as a PDF? The button is right up there."},
       soon: {i:'flask',   t:"That one is still being written. Cursor is the page that's ready."},
     },
-    chips:{work:'Show me the work', who:'Who are you?'},
+    chips:{work:'Show me the work', who:'Who are you?', more:'Tell me more', next:'And after launch?'},
     proj:{
       /* the featured card carries a full-width frame, so this one gets a
          longer line than the rest — the disciplines stay out of it, they
@@ -1571,10 +1554,6 @@ const T = {
     about_eyebrow:'Ürün Tasarımcısı & Frontend Geliştirici',
     about_statement:'İlk eskizden<br><em>çalışan koda.</em>',
     about_description:'Dijital ürünler tasarlıyor, web siteleri ve uygulamalar için frontend geliştiriyorum.',
-    about_note_label:'Biraz kendimden',
-    about_note_title:'Merhaba, ben Elif.',
-    about_note_body:'Tasarım birikimimi AI ile birleştirip fikirleri yaşayan ürünlere dönüştürüyorum. Kullanıcı deneyimini kurguluyor, ürünü geliştiriyor ve canlıya taşıyorum.',
-    about_note_discovery:'Gerektiğinde SEO ve GEO optimizasyonu da yaparak ürünün arama motorlarında ve AI yanıtlarında keşfedilmesine yardımcı oluyorum.',
     about_work:'Seçili projeleri keşfet', about_cv:'CV’yi görüntüle',
     band:['ürün tasarımı','prototipleme','tasarım sistemi','motion','servis tasarımı','oyun tasarımı','endüstriyel tasarım','ui/ux'],
     cta:'Konuşalım →',
@@ -1582,13 +1561,15 @@ const T = {
       hero1:{i:'hand',   t:'Selam. Ben Elif — şurada duran benim.'},
       hero2:{i:'scroll', t:'Hazır olunca kaydır. Ben de seninle geliyorum.'},
       work: {i:'grid',   t:'Bunlar bir görüşmede ilk göstereceklerim.'},
-      about:{i:'compass',t:'Fikir, arayüz, frontend — üçünü birbirine bağlamayı seviyorum.'},
+      about:{i:'sparkle',t:'Tasarım birikimimi AI ile birleştirip fikirleri yaşayan ürünlere dönüştürüyorum.'},
+      build:{i:'compass',t:'Deneyimi kurguluyor, frontend’i geliştiriyor ve ürünü canlıya taşıyorum.'},
+      discovery:{i:'search',t:'Gerektiğinde SEO ve GEO da yapıyorum; ürünün arama motorlarında ve AI yanıtlarında keşfedilmesine yardımcı oluyorum.'},
       end:  {i:'send',   t:'Bölümün sonuna geldin. Merhaba der misin?'},
       cv1:  {i:'hand',   t:'Haha, bu benim! Kâğıt hâlim yani.'},
       cv2:  {i:'download',t:'PDF olarak istersen buton hemen yukarıda.'},
       soon: {i:'flask',   t:'O sayfa daha yazılıyor. Hazır olan Cursor.'},
     },
-    chips:{work:'İşleri göster', who:'Sen kimsin?'},
+    chips:{work:'İşleri göster', who:'Sen kimsin?', more:'Biraz daha anlat', next:'Peki ya sonrası?'},
     proj:{
       alti:    {i:'compass', t:'Commencis ile yaptığım bitirme projem — insanları yaşadıkları şehrin tarihini keşfetmeye iten hibrit fiziksel–dijital bir sistem. Sokaktaki nesneden elindeki uygulamaya, beş akış ve 79 ekran.'},
       cursor:  {i:'cursor',  t:'Sohbet penceresinden değil, imleçten konuşan bir e-ticaret asistanı.'},
@@ -1797,6 +1778,7 @@ function setIcon(name){
 
 function say(icon,text,delay=0){
   clearTimeout(typeTimer);
+  txtEl.setAttribute('aria-busy','true');
   setIcon(icon);
   sayEl.classList.add('show');
   const start=()=>{
@@ -1806,9 +1788,9 @@ function say(icon,text,delay=0){
       i++;
       txtEl.innerHTML = text.slice(0,i) + (i<text.length?'<span class="caret"></span>':'');
       if(i<text.length) typeTimer=setTimeout(step, 16+Math.random()*22);
-      else typing=false;
+      else { typing=false; txtEl.setAttribute('aria-busy','false'); }
     };
-    if(RM){ txtEl.textContent=text; typing=false; return; }
+    if(RM){ txtEl.textContent=text; typing=false; txtEl.setAttribute('aria-busy','false'); return; }
     step();
   };
   // 180ms head start so the icon lands first — then she "speaks"
@@ -1818,12 +1800,33 @@ function say(icon,text,delay=0){
 function sayLine(k){ const l=t().lines[k]; if(l) say(l.i,l.t); }
 function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }
 
+const scrollToSection = id => document.getElementById(id).scrollIntoView({behavior:RM?'auto':'smooth'});
+function heroChips(){
+  renderChips([
+    {label:t().chips.work, on:()=>scrollToSection('work')},
+    {label:t().chips.who, on:()=>scrollToSection('about')},
+  ]);
+}
+
+// Let visitors ask for the next thought, with no reading deadline.
+let aboutStep=0;
+function sayAbout(step=0){
+  aboutStep=step;
+  sayLine(['about','build','discovery'][step]);
+  const chips=[];
+  if(step<2) chips.push({label:step===0?t().chips.more:t().chips.next, on:()=>sayAbout(step+1)});
+  chips.push({label:t().chips.work, on:()=>scrollToSection('work')});
+  renderChips(chips);
+}
+
 function renderChips(list){
+  const hadFocus=chipsEl.contains(document.activeElement);
   chipsEl.innerHTML='';
   list.forEach(c=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent=c.label;
     b.onclick=c.on; chipsEl.appendChild(b);
   });
+  if(hadFocus) chipsEl.querySelector('button')?.focus({preventScroll:true});
   cardW=0; // re-measure
 }
 
@@ -1879,10 +1882,11 @@ function tick(now){
   if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
   let sx,sy;
   const sayH=sayEl.offsetHeight, half=(CW*s)/2;
+  sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
-    sx = x - half - cardW - 14;
-    sy = y - CH*s*.92;
+    sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
+    sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;
     sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);
@@ -1923,16 +1927,19 @@ function tick(now){
    SCROLL STATE MACHINE — which line she's on
    ============================================================= */
 let zone='';
-function setZone(z){
-  if(z===zone) return; zone=z;
+function setZone(z,force=false){
+  if(cvOpen||caseOpen||(z===zone&&!force)) return;
+  const previous=zone;
+  zone=z;
+  if(z==='hero'){ sayLine('hero1'); heroChips(); }
   if(z==='work'){ sayLine('work'); renderChips([]); }
-  if(z==='about'){ sayLine('about'); renderChips([]); }
+  if(z==='about') sayAbout(previous==='about'?aboutStep:0);
   if(z==='contact'){ sayLine('end');
     renderChips([{label:t().cta, on:()=>location.href='mailto:elifbeyzauysal01@gmail.com'}]); }
 }
 const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) setZone(e.target.id); }),
   {rootMargin:'-45% 0px -45% 0px'});
-['work','about','contact'].forEach(id=>io.observe(document.getElementById(id)));
+['hero','work','about','contact'].forEach(id=>io.observe(document.getElementById(id)));
 
 /* reveal-on-scroll */
 const rio=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target);} }),
@@ -2021,8 +2028,11 @@ function cvLines(){
   cvLineTimer=setTimeout(()=>{ if(cvOpen) sayLine('cv2'); }, 4200);
 }
 function resumeLine(){
-  if(scrollY<innerHeight*.6){ sayLine('hero1'); return; }
-  if(zone) sayLine(zone==='contact'?'end':zone);
+  const visible=['hero','about','work','contact'].find(id=>{
+    const r=document.getElementById(id).getBoundingClientRect();
+    return r.top<=innerHeight/2 && r.bottom>innerHeight/2;
+  });
+  setZone(visible||zone||'hero',true);
 }
 
 function openCV(){
@@ -3266,14 +3276,7 @@ function applyLang(){
   buildStrip(); buildBand(); buildIndex(); splitStatement();
   if(caseOpen){ buildCase(caseKey); return; }
   if(cvOpen){ buildCV(); cvLines(); return; }   // the sheet is open — swap it in place
-  zone=''; // force the current line to re-say itself in the new language
-  const y=scrollY;
-  if(y<innerHeight*.6){ sayLine('hero1'); setTimeout(()=>{ if(scrollY<innerHeight*.6) sayLine('hero2'); },3600);
-    renderChips([
-      {label:t().chips.work, on:()=>document.getElementById('work').scrollIntoView({behavior:'smooth'})},
-      {label:t().chips.who,  on:()=>document.getElementById('about').scrollIntoView({behavior:'smooth'})},
-    ]);
-  }
+  resumeLine();
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.lang button').forEach(x=>x.classList.remove('on'));
@@ -3300,13 +3303,9 @@ document.documentElement.lang=L;
 buildStrip(); buildBand(); buildIndex(); splitStatement();
 requestAnimationFrame(tick);
 setTimeout(()=>{
-  sayLine('hero1');
-  renderChips([
-    {label:t().chips.work, on:()=>document.getElementById('work').scrollIntoView({behavior:'smooth'})},
-    {label:t().chips.who,  on:()=>document.getElementById('about').scrollIntoView({behavior:'smooth'})},
-  ]);
+  if(!cvOpen&&!caseOpen) resumeLine();
 }, 700);
-setTimeout(()=>{ if(scrollY<innerHeight*.6) sayLine('hero2'); }, 4600);
+setTimeout(()=>{ if(!cvOpen&&!caseOpen&&zone==='hero') sayLine('hero2'); }, 4600);
 addEventListener('resize',()=>{ stripX=0; cardW=0; });
 
 /* routes come last: applyRoute reaches for CASES and the sheets, which are
