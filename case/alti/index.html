@@ -378,8 +378,14 @@ html{scroll-snap-type:y proximity}
 #about .statement{
   max-width:22ch; margin-inline:auto; margin-top:clamp(20px,3vh,34px);
 }
-#about .stats{justify-content:center}
-#about .stat{text-align:center}
+#about .statement{font-size:clamp(40px,6.5vw,88px);max-width:20ch;line-height:1.06}
+.about-description{max-width:46ch;margin:28px auto 0;font-size:clamp(17px,1.7vw,22px);line-height:1.55;color:var(--ink-2);text-wrap:pretty}
+.about-actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 28px;margin-top:34px}
+.about-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;color:var(--ink);text-decoration:none;font-size:15px;font-weight:600;border-radius:999px;transition:background .2s,color .2s}
+.about-actions .about-work{background:var(--ink);color:var(--paper);padding-inline:24px}
+.about-actions .about-work:hover{background:var(--accent)}
+.about-actions a:not(.about-work):hover{color:var(--accent)}
+@media(max-width:480px){#about .eyebrow{font-size:10px;letter-spacing:.06em}.about-actions{gap:8px 12px}.about-actions a{font-size:14px}}
 
 /* ============================================================
    WORK INDEX — photo first
@@ -1315,13 +1321,12 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
 
   <!-- ================= ABOUT ================= -->
   <section id="about" class="pad"><div class="col">
-    <div class="eyebrow rv" data-i18n="about_eyebrow">Who am I?</div>
-    <p class="statement" id="statement" data-i18n="about_statement">I studied industrial design. I still design like the thing has <em>weight</em>.</p>
-    <div class="stats rv">
-      <div class="stat"><b>79</b><s data-i18n="s1">screens shipped</s></div>
-      <div class="stat"><b>04</b><s data-i18n="s2">disciplines</s></div>
-      <div class="stat"><b>5.3k</b><s data-i18n="s3">layers in one file</s></div>
-      <div class="stat"><b>TR/EN</b><s data-i18n="s4">working languages</s></div>
+    <div class="eyebrow rv" data-i18n="about_eyebrow">Product Designer &amp; Frontend Developer</div>
+    <h1 class="statement" id="statement" data-i18n="about_statement">From first sketch<br>to <em>working code.</em></h1>
+    <p class="about-description rv" data-i18n="about_description">I design digital products and build their frontends — across web and apps.</p>
+    <div class="about-actions rv">
+      <a class="about-work" href="#work" data-i18n="about_work">Explore selected work ↗</a>
+      <a href="/cv/" id="aboutCV" data-i18n="about_cv">View CV</a>
     </div>
   </div>
   </section>
@@ -1500,16 +1505,17 @@ const T = {
     hero_1:'PRODUCT', hero_2:'DESIGNER',
     avail:'Available for work — 2026', loc:'Ankara, TR · ind. design → product',
     work_h:'My previous works', work_p:"Hover a tile. She'll tell you what it was.",
-    about_eyebrow:'Who am I?',
-    about_statement:'I studied industrial design. I still design like the thing has <em>weight</em>.',
+    about_eyebrow:'Product Designer & Frontend Developer',
+    about_statement:'From first sketch<br>to <em>working code.</em>',
+    about_description:'I design digital products and build their frontends — across web and apps.',
+    about_work:'Explore selected work ↗', about_cv:'View CV',
     band:['product design','prototyping','design systems','motion','service design','game design','industrial design','ui/ux'],
-    s1:'screens shipped', s2:'disciplines', s3:'layers in one file', s4:'working languages',
     cta:"Let's talk →",
     lines:{
       hero1:{i:'hand',   t:"Hey. I'm Elif — that's me standing there."},
       hero2:{i:'scroll', t:"Scroll whenever you're ready. I'll come with you."},
       work: {i:'grid',   t:"These are the ones I'd put in front of a hiring manager first."},
-      about:{i:'compass',t:"I still think about the sleepless nights that go into making a product."},
+      about:{i:'compass',t:"The idea, the interface, the frontend — I like connecting all three."},
       end:  {i:'send',   t:"You made it to the end of the level. Say hi?"},
       cv1:  {i:'hand',   t:"Haha, that's me! The paper version, anyway."},
       cv2:  {i:'download',t:"Want it as a PDF? The button is right up there."},
@@ -1550,16 +1556,17 @@ const T = {
     hero_1:'ÜRÜN', hero_2:'TASARIMCISI',
     avail:'İşe açığım — 2026', loc:'Ankara, TR · end. tasarım → ürün',
     work_h:'Önceki işlerim', work_p:'Bir karonun üstüne gel. Ne olduğunu o anlatsın.',
-    about_eyebrow:'Ben kimim?',
-    about_statement:'Endüstriyel tasarım okudum. Hâlâ nesnenin <em>ağırlığı</em> varmış gibi tasarlıyorum.',
+    about_eyebrow:'Ürün Tasarımcısı & Frontend Geliştirici',
+    about_statement:'İlk eskizden<br><em>çalışan koda.</em>',
+    about_description:'Dijital ürünler tasarlıyor, web siteleri ve uygulamalar için frontend geliştiriyorum.',
+    about_work:'Seçili projeleri keşfet ↗', about_cv:'CV’yi görüntüle',
     band:['ürün tasarımı','prototipleme','tasarım sistemi','motion','servis tasarımı','oyun tasarımı','endüstriyel tasarım','ui/ux'],
-    s1:'teslim edilen ekran', s2:'disiplin', s3:'tek dosyada katman', s4:'çalışma dili',
     cta:'Konuşalım →',
     lines:{
       hero1:{i:'hand',   t:'Selam. Ben Elif — şurada duran benim.'},
       hero2:{i:'scroll', t:'Hazır olunca kaydır. Ben de seninle geliyorum.'},
       work: {i:'grid',   t:'Bunlar bir görüşmede ilk göstereceklerim.'},
-      about:{i:'compass',t:'Bir ürün ortaya çıksın diye geçirilen uykusuz geceleri hâlâ düşünüyorum.'},
+      about:{i:'compass',t:'Fikir, arayüz, frontend — üçünü birbirine bağlamayı seviyorum.'},
       end:  {i:'send',   t:'Bölümün sonuna geldin. Merhaba der misin?'},
       cv1:  {i:'hand',   t:'Haha, bu benim! Kâğıt hâlim yani.'},
       cv2:  {i:'download',t:'PDF olarak istersen buton hemen yukarıda.'},
@@ -2029,6 +2036,7 @@ function closeCV(){
   syncRoute();
 }
 navAbout.addEventListener('click',e=>{ e.preventDefault(); cvOpen ? closeCV() : openCV(); });
+document.getElementById('aboutCV').addEventListener('click',e=>{ e.preventDefault(); openCV(); });
 /* the wordmark goes home from wherever you are: it closes whichever sheet is
    open (which puts the address back to /) and returns to the top. Handled in
    JS rather than left to the href so a case study folds away instead of the
@@ -3258,7 +3266,7 @@ document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{
 
 /* nav + placeholder footer links: scroll in place instead of writing a hash
    into the host URL (this page is a single self-contained artifact) */
-document.querySelectorAll('nav a[href^="#"], .foot a[href="#"]').forEach(a=>{
+document.querySelectorAll('nav a[href^="#"], .about-actions a[href="#work"], .foot a[href="#"]').forEach(a=>{
   if(a.id==='navAbout') return;                 // that one opens the CV instead
   a.addEventListener('click',e=>{
     e.preventDefault();
