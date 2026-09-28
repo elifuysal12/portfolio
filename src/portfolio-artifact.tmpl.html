@@ -370,6 +370,21 @@ html{scroll-snap-type:y proximity}
 .about-actions .about-work{background:var(--ink);color:var(--paper);padding-inline:24px;gap:6px}
 .about-actions .about-work:hover{background:var(--accent)}
 .about-actions a:not(.about-work):hover{color:var(--accent)}
+#about .about-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);align-items:center;gap:clamp(40px,5vw,80px);width:100%;max-width:1440px}
+.about-intro{min-width:0}
+#about .statement{font-size:clamp(40px,5.2vw,80px)}
+.about-note{text-align:left;border-left:1px solid var(--line);padding-left:clamp(24px,3vw,40px)}
+.about-note-label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.about-note h2{font-family:var(--display);font-size:clamp(26px,2.5vw,36px);font-weight:600;letter-spacing:-.04em;margin:0 0 18px}
+.about-note p{font-size:16px;line-height:1.7;color:var(--ink-2);text-wrap:pretty;margin:0}
+.about-note p+p{margin-top:18px}
+@media(max-width:900px){
+  #about .about-layout{grid-template-columns:1fr;gap:44px;max-width:720px}
+  #about .statement{font-size:clamp(40px,6.5vw,68px)}
+  .about-note{border-left:0;border-top:1px solid var(--line);padding:28px 0 0;max-width:52ch;margin-inline:auto}
+  .about-note-label{margin-bottom:14px}
+}
+
 @media(max-width:480px){#about .eyebrow{font-size:10px;letter-spacing:.06em}.about-actions{gap:8px 12px}.about-actions a{font-size:14px}}
 
 /* ============================================================
@@ -1305,7 +1320,8 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   </section>
 
   <!-- ================= ABOUT ================= -->
-  <section id="about" class="pad"><div class="col">
+  <section id="about" class="pad"><div class="col about-layout">
+    <div class="about-intro">
     <div class="eyebrow rv" data-i18n="about_eyebrow">Product Designer &amp; Frontend Developer</div>
     <h1 class="statement" id="statement" data-i18n="about_statement">From first sketch<br>to <em>working code.</em></h1>
     <p class="about-description rv" data-i18n="about_description">I design digital products and build their frontends — across web and apps.</p>
@@ -1313,6 +1329,13 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
       <a class="about-work" href="#work"><span data-i18n="about_work">Explore selected work</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
       <a href="/cv/" id="aboutCV" data-i18n="about_cv">View CV</a>
     </div>
+    </div>
+    <aside class="about-note rv" aria-labelledby="about-note-title">
+      <span class="about-note-label" data-i18n="about_note_label">A little about me</span>
+      <h2 id="about-note-title" data-i18n="about_note_title">Hi, I’m Elif.</h2>
+      <p data-i18n="about_note_body">I combine my design experience with AI to turn ideas into live products — shaping the experience, building it, and bringing it to launch.</p>
+      <p data-i18n="about_note_discovery">When a project calls for it, I also work on SEO and GEO to help people discover it through search engines and AI answers.</p>
+    </aside>
   </div>
   </section>
 
@@ -1493,6 +1516,10 @@ const T = {
     about_eyebrow:'Product Designer & Frontend Developer',
     about_statement:'From first sketch<br>to <em>working code.</em>',
     about_description:'I design digital products and build their frontends — across web and apps.',
+    about_note_label:'A little about me',
+    about_note_title:'Hi, I’m Elif.',
+    about_note_body:'I combine my design experience with AI to turn ideas into live products — shaping the experience, building it, and bringing it to launch.',
+    about_note_discovery:'When a project calls for it, I also work on SEO and GEO to help people discover it through search engines and AI answers.',
     about_work:'Explore selected work', about_cv:'View CV',
     band:['product design','prototyping','design systems','motion','service design','game design','industrial design','ui/ux'],
     cta:"Let's talk →",
@@ -1544,6 +1571,10 @@ const T = {
     about_eyebrow:'Ürün Tasarımcısı & Frontend Geliştirici',
     about_statement:'İlk eskizden<br><em>çalışan koda.</em>',
     about_description:'Dijital ürünler tasarlıyor, web siteleri ve uygulamalar için frontend geliştiriyorum.',
+    about_note_label:'Biraz kendimden',
+    about_note_title:'Merhaba, ben Elif.',
+    about_note_body:'Tasarım birikimimi AI ile birleştirip fikirleri yaşayan ürünlere dönüştürüyorum. Kullanıcı deneyimini kurguluyor, ürünü geliştiriyor ve canlıya taşıyorum.',
+    about_note_discovery:'Gerektiğinde SEO ve GEO optimizasyonu da yaparak ürünün arama motorlarında ve AI yanıtlarında keşfedilmesine yardımcı oluyorum.',
     about_work:'Seçili projeleri keşfet', about_cv:'CV’yi görüntüle',
     band:['ürün tasarımı','prototipleme','tasarım sistemi','motion','servis tasarımı','oyun tasarımı','endüstriyel tasarım','ui/ux'],
     cta:'Konuşalım →',
