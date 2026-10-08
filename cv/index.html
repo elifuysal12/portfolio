@@ -1005,6 +1005,123 @@ body.case-open:not(.case-light) .grain{mix-blend-mode:screen;opacity:.09}
 #case[data-theme="whallet"] .cs-meta,
 #case[data-theme="whallet"] .cs-lead{color:var(--c-quiet)}
 #case[data-theme="whallet"] .case-back{border-color:var(--c-line)}
+/* Whallet: a short product walkthrough, scoped to this case. */
+.wh-story{--wh-muted:#b3bedc;--wh-line:#ffffff19;font-family:var(--ui);padding:116px max(24px,5vw) 40px;background:radial-gradient(ellipse 65% 25% at 90% 7%,#6551cb24,transparent),#050f2b}
+.wh-wrap{max-width:1120px;margin:auto}
+.wh-story h1,.wh-story h2,.wh-story h3{font-family:var(--display);color:#fff;letter-spacing:-.035em}
+.wh-story p{color:var(--wh-muted);font-size:16px;line-height:1.7}
+.wh-label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#dab5ff;margin-bottom:20px}
+.wh-brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:24px;font-weight:700;color:#fff;margin-bottom:34px}
+.wh-brand:before{content:'';width:14px;height:14px;border-radius:50% 50% 50% 4px;background:var(--c-ramp);transform:rotate(-25deg)}
+.wh-hero{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:70px;padding-bottom:64px}
+.wh-hero h1{font-size:clamp(44px,5.4vw,72px);line-height:1.04;font-weight:800;max-width:10ch;margin-bottom:25px}
+.wh-gradient{display:block;background:var(--c-ramp);background-clip:text;-webkit-background-clip:text;color:transparent}
+.wh-hero .wh-intro{font-size:18px;max-width:42ch}
+.wh-meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:25px;color:#b3bedc;font-size:12px}
+.wh-action{display:inline-flex;align-items:center;gap:25px;margin-top:30px;padding:14px 20px;border:1px solid #c7a7ff70;border-radius:999px;background:#b594ff14;color:#eee2ff;font-size:13px;cursor:pointer;font-family:inherit}
+.wh-action:hover{background:#b594ff2b}
+.wh-story button:focus-visible{outline:2px solid #efb2df;outline-offset:5px}
+.wh-hero-art{position:relative;display:grid;place-items:center;padding:24px;border:1px solid var(--wh-line);border-radius:32px;background:radial-gradient(ellipse at 50% 60%,#5c43ba36,transparent 72%)}
+.wh-phone{display:block;width:100%;max-width:248px;height:auto;border:1px solid #a79ae747;border-radius:24px;box-shadow:0 25px 65px #0004;background:#050f2b}
+.wh-hero-art figcaption{margin-top:18px;font-size:11px;color:#afbad8;letter-spacing:.03em;text-align:center}
+.wh-context{display:grid;grid-template-columns:1fr 1.5fr;gap:50px;border-top:1px solid var(--wh-line);border-bottom:1px solid var(--wh-line);padding:30px 0}
+.wh-context h2{font-size:24px;line-height:1.2;max-width:20ch}
+.wh-context p{font-size:15px;max-width:60ch}
+.wh-section{padding-top:76px;scroll-margin-top:90px}
+.wh-section h2{font-size:clamp(30px,3.6vw,44px);line-height:1.12;max-width:25ch}
+.wh-switches{display:flex;gap:10px;margin:28px 0 24px;flex-wrap:wrap}
+.wh-switch{display:flex;align-items:center;gap:10px;border:1px solid var(--wh-line);border-radius:999px;background:transparent;color:#b3bedc;padding:12px 18px;cursor:pointer;font:500 13px var(--ui)}
+.wh-switch span{font-size:10px;opacity:.7}
+.wh-switch[aria-pressed="true"]{color:#10132b;background:#ded0ff;border-color:#ded0ff}
+.wh-tour-panel{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:55px;border:1px solid var(--wh-line);border-radius:28px;background:linear-gradient(130deg,#141e40,#09132d);padding:40px 60px}
+.wh-tour-art{display:grid;place-items:center}
+.wh-tour-panel h3{font-size:30px;line-height:1.15;margin-bottom:18px}
+.wh-tour-panel p{font-size:15px}
+.wh-callouts{list-style:none;display:grid;gap:20px;margin-top:28px}
+.wh-callouts li{display:grid;grid-template-columns:24px 1fr;gap:12px;color:#b3bedc;font-size:14px;line-height:1.6}
+.wh-callouts i{display:grid;place-items:center;width:24px;height:24px;background:#c3a9ff15;border:1px solid #c3a9ff30;border-radius:50%;font-size:11px;font-style:normal;color:#e4ccff}
+.wh-callouts b{display:block;color:#f1edff;font-weight:500;margin-bottom:3px}
+.wh-tour-note{display:block;margin-top:24px;color:#9ca9cd;font-size:11px;line-height:1.6}
+.wh-decisions{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+.wh-decision{padding:28px;border:1px solid var(--wh-line);border-radius:22px;background:#101a35}
+.wh-decision h3{font-size:25px;line-height:1.2;margin-bottom:14px}
+.wh-decision p{font-size:14px}
+.wh-decision .wh-label{margin-bottom:16px}
+.wh-decision small{display:block;font-size:12px;line-height:1.65;color:#9daccf;border-top:1px solid var(--wh-line);margin-top:20px;padding-top:18px}
+.wh-research{margin-top:24px;font-size:13px!important;max-width:85ch}
+.wh-end{margin-top:70px;padding:32px 0;border-top:1px solid var(--wh-line);display:grid;grid-template-columns:1fr 1.5fr;gap:50px}
+.wh-end h2{font-size:28px;line-height:1.2}
+.wh-end p{font-size:14px}
+.wh-end .case-back{margin-top:24px;color:#e0daf1;border-color:#a79ae747!important}
+@media(max-width:820px){.wh-story{padding-top:100px}.wh-hero{gap:30px;grid-template-columns:1fr 1fr}.wh-hero h1{font-size:46px}.wh-tour-panel{padding:28px;gap:28px}.wh-tour-panel h3{font-size:26px}.wh-context,.wh-end{gap:25px}.wh-decisions{gap:16px}.wh-decision{padding:22px}}
+@media(max-width:600px){.wh-hero{grid-template-columns:1fr;gap:36px;padding-bottom:36px}.wh-hero h1{font-size:52px;max-width:11ch}.wh-brand{margin-bottom:24px}.wh-hero .wh-intro{font-size:16px}.wh-hero-art{padding:22px}.wh-phone{max-width:224px}.wh-context,.wh-end{grid-template-columns:1fr;gap:14px}.wh-context h2{max-width:none}.wh-section{padding-top:48px}.wh-tour-panel{grid-template-columns:1fr;padding:24px;gap:30px}.wh-tour-copy{grid-row:1}.wh-tour-panel h3{font-size:28px}.wh-callouts{gap:15px;margin-top:20px}.wh-switches{gap:6px}.wh-switch{padding:10px 12px;font-size:12px;gap:6px}.wh-decisions{grid-template-columns:1fr}.wh-end{margin-top:48px}.wh-label{margin-bottom:14px}}
+
+/* Whallet product stage: restrained surfaces, responsive controls, optional detail. */
+.wh-story{--wh-muted:#aeb9d1;--wh-line:#a2add321;background:radial-gradient(ellipse at 78% 8%,#3c2d652d,transparent 32%),#080e21;padding-top:112px;overflow:clip}
+.wh-wrap{max-width:1160px}
+.wh-hero{grid-template-columns:1.1fr 1fr;gap:70px;padding-bottom:65px}
+.wh-brand{font-size:22px;margin-bottom:40px}
+.wh-hero h1{font-size:clamp(54px,6.2vw,84px);line-height:1.03;letter-spacing:-.045em;max-width:11ch}
+.wh-gradient{font-family:var(--display);font-style:normal;font-weight:600;letter-spacing:-.055em;line-height:1.08}
+.wh-hero .wh-intro{font-size:17px;max-width:40ch}
+.wh-label{font-size:10px;letter-spacing:.16em;color:#c6bedf}
+.wh-meta{font-size:11px}
+.wh-action{border:1px solid #b8abd44d;background:#d7c7f010;border-radius:999px;padding:14px 22px;gap:30px;transition:background .2s,transform .2s}
+.wh-action:hover{background:#d7c7f024;transform:translateY(-2px)}
+.wh-hero-art{--stage-glow:#7050a849;position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 42%,var(--stage-glow),transparent 68%);border:0;padding:10px 20px 20px;border-radius:0;transition:background .4s}
+.wh-hero-art:before{content:'';position:absolute;inset:9% 5% 21%;border:1px solid #c7b3f011;border-radius:50%;z-index:-1}
+.wh-hero-art .wh-phone{max-width:235px;border-radius:29px;border:1px solid #b8b6e34d;box-shadow:0 35px 80px #0007,0 0 55px #927bd30b;transform:none}
+.wh-hero-art figcaption{font-size:10px;color:#929fbd;margin-top:15px}
+.wh-annotation{display:none}
+.wh-preview-controls{display:flex;gap:4px;justify-content:center;margin:26px auto 0;padding:5px;border:1px solid #b8b6e323;border-radius:999px;background:#0b1228;width:max-content;max-width:100%}
+.wh-preview-controls button{border:0;background:none;border-radius:999px;padding:10px 14px;font:12px var(--ui);color:#9faac5;cursor:pointer;transition:background .2s,color .2s}
+.wh-preview-controls button[aria-pressed="true"]{background:#d3c6ed;color:#15192e;box-shadow:0 2px 9px #0002}
+.wh-image-button{display:block;border:0;padding:0;background:none;margin:auto;position:relative;cursor:zoom-in;border-radius:29px;max-width:100%}
+.wh-image-button .wh-zoom-label{position:absolute;bottom:24px;right:-18px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e5ddf6;color:#171b30;box-shadow:0 4px 20px #0005;font:20px var(--ui);transition:transform .2s}
+.wh-image-button:hover .wh-zoom-label{transform:scale(1.12)}
+.wh-context{padding:32px 0;border-top:1px solid var(--wh-line);border-bottom:1px solid var(--wh-line);background:none;gap:60px;transform:none}
+.wh-context h2{font-size:25px;color:#eeeef7}
+.wh-context p{font-size:15px;color:#aeb9d1}
+.wh-section{padding-top:72px}
+.wh-section h2{font-size:clamp(30px,3.4vw,44px);letter-spacing:-.035em}
+.wh-switches{display:flex;gap:8px;margin:28px 0 22px}
+.wh-switch{font-size:13px;border:1px solid #b8b6e326;padding:12px 20px;border-radius:999px;transition:background .2s,color .2s,border-color .2s}
+.wh-switch[aria-pressed="true"]{background:#d3c6ed;color:#15192e;border-color:#d3c6ed}
+.wh-tour-panel{padding:36px 50px;border:1px solid #a2add321;border-radius:28px;background:radial-gradient(ellipse at 20% 50%,#61437c20,transparent 65%),#10182d;gap:65px;position:relative;isolation:isolate;transition:background .4s}
+.wh-tour-panel[data-step="1"]{background:radial-gradient(ellipse at 20% 50%,#34667722,transparent 65%),#10182d}
+.wh-tour-panel[data-step="2"]{background:radial-gradient(ellipse at 20% 50%,#78563f24,transparent 65%),#10182d}
+.wh-tour-art{position:relative;padding:0;background:none}
+.wh-tour-art .wh-phone{max-width:228px;transform:none;border-radius:26px}
+.wh-tour-panel h3{font-size:31px;max-width:19ch}
+.wh-tour-copy{min-width:0}
+.wh-callouts{gap:18px}
+.wh-callouts i{background:none;border:1px solid #d3c6ed33;color:#cbbce8}
+.wh-tour-note{font-size:10px;margin-top:20px}
+.wh-tour-next{display:flex;justify-content:space-between;align-items:center;border:0;border-top:1px solid #b8b6e32b;background:none;color:#e4daf4;width:100%;padding:18px 0 0;margin-top:25px;font:12px var(--ui);cursor:pointer;text-align:left}
+.wh-tour-next span:last-child{font-size:22px;transition:transform .2s}.wh-tour-next:hover span:last-child{transform:translateX(5px)}
+.wh-decisions{gap:55px;grid-template-columns:1fr 1fr;margin-top:34px}
+.wh-decision{border:0;border-top:1px solid #a2add344;border-radius:0;background:none;padding:24px 0;transform:none}
+.wh-decision h3{font-size:27px;max-width:19ch}
+.wh-decision p{font-size:14px}
+.wh-decision details{margin-top:22px}
+.wh-decision summary{font-size:12px;color:#d4c6e6;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-top:1px solid var(--wh-line)}
+.wh-decision summary::-webkit-details-marker{display:none}
+.wh-decision summary:after{content:'+';font-size:18px;line-height:1}.wh-decision details[open] summary:after{content:'−'}
+.wh-decision small{border:0;margin:0;padding:2px 0 0;font-size:12px;line-height:1.7;color:#a8b3cd}
+.wh-research{font-size:12px!important;max-width:83ch;margin-top:10px}
+.wh-end{margin-top:55px;gap:55px}.wh-end h2{font-size:33px;max-width:17ch}
+.wh-progress{position:fixed;top:0;left:0;width:100%;height:2px;background:#cab6e7;z-index:60;transform:scaleX(var(--wh-progress,0));transform-origin:left;pointer-events:none}
+.wh-lightbox{position:fixed;inset:0;margin:auto;border:1px solid #a2add338;border-radius:24px;width:min(760px,94vw);max-width:94vw;height:90dvh;max-height:90dvh;background:#0b1226;color:#fff;padding:0;box-shadow:0 40px 120px #000a;overflow:auto}
+.wh-lightbox::backdrop{background:#030817d9;backdrop-filter:blur(14px)}
+.wh-lightbox header{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 22px;background:#0b1226f5;border-bottom:1px solid #a2add326;z-index:1;font:13px var(--ui)}
+.wh-lightbox-close{border:1px solid #a2add338;background:#ffffff09;color:#fff;border-radius:50%;width:34px;height:34px;font-size:23px;cursor:pointer}
+.wh-lightbox img{display:block;width:min(440px,100%);height:auto;margin:24px auto;border:1px solid #a2add326;border-radius:20px}
+@keyframes whScreenIn{from{opacity:.25;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.wh-changing{animation:whScreenIn .32s ease both}
+@media(max-width:820px){.wh-hero{gap:25px}.wh-hero h1{font-size:56px}.wh-hero-art .wh-phone{max-width:210px}.wh-tour-panel{padding:28px;gap:30px}.wh-tour-panel h3{font-size:27px}.wh-context,.wh-decisions,.wh-end{gap:28px}.wh-preview-controls button{padding:9px 10px}}
+@media(max-width:600px){.wh-story{padding-top:102px}.wh-hero{grid-template-columns:1fr;gap:35px;padding-bottom:38px}.wh-hero h1{font-size:55px;max-width:11ch}.wh-brand{margin-bottom:26px}.wh-hero .wh-intro{font-size:16px}.wh-hero-art{padding:0 10px 8px}.wh-hero-art .wh-phone{max-width:214px}.wh-context{grid-template-columns:1fr;gap:16px;padding:26px 0}.wh-section{padding-top:48px}.wh-switches{gap:6px}.wh-switch{padding:11px 12px;font-size:12px;gap:7px}.wh-tour-panel{grid-template-columns:1fr;gap:28px;padding:26px 23px}.wh-tour-copy{grid-row:1}.wh-tour-panel h3{font-size:28px}.wh-tour-art .wh-phone{max-width:220px}.wh-decisions,.wh-end{grid-template-columns:1fr;gap:15px}.wh-end{margin-top:40px}.wh-lightbox img{margin:12px auto;width:calc(100% - 24px)}.wh-progress{height:2px}}
+@media(prefers-reduced-motion:reduce){.wh-story *, .wh-changing{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 /* the light source moves with the page, the way the coral one does — but the
    fade-out has to land on this ground, not on #0F1115, or it greys out */
 #case[data-theme="whallet"] .cs-mesh:before{
@@ -2363,183 +2480,9 @@ const CASES = {
     },
   },
 
-  /* ---------------------------------------------------------------
-     WHALLET — the same board, rebuilt as a page. No prototype runs
-     yet, so there is no demo button: the cover carries the artwork
-     instead of a claim it cannot keep.
-     Research screens are the four apps' own App Store listings.
-     --------------------------------------------------------------- */
-  whallet:{
-    theme:'whallet',
-    coverShot:W.cover,
-    en:{
-      kicker:'Web3 wallet',
-      say:'<b>Whallet</b> Crypto Wallet Case Study',
-      role:'Product design · UI/UX',
-      kind:'Self-initiated concept',
-      sections:[
-        {k:'claim', lead:'What did I do?',
-         h:'A wallet that answers the two questions that make people leave one:<br>what just happened, and is this token real?'},
+  /* Whallet uses its own concise product walkthrough in whalletStory. */
+  whallet:{theme:'whallet',en:{},tr:{}},
 
-        {k:'four', mesh:true, eyebrow:'Research',
-         h:'Four wallets, four blind spots',
-         note:'A desk study, not a user study — no interviews. Screens are the four apps’ own App Store listings, captured August 2026; trademarks belong to their owners.',
-         shots:[
-           {img:W.r1, t:'MetaMask', p:'Bitcoin, Solana, Tesla, SPCXON — the list shows whatever lands in your address.'},
-           {img:W.r2, t:'Trust Wallet', p:'A calm home. Discovery is a separate dApp browser that never mentions what you hold.'},
-           {img:W.r3, t:'Phantom', p:'A clean token list — with the spam already hidden, so you never learn what one looks like.'},
-           {img:W.r4, t:'Binance', p:'Charts, order book, Square. All the context there is, on an exchange holding your keys.'}]},
-
-        {k:'claim', lead:'What is the gap?',
-         h:'No wallet is willing to have an opinion.<br>Whallet tells you what happened, and what got in.'},
-
-        {k:'fork', eyebrow:'Decision 01', h:'Social is a tab, not a widget',
-         shots:[
-           {img:W.d1, t:'What I chose', p:'A whole tab: the day’s headline, a dated sentiment gauge, a feed you can filter.'},
-           {img:W.d1x, t:'What I dropped', p:'A news strip under the balance. Cheap, and it can only ever hold titles.'},
-           {img:W.d1r, t:'The risk I took', p:'A tab is a quarter of the navigation. Stale feed, dead weight.'}]},
-
-        {k:'fork', eyebrow:'Decision 02', h:'Name the scam, don’t hide it',
-         shots:[
-           {img:W.d2, t:'What I chose', p:'It stays in the list — named, priced at $0, set in red.'},
-           {img:W.d2x, t:'What I dropped', p:'Silent filtering, the way Phantom does it. Safer on day one, teaches nothing.'},
-           {img:W.d2r, t:'The risk I took', p:'Red already means −6,7% three rows up. One colour, two meanings.'}]},
-
-        {k:'fork', eyebrow:'Decision 03', h:'One number, all networks',
-         shots:[
-           {img:W.d3, t:'What I chose', p:'Opens on All Wallets · All Networks. One figure, no decision first.'},
-           {img:W.d3x, t:'What I dropped', p:'Pick a chain, then see it. Familiar — and it gates the answer.'},
-           {img:W.d3r, t:'The risk I took', p:'You may not know which chain a token sits on until you try to move it.'}]},
-
-        {k:'fork', eyebrow:'Decision 04', h:'One form for swap, bridge and stake',
-         shots:[
-           {img:W.d4, t:'What I chose', p:'One segmented surface. Same two cards, same fee line, same stated wait.'},
-           {img:W.d4x, t:'What I dropped', p:'Three separate flows for one mental model, three surfaces to keep in step.'},
-           {img:W.d4r, t:'The risk I took', p:'Bridge needs a destination chain; stake needs a lock period.'}]},
-
-        {k:'four', eyebrow:'My solution', h:'Four screens, four jobs',
-         shots:[
-           {img:W.s1, t:'Mainpage', p:'Total balance first, market second. You can answer “how am I doing” without scrolling.'},
-           {img:W.s2, t:'Social', p:'The day’s headline, a sentiment gauge, and a feed you can narrow to what you hold.'},
-           {img:W.s3, t:'Trade', p:'Swap, bridge and stake in one form. The fee and the wait are stated before you commit.'},
-           {img:W.s4, t:'Assets', p:'Everything you own, per wallet — including the things you never asked for.'}]},
-
-        {k:'two', eyebrow:'Spotlight · Social', h:'The feed lives where the money lives',
-         shots:[
-           {img:W.news, t:'One headline, not a feed of them', p:'If you read nothing else in the app, you read this one.'},
-           {img:W.fear, t:'Sentiment, dated', p:'65, greedy, 8 October — a number you are allowed to disagree with.'}]},
-
-        {k:'mid', eyebrow:'Spotlight · Social', h:'Filtered by what you hold',
-         img:W.chips,
-         p:'All · Bitcoin · Altcoins · Allocation · DeFi. The feed narrows to your own bags — the only reason a wallet has any business showing news.'},
-
-        {k:'two', eyebrow:'Spotlight · Trade', h:'One form, three jobs',
-         shots:[
-           {img:W.seg, t:'Swap · Bridge · Stake', p:'All three are “put this in, get that out”. Same two cards, same fee line, same stated wait.'},
-           {img:W.recv, t:'The one place the gradient is allowed', p:'Colour lands only on the amount you receive. The fee and the wait are printed above the button, not after it.'}]},
-
-        {k:'gap', lead:'The row that isn’t like the others',
-         img:W.scam, t:'Name it, don’t sweep it',
-         p:'125,684,905 units, worth $0, sitting between two real holdings. The name says Scammer Token in the slot you were already reading — no badge to decode, and nothing quietly removed on your behalf.'},
-
-        {k:'notes', eyebrow:'Looking back', h:'What I’d do differently',
-         items:[
-           {t:'Red is doing two jobs', p:'Next pass: a hazard band and a struck-through value, and red stays with the market.'},
-           {t:'I only drew the happy path', p:'No empty wallet, no failed swap, no pending transaction. A wallet is mostly waiting, and I drew none of it.'},
-           {t:'Desk research is not people', p:'I can defend every decision here. I can’t tell you one was wanted. Five holders and the asset list would fix that.'}]},
-
-        {k:'end', eyebrow:'That was all', h:'Thank you.'},
-      ],
-    },
-    tr:{
-      kicker:'Web3 cüzdan',
-      say:'<b>Whallet</b> kripto cüzdan case study',
-      role:'Ürün tasarımı · UI/UX',
-      kind:'Kendi başlattığım konsept',
-      sections:[
-        {k:'claim', lead:'Ne yaptım?',
-         h:'İnsanı cüzdandan çıkaran iki soruyu cüzdanın içinde cevaplayan bir cüzdan:<br>az önce ne oldu, ve bu token gerçek mi?'},
-
-        {k:'four', mesh:true, eyebrow:'Araştırma',
-         h:'Dört cüzdan, dört kör nokta',
-         note:'Masabaşı çalışma, kullanıcı araştırması değil — görüşme yapmadım. Ekranlar dört uygulamanın kendi App Store sayfalarından, Ağustos 2026. Markalar sahiplerine aittir.',
-         shots:[
-           {img:W.r1, t:'MetaMask', p:'Bitcoin, Solana, Tesla, SPCXON — adresine ne düşerse listede o var.'},
-           {img:W.r2, t:'Trust Wallet', p:'Sakin bir ana ekran. Keşif, ne tuttuğundan hiç bahsetmeyen ayrı bir dApp tarayıcısında.'},
-           {img:W.r3, t:'Phantom', p:'Tertemiz token listesi — spam zaten gizlenmiş, yani nasıl göründüğünü hiç öğrenmiyorsun.'},
-           {img:W.r4, t:'Binance', p:'Grafik, emir defteri, Square. Var olan tüm bağlam, anahtarlarını tutan bir borsada.'}]},
-
-        {k:'claim', lead:'Boşluk ne?',
-         h:'Hiçbir cüzdan fikir sahibi olmaya yanaşmıyor.<br>Whallet ne olduğunu da söylüyor, içeri ne girdiğini de.'},
-
-        {k:'fork', eyebrow:'Karar 01', h:'Social bir sekme, widget değil',
-         shots:[
-           {img:W.d1, t:'Seçtiğim', p:'Tam bir sekme: günün başlığı, tarihli bir duygu göstergesi, filtreleyebildiğin bir akış.'},
-           {img:W.d1x, t:'Bıraktığım', p:'Bakiyenin altına iliştirilmiş haber şeridi. Ucuz, ve sadece başlık taşıyabiliyor.'},
-           {img:W.d1r, t:'Aldığım risk', p:'Bir sekme, navigasyonun dörtte biri. Akış bayatlarsa ölü ağırlık.'}]},
-
-        {k:'fork', eyebrow:'Karar 02', h:'Dolandırıcıyı gizleme, adını koy',
-         shots:[
-           {img:W.d2, t:'Seçtiğim', p:'Listede kalıyor — adı yazıyor, değeri $0, kırmızı.'},
-           {img:W.d2x, t:'Bıraktığım', p:'Phantom gibi sessizce filtrelemek. İlk gün daha güvenli, ama hiçbir şey öğretmiyor.'},
-           {img:W.d2r, t:'Aldığım risk', p:'Kırmızı üç satır yukarıda zaten −6,7% demek. Tek renk, iki anlam.'}]},
-
-        {k:'fork', eyebrow:'Karar 03', h:'Tek rakam, bütün ağlar',
-         shots:[
-           {img:W.d3, t:'Seçtiğim', p:'All Wallets · All Networks ile açılıyor. Tek rakam, önce karar vermeden.'},
-           {img:W.d3x, t:'Bıraktığım', p:'Önce zinciri seç, sonra gör. Tanıdık — ve cevabı kapının arkasına koyuyor.'},
-           {img:W.d3r, t:'Aldığım risk', p:'Bir token’ın hangi zincirde olduğunu taşımaya kalkana kadar bilmeyebilirsin.'}]},
-
-        {k:'fork', eyebrow:'Karar 04', h:'Swap, bridge ve stake için tek form',
-         shots:[
-           {img:W.d4, t:'Seçtiğim', p:'Tek bir segmentli yüzey. Aynı iki kart, aynı ücret satırı, aynı yazılı bekleme.'},
-           {img:W.d4x, t:'Bıraktığım', p:'Tek bir zihinsel model için üç ayrı akış, sürekli hizada tutulacak üç yüzey.'},
-           {img:W.d4r, t:'Aldığım risk', p:'Bridge hedef zincir ister, stake kilit süresi. Form tam orada çatlayabilir.'}]},
-
-        {k:'four', eyebrow:'Çözümüm', h:'Dört ekran, dört iş',
-         shots:[
-           {img:W.s1, t:'Mainpage', p:'Önce toplam bakiye, sonra piyasa. “Nasıl gidiyorum” sorusunu kaydırmadan cevaplıyorsun.'},
-           {img:W.s2, t:'Social', p:'Günün başlığı, duygu göstergesi ve tuttuğun coin’lere daraltabildiğin bir akış.'},
-           {img:W.s3, t:'Trade', p:'Swap, bridge ve stake tek formda. Ücret ve süre, onaylamadan önce yazıyor.'},
-           {img:W.s4, t:'Assets', p:'Sahip olduğun her şey, cüzdan cüzdan — hiç istemediklerin dahil.'}]},
-
-        {k:'two', eyebrow:'Spotlight · Social', h:'Akış, paranın olduğu yerde',
-         shots:[
-           {img:W.news, t:'Tek başlık, başlık yığını değil', p:'Uygulamada başka bir şey okumayacaksan, bunu okuyorsun.'},
-           {img:W.fear, t:'Tarihli duygu göstergesi', p:'65, açgözlü, 8 Ekim — katılmamakta özgür olduğun bir rakam.'}]},
-
-        {k:'mid', eyebrow:'Spotlight · Social', h:'Tuttuğun coin’lere göre filtreli',
-         img:W.chips,
-         p:'All · Bitcoin · Altcoins · Allocation · DeFi. Akış senin portföyüne daralıyor — bir cüzdanın haber göstermesinin tek meşru sebebi bu.'},
-
-        {k:'two', eyebrow:'Spotlight · Trade', h:'Tek form, üç iş',
-         shots:[
-           {img:W.seg, t:'Swap · Bridge · Stake', p:'Üçü de “şunu ver, bunu al”. Aynı iki kart, aynı ücret satırı, aynı yazılı bekleme.'},
-           {img:W.recv, t:'Degradenin izinli olduğu tek yer', p:'Renk sadece alacağın tutara iniyor. Ücret ve süre butonun üstünde yazıyor, sonrasında değil.'}]},
-
-        {k:'gap', lead:'Diğerlerine benzemeyen satır',
-         img:W.scam, t:'Süpürme, adını koy',
-         p:'125.684.905 adet, değeri $0, iki gerçek varlığın arasında duruyor. Adının olduğu yerde Scammer Token yazıyor — çözülecek bir rozet yok, senin adına sessizce silinen bir şey de yok.'},
-
-        {k:'notes', eyebrow:'Geriye dönüş', h:'Bugün neyi farklı yapardım',
-         items:[
-           {t:'Kırmızı iki iş birden yapıyor', p:'Sonraki turda: tehlike bandı ve üstü çizili değer; kırmızı piyasada kalsın.'},
-           {t:'Sadece mutlu yolu çizdim', p:'Boş cüzdan yok, başarısız swap yok, bekleyen işlem yok. Cüzdan çoğunlukla bekler, ben beklemeyi çizmedim.'},
-           {t:'Masabaşı araştırma insan değildir', p:'Buradaki her kararı savunabilirim. Hiçbirinin istendiğini söyleyemem. Beş kişi ve varlık listesi bunu çözerdi.'}]},
-
-        {k:'end', eyebrow:'Hepsi bu kadar', h:'Teşekkürler.'},
-      ],
-    },
-  },
-
-  /* ALTI — the graduation project, and the one case here whose board is a
-     light page. Same job as above: her board rebuilt as HTML, in her order,
-     with the sections that only exist here (four people, three speeds, two
-     flows end to end) given their own kinds rather than bent into Cursor's.
-     Section kinds: claim · two · personas · band · trio · devices · flow ·
-     rows · end.
-     The demo is Figma's player with its chrome off — 79 screens across five
-     flows have no coded twin, and a video would not be a prototype. */
   alti:{
     theme:'alti', light:true, cover:'alti',
     /* not in the /demo yard with the others: this prototype is not a separate
@@ -3188,7 +3131,64 @@ const altiCover = (key,d,p,u) =>
     `</div>`+
   `</section>`;
 
+/* Text describes the visible concept screens, without claiming live services. */
+const WH_STORY = {
+ en:{title:'Your crypto.',accent:'One clear view.',intro:'Whallet is a mobile wallet concept for seeing your balances, following the market and moving tokens between networks.',meta:['Independent concept','Product design · UI/UX'],cta:'Explore the product',caption:'Mainpage · Original interface concept',audience:'Designed for people with crypto in more than one place.',problem:'The design goal: start with a combined balance, then bring market context and transaction controls into the same wallet.',tour:'The product in three steps',tourTitle:'Check your balance. Find context. Make a move.',note:'Original UI concept · Illustrative content and amounts',steps:[
+ {tab:'Overview',label:'01 / See what you have',title:'Start with the whole picture.',body:'Mainpage brings the combined balance and market prices together. Wallet and network selectors let you narrow the view.',img:W.s1,alt:'Whallet Mainpage with total balance, wallet and network selectors, and market prices',points:[['Total balance','An overview before choosing an individual wallet.'],['Wallet + network filters','Move from all holdings to a specific view.']]},
+ {tab:'Market',label:'02 / Get some context',title:'A place for market updates.',body:'The Social screen groups a daily headline, a dated sentiment indicator and a topic-based feed. It gives market context alongside the wallet.',img:W.s2,alt:'Whallet Social screen showing news, a dated Fear and Greed indicator, and topic filters',points:[['Headline + sentiment','A quick read on the wider market.'],['Topic filters','Browse Bitcoin, altcoins and other categories.']]},
+ {tab:'Trade',label:'03 / Review a transaction',title:'See what goes out. And what comes back.',body:'The Trade concept groups Swap, Bridge and Stake. The bridge view shown here compares the sending and receiving networks, amounts, fee and estimated time.',img:W.s3,alt:'Whallet Trade concept with Bridge selected, sending and receiving networks, amounts and fee',points:[['From → to','Keep both sides of the transaction visible.'],['Fee + estimated time','Put the cost and wait beside the action.']]}
+ ],decisions:'Behind the design',decisionTitle:'Two choices that shape the experience.',cards:[['01 / Navigation','Give market context its own space.','Keep the balance view focused. Put the news and sentiment feed in a separate tab, ready when the user wants more context.','Next iteration: rename “Social” to “Market” to match what this screen actually offers.'],['02 / Asset awareness','Make unfamiliar tokens noticeable.','The Assets concept keeps a suspicious token visible with a warning label, instead of silently removing it from the list.','The warning is a UI exploration. Detection logic, false positives and safe next steps still need to be designed.']],research:'Exploration: a desk review of MetaMask, Trust Wallet, Phantom and Binance informed the concept. These are design hypotheses, not findings from user interviews.',endTitle:'A concept, ready to be tested.',end:'Designed: the balance, market, trade and asset screens. Next: test whether people can find their total, interpret a warning and review a transfer; then resolve transaction labels, confirmation and failure states.',back:'Back to projects'},
+ tr:{title:'Kripto varlıkların.',accent:'Tek bir bakışta.',intro:'Whallet; bakiyeni görmen, piyasayı takip etmen ve ağlar arasında token taşıman için tasarlanmış bir mobil cüzdan konsepti.',meta:['Bağımsız konsept','Ürün tasarımı · UI/UX'],cta:'Ürünü keşfet',caption:'Ana ekran · Orijinal arayüz konsepti',audience:'Kripto varlıklarını birden fazla yerde tutanlar için.',problem:'Tasarım hedefi: toplam bakiyeyle başlamak; piyasa bilgilerini ve işlem kontrollerini aynı cüzdanda bir araya getirmek.',tour:'Üç adımda ürün',tourTitle:'Bakiyeni gör. Piyasayı takip et. İşlemini incele.',note:'Orijinal arayüz konsepti · İçerik ve tutarlar örnektir',steps:[
+ {tab:'Genel bakış',label:'01 / Varlıklarını gör',title:'Önce bütünü gör.',body:'Ana ekran, toplam bakiyeyi ve piyasa fiyatlarını bir araya getirir. Cüzdan ve ağ seçicileriyle görünümü daraltabilirsin.',img:W.s1,alt:'Whallet ana ekranı: toplam bakiye, cüzdan ve ağ seçicileri ile piyasa fiyatları',points:[['Toplam bakiye','Tek bir cüzdan seçmeden önce genel durumu gör.'],['Cüzdan + ağ filtreleri','Tüm varlıklardan belirli bir görünüme geç.']]},
+ {tab:'Piyasa',label:'02 / Piyasayı takip et',title:'Piyasada neler oluyor?',body:'Social ekranı; günün haberini, tarihli bir duyarlılık göstergesini ve konu bazlı akışı bir araya getirir. Piyasa bilgileri cüzdanın yanında durur.',img:W.s2,alt:'Whallet Social ekranı: haberler, tarihli korku ve açgözlülük göstergesi, konu filtreleri',points:[['Haber + duyarlılık','Piyasanın genel durumuna kısa bir bakış.'],['Konu filtreleri','Bitcoin, altcoin ve diğer kategorileri incele.']]},
+ {tab:'İşlem',label:'03 / İşlemini incele',title:'Ne gönderiyorsun, ne alıyorsun?',body:'Trade konsepti Swap, Bridge ve Stake işlemlerini gruplar. Buradaki Bridge görünümü; gönderim ve alım ağlarını, tutarları, ücreti ve tahmini süreyi karşılaştırır.',img:W.s3,alt:'Whallet Trade konsepti: Bridge seçimi, gönderim ve alım ağları, tutarlar ve işlem ücreti',points:[['Gönderim → alım','İşlemin iki tarafını aynı anda gör.'],['Ücret + tahmini süre','Maliyeti ve bekleme süresini işlemden önce incele.']]}
+ ],decisions:'Tasarımın arkasında',decisionTitle:'Deneyimi şekillendiren iki karar.',cards:[['01 / Navigasyon','Piyasa bilgilerine ayrı bir alan.','Bakiye ekranının odağını koru. Haberleri ve duyarlılık göstergesini, kullanıcı istediğinde açabileceği ayrı bir sekmede topla.','Sonraki adım: ekranın işlevini daha iyi anlatmak için “Social” adını “Market” olarak değiştir.'],['02 / Varlık farkındalığı','Tanımadığın token’ı fark et.','Assets konsepti, şüpheli bir token’ı sessizce kaldırmak yerine uyarı etiketiyle listede görünür tutar.','Bu uyarı bir arayüz denemesi. Tespit yöntemi, yanlış uyarılar ve güvenli sonraki adımlar henüz tasarlanmadı.']],research:'Keşif: MetaMask, Trust Wallet, Phantom ve Binance üzerine masabaşı inceleme konsepti şekillendirdi. Bunlar tasarım varsayımları; kullanıcı görüşmelerinden elde edilmiş bulgular değil.',endTitle:'Test edilmeye hazır bir konsept.',end:'Tasarlananlar: bakiye, piyasa, işlem ve varlık ekranları. Sırada: kullanıcıların toplam bakiyeyi bulmasını, uyarıyı anlamasını ve transferi incelemesini test etmek; işlem etiketlerini, onay ve hata durumlarını netleştirmek.',back:'Projelere dön'}
+};
+const whTourPanel = (step,note) => `<div class="wh-tour-art"><button class="wh-image-button" type="button" data-wh-zoom aria-label="${step.alt} — ${note.startsWith('Orijinal')?'Büyüt':'Enlarge'}"><img class="wh-phone" src="${step.img}" alt="${step.alt}" width="900" height="1951"><span class="wh-zoom-label" aria-hidden="true">↗</span></button></div><div class="wh-tour-copy"><span class="wh-label">${step.label}</span><h3>${step.title}</h3><p>${step.body}</p><ol class="wh-callouts">${step.points.map((x,i)=>`<li><i aria-hidden="true">${i+1}</i><div><b>${x[0]}</b>${x[1]}</div></li>`).join('')}</ol><small class="wh-tour-note">${note}</small><button type="button" class="wh-tour-next"><span>${note.startsWith('Orijinal')?'Sonraki ekran':'Next screen'}</span><span aria-hidden="true">→</span></button></div>`;
+function whalletStory(tr){
+ const d=WH_STORY[tr?'tr':'en'];
+ return `<article class="wh-story"><div class="wh-progress" aria-hidden="true"></div><dialog class="wh-lightbox" aria-label="${tr?'Ekran detayı':'Screen detail'}"><header><span>${tr?'Whallet · Ekran detayı':'Whallet · Screen detail'}</span><button class="wh-lightbox-close" type="button" aria-label="${tr?'Kapat':'Close'}">×</button></header><img alt=""></dialog><div class="wh-wrap"><section class="wh-hero"><div><div class="wh-brand">Whallet</div><span class="wh-label">Mobile wallet / Product design</span><h1>${d.title}<span class="wh-gradient">${d.accent}</span></h1><p class="wh-intro">${d.intro}</p><div class="wh-meta">${d.meta.map(x=>`<span>${x}</span>`).join('')}</div><button class="wh-action" type="button">${d.cta}<span aria-hidden="true">↓</span></button></div><figure class="wh-hero-art"><button class="wh-image-button" type="button" data-wh-zoom aria-label="${tr?'Ekranı büyüt':'Enlarge screen'}"><img class="wh-phone" src="${W.s1}" alt="${d.steps[0].alt}" width="900" height="1951" fetchpriority="high"><span class="wh-zoom-label" aria-hidden="true">↗</span></button><div class="wh-preview-controls" role="group" aria-label="${tr?'Ürün ekranları':'Product screens'}">${d.steps.map((x,i)=>`<button type="button" data-wh-preview="${i}" aria-pressed="${i===0}">${x.tab}</button>`).join('')}</div><figcaption>${tr?'Ekranları değiştir · Detayları büyüt':'Switch screens · Zoom into the details'}</figcaption></figure></section><section class="wh-context"><h2>${d.audience}</h2><p>${d.problem}</p></section><section class="wh-section" id="wh-tour"><span class="wh-label">${d.tour}</span><h2>${d.tourTitle}</h2><div class="wh-switches" role="group" aria-label="${d.tour}">${d.steps.map((x,i)=>`<button class="wh-switch" type="button" data-wh-step="${i}" aria-pressed="${i===0}" aria-controls="wh-tour-panel"><span>0${i+1}</span>${x.tab}</button>`).join('')}</div><div class="wh-tour-panel" id="wh-tour-panel" data-step="0" aria-live="polite">${whTourPanel(d.steps[0],d.note)}</div></section><section class="wh-section"><span class="wh-label">${d.decisions}</span><h2>${d.decisionTitle}</h2><div class="wh-decisions">${d.cards.map(x=>`<div class="wh-decision"><span class="wh-label">${x[0]}</span><h3>${x[1]}</h3><p>${x[2]}</p><details><summary>${tr?'Sonraki tasarım adımı':'What I would refine'}</summary><small>${x[3]}</small></details></div>`).join('')}</div><p class="wh-research">${d.research}</p></section><footer class="wh-end"><h2>${d.endTitle}</h2><div><p>${d.end}</p><button class="case-back" type="button">${d.back}</button></div></footer></div></article>`;
+}
+let whCleanup=()=>{};
+function wireWhallet(tr){
+ whCleanup();
+ const d=WH_STORY[tr?'tr':'en'], story=caseSheet.querySelector('.wh-story'), panel=story.querySelector('#wh-tour-panel'), dialog=story.querySelector('.wh-lightbox');
+ let selected=0, preview=0, opener=null;
+ const motion=()=>!matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const animate=el=>{if(motion()){el.classList.remove('wh-changing');void el.offsetWidth;el.classList.add('wh-changing');}};
+ const select=i=>{
+   selected=(i+d.steps.length)%d.steps.length;
+   story.querySelectorAll('[data-wh-step]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.whStep)===selected)));
+   panel.dataset.step=String(selected);panel.innerHTML=whTourPanel(d.steps[selected],d.note);animate(panel);
+ };
+ story.querySelector('.wh-action').onclick=()=>story.querySelector('#wh-tour').scrollIntoView({behavior:motion()?'smooth':'instant',block:'start'});
+ story.querySelectorAll('[data-wh-step]').forEach(button=>{
+   button.onclick=()=>select(Number(button.dataset.whStep));
+   button.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();select(selected+(e.key==='ArrowRight'?1:-1));story.querySelector(`[data-wh-step="${selected}"]`).focus();}};
+ });
+ story.querySelectorAll('[data-wh-preview]').forEach(button=>button.onclick=()=>{
+   preview=Number(button.dataset.whPreview);const art=story.querySelector('.wh-hero-art'),img=art.querySelector('img');
+   img.src=d.steps[preview].img;img.alt=d.steps[preview].alt;animate(img);
+   art.style.setProperty('--stage-glow',['#7050a849','#386a7a49','#93654239'][preview]);
+   story.querySelectorAll('[data-wh-preview]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+ });
+ story.addEventListener('click',e=>{
+   const zoom=e.target.closest('[data-wh-zoom]');
+   if(zoom){opener=zoom;const source=zoom.querySelector('img'),image=dialog.querySelector('img');image.src=source.src;image.alt=source.alt;dialog.showModal();dialog.scrollTop=0;}
+   if(e.target.closest('.wh-tour-next')){select(selected+1);panel.querySelector('.wh-tour-next').focus({preventScroll:true});}
+ });
+ const close=()=>dialog.close();
+ dialog.querySelector('.wh-lightbox-close').onclick=close;
+ dialog.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
+ dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();}});
+ dialog.addEventListener('close',()=>opener?.focus({preventScroll:true}));
+ const progress=()=>{const total=caseEl.scrollHeight-caseEl.clientHeight;story.style.setProperty('--wh-progress',String(total>0?caseEl.scrollTop/total:0));};
+ caseEl.addEventListener('scroll',progress,{passive:true});progress();
+ whCleanup=()=>{caseEl.removeEventListener('scroll',progress);if(dialog.open)dialog.close();};
+}
+
 function buildCase(key){
+  whCleanup();
   const p = PROJECTS.find(x=>x.key===key); if(!p) return;
   const u = CASE_UI[L], d = CASES[key][L];
 
@@ -3196,6 +3196,13 @@ function buildCase(key){
      nav and the close pill to stay on paper instead of following it dark */
   caseEl.dataset.theme = CASES[key].theme || '';
   document.body.classList.toggle('case-light', !!CASES[key].light);
+
+  if(key==='whallet'){
+    caseSheet.innerHTML=whalletStory(L==='tr');
+    wireWhallet(L==='tr');
+    caseSheet.querySelector('.case-back').onclick=()=>closeCase();
+    return;
+  }
 
   if(CASES[key].cover === 'alti'){
     caseSheet.innerHTML = altiCover(key,d,p,u) + d.sections.map(s=>sectionHTML(s,d,u)).join('');
@@ -3261,6 +3268,7 @@ function openCase(key){
   syncRoute();
 }
 function closeCase(){
+  whCleanup();
   if(!caseOpen) return;
   caseOpen=false; caseKey=null;
   caseEl.classList.remove('open');
