@@ -133,11 +133,23 @@ nav a:hover{background:rgba(23,20,15,.06); color:var(--ink)}
   position:absolute; left:0; top:0; width:720px; height:713px;
   transform-origin:50% 100%; will-change:transform;
 }
-#char img{
-  width:100%; height:100%; display:block; object-fit:contain;
-  will-change:transform; user-select:none;
+#charFigure{
+  position:relative; left:3.5px; width:713px; height:713px;
+  will-change:transform; transform-origin:50% 75%;
   filter:drop-shadow(0 18px 30px rgba(23,20,15,.18));
 }
+#char img{
+  width:100%; height:100%; display:block; object-fit:contain; object-position:center bottom;
+  user-select:none;
+}
+/* A local lip mesh keeps the original face and hair stable. Its canvas
+   maps source pixels 510,450–754,622 into the square portrait. */
+#charMouth{
+  position:absolute; left:40.669856%; top:35.885167%;
+  width:19.457735%; height:13.716108%; opacity:0;
+  pointer-events:none;
+}
+#char img[hidden]{display:none}
 
 /* dialogue — sits beside her, never labelled as an "assistant" */
 #say{
@@ -290,6 +302,8 @@ section{position:relative}
 
 @media (max-width:820px){
   :root{--dock-h:104px}
+  /* Leave room for the dialogue above the portrait on narrow screens. */
+  #hero .hero-type{transform:translateY(-15svh)}
   nav .mark{margin-right:6px}
   nav a{padding:7px 8px;font-size:10px}
   .strip-head{flex-direction:column;gap:10px}
@@ -1269,15 +1283,17 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
 
 <!-- ============================================================
      CHARACTER STAGE
-     SWAP POINT: when the 3D render is ready, replace everything
-     inside <div id="char"> with  <img src="elif-3d.png">  (or a
-     <canvas> for a GLB). The rig below — dock-on-scroll, cursor
-     parallax, blink, breathe, talk — keeps working; only the
-     eye/mouth tracking needs the SVG.
+     Transparent 3D render, inlined from src/assets/elif-3d.webp.
+     A textured lip mesh shapes vowels continuously during dialogue.
+     The original portrait remains the idle pose and WebGL fallback.
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <img id="charImg" src="data:image/webp;base64,{{IMG_BUST}}" alt="Elif Uysal" draggable="false">
+    <div id="charFigure">
+      <img id="charImg" src="data:image/webp;base64,{{IMG_BUST}}" alt="Elif Uysal" width="1254" height="1254" draggable="false">
+      <img id="charSpeechTexture" src="data:image/webp;base64,{{IMG_SPEAKING}}" alt="" hidden>
+      <canvas id="charMouth" width="244" height="172" aria-hidden="true"></canvas>
+    </div>
   </div>
 
   <div id="say">
@@ -1743,6 +1759,7 @@ function buildIndex(){
 const sayEl=document.getElementById('say'), txtEl=document.getElementById('sayTxt'),
       icoEl=document.getElementById('sayIco'), chipsEl=document.getElementById('chips');
 let typing=false, typeTimer=null, currentIco='';
+let speechBlend=0;
 
 function setIcon(name){
   if(name===currentIco) return;
@@ -1759,6 +1776,7 @@ function setIcon(name){
 
 function say(icon,text,delay=0){
   clearTimeout(typeTimer);
+  typing=false;
   setIcon(icon);
   sayEl.classList.add('show');
   const start=()=>{
@@ -1767,7 +1785,10 @@ function say(icon,text,delay=0){
     const step=()=>{
       i++;
       txtEl.innerHTML = text.slice(0,i) + (i<text.length?'<span class="caret"></span>':'');
-      if(i<text.length) typeTimer=setTimeout(step, 16+Math.random()*22);
+      const glyph=text[i-1];
+      const pause=/[.!?…]/.test(glyph)?210:/[,;:—]/.test(glyph)?110:/\s/.test(glyph)?35:0;
+      portraitSpeech.cue(glyph);
+      if(i<text.length) typeTimer=setTimeout(step, 32+Math.random()*16+pause);
       else typing=false;
     };
     if(RM){ txtEl.textContent=text; typing=false; return; }
@@ -1793,7 +1814,10 @@ function renderChips(list){
    RIG — one rAF loop drives everything
    ============================================================= */
 const charEl=document.getElementById('char');
-const charImg=document.getElementById('charImg');
+const charFigure=document.getElementById('charFigure');
+const charMouth=document.getElementById('charMouth');
+{{CHARACTER_SPEECH}}
+const portraitSpeech=createPortraitSpeechRig(charMouth, document.getElementById('charSpeechTexture'));
 const glow=document.getElementById('glow');
 const cardEl=document.querySelector('.say-card');
 let cardW=0;
@@ -1847,24 +1871,27 @@ function tick(now){
     sy = y - CH*s*.92;
     sayEl.classList.add('flip');
   }else{
-    sx = x + half + (P.mobile?4:18);
-    sy = y - CH*s*.78;
+    sx = P.mobile ? x-cardW/2 : x+half+18;
+    sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.78;
     sayEl.classList.remove('flip');
   }
   sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));
   sy=Math.max(74, Math.min(sy, innerHeight-sayH-16));
   sayEl.style.transform=`translate3d(${sx.toFixed(1)}px,${sy.toFixed(1)}px,0)`;
 
-  /* ---- she is a flat illustration now, so the life comes from the whole
-         figure: parallax lean, a breath, and a small nod while she types.
-         (Blink and mouth shapes went with the SVG — they need layers.) ---- */
-  const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);
+  /* ---- continuous vowel shapes, settled lips between words ---- */
+  const speaking=typing && !RM && !document.hidden && !caseOpen;
+  portraitSpeech.update(dt, speaking, RM);
+  speechBlend+=((speaking?1:0)-speechBlend)*k;
+
+  const tx=RM?0:(mx-.5)*(P.mobile?5:12), ty=RM?0:(my-.5)*(P.mobile?3:7);
   hx+=(tx-hx)*k*.55; hy+=(ty-hy)*k*.55;
-  const br  = Math.sin(now/1450)*1.7;                        // breathe
-  const nod = (typing && !RM) ? Math.sin(now/150)*1.1 : 0;   // talking
-  charImg.style.transform =
+  const br  = RM?0:Math.sin(now/1450)*1.7;
+  const nod = Math.sin(now/340)*.7*speechBlend;
+  const tilt = hx*.06;
+  charFigure.style.transform = RM?'none':
     `translate3d(${hx.toFixed(2)}px, ${(hy+br+nod).toFixed(2)}px, 0)`+
-    ` rotate(${(hx*.06).toFixed(2)}deg) scale(${(1+br*.0016).toFixed(4)})`;
+    ` rotate(${tilt.toFixed(2)}deg) scale(${(1+br*.0016).toFixed(4)})`;
 
   /* ---- strips drift ---- */
   if(!RM){

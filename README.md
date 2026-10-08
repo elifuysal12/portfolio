@@ -26,6 +26,22 @@ turns the 2px gradient stroke into a sub-pixel smear), drop the file into
 `src/assets/case/`, reference it in the template as `{{ASSET:case/name.webp}}`,
 rebuild.
 
+The home-page character is a transparent, pre-rendered 3D portrait in
+`src/assets/elif-3d.webp`, generated with the built-in Imagegen tool from
+`src/assets/bust_q92.webp`. The original illustration remains available.
+The render keeps the existing scroll docking, cursor parallax and dialogue
+animations; it is an image, not an interactive 3D mesh. The generation prompt
+is saved in `src/character-3d-prompt.txt`. Re-run the build after replacing it.
+
+`src/assets/elif-3d-speaking.webp` supplies a lip texture for the local WebGL
+mesh in `src/character-speech.js`, which is inlined by the build. The mesh
+continuously shapes open, wide, rounded and closed lips from the typed letters;
+the lower lip moves while the mouth cavity compresses, and the rest of the
+portrait stays stable. The original smile returns between lines. This is a
+silent illustration rig, not audio lip-sync or a full 3D face. Reduced-motion
+preferences disable it; browsers without WebGL keep the original portrait.
+The texture prompt is in `src/character-speaking-prompt.txt`.
+
 Work-card covers go through one more step, because the cards are 16:10 and the
 cover frames are not:
 

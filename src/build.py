@@ -20,7 +20,9 @@ SUB = {
     '{{F_BRIC_LATINEXT}}': b64('assets/f1.woff2'),   # Bricolage Grotesque — latin-ext (TR)
     '{{F_IS_LATIN}}':      b64('assets/f4.woff2'),   # Instrument Sans — latin
     '{{F_IS_LATINEXT}}':   b64('assets/f5.woff2'),   # Instrument Sans — latin-ext (TR)
-    '{{IMG_BUST}}':        b64('assets/bust_q92.webp'),
+    '{{IMG_BUST}}':        b64('assets/elif-3d.webp'),
+    '{{IMG_SPEAKING}}':    b64('assets/elif-3d-speaking.webp'),
+    '{{CHARACTER_SPEECH}}': open(os.path.join(HERE, 'character-speech.js'), encoding='utf-8').read(),
 }
 
 html = open(os.path.join(HERE, 'portfolio-artifact.tmpl.html'), encoding='utf-8').read()

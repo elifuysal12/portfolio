@@ -1,0 +1,7 @@
+Tool: built-in image_gen.imagegen (Imagegen skill)
+Input: src/assets/elif-3d.webp
+Output: src/assets/elif-3d-speaking.webp
+Transparent background: true
+Delivery encoding: WebP quality 90, method 6; 1254 x 1254.
+
+Use case: precise-object-edit. Edit target: the provided 1254 by 1254 transparent 3D character render. Create ONE matching animation frame of this exact portrait with her mouth slightly open mid-speech, as if saying a relaxed 'ah'. Keep the upper lip's outer silhouette and mouth corners at their exact original positions; lower the lower lip subtly to open a small natural mouth gap, showing a soft dark inner mouth and only a narrow edge of upper teeth, no prominent tongue. Mouth opening should be small, friendly and conversational, not a laugh or a toothy grin. CRITICAL REGISTRATION: preserve the exact 1254x1254 canvas, camera, head size, face position, nose, cheeks, jaw outline, eyes, glasses, hair, bandana, torso, pose, accessories, lighting, skin colour and transparent background from the reference without moving or redesigning anything. Only the lips and the inside of the mouth may change, around the existing mouth centered at approximately x=630 y=510 in the reference. The output must align with the input as an animation frame. Render the whole portrait; no text, no montage, no new background, no extra elements.
