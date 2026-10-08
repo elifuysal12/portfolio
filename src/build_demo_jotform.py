@@ -46,7 +46,7 @@ QS = (f"node-id={NODE}&page-id={quote(PAGE_ID,safe='')}"
 EMBED = f"https://embed.figma.com/proto/{FILE}/{NAME}?{QS}&hide-ui=1&embed-host=elifbeyzauysal"
 PROTO = f"https://www.figma.com/proto/{FILE}/{NAME}?{QS}"
 
-TITLE = 'Chatbot Dashboard — interactive prototype · Elif Beyza Uysal'
+TITLE = 'AI Chatbot Dashboard — interactive prototype · Elif Beyza Uysal'
 DESC = ('An analytics dashboard for Jotform AI Chatbot, embedded in WordPress — '
         'the clickable prototype, by Elif Beyza Uysal.')
 BEACON = ("<script defer src='https://static.cloudflareinsights.com/beacon.min.js' "
@@ -267,7 +267,7 @@ main{{flex:1 1 auto;min-height:0;display:grid;
 <main>
   <div class="side">
     <div class="room">
-      <h1>Chatbot Dashboard</h1>
+      <h1>AI Chatbot Dashboard</h1>
       <span data-i18n="sub">Jotform &middot; inside WordPress</span>
     </div>
     <p class="hint" data-i18n-html="hint"></p>
@@ -287,7 +287,7 @@ main{{flex:1 1 auto;min-height:0;display:grid;
   <div class="rig">
     <div class="mon">
       <div class="screen" id="screen">
-        <iframe id="proto" src="{EMBED}" title="Chatbot Dashboard — prototype"
+        <iframe id="proto" src="{EMBED}" title="AI Chatbot Dashboard — prototype"
                 allowfullscreen loading="eager"></iframe>
         <div class="wait" id="wait">
           <span data-i18n="loading">Loading the prototype</span>

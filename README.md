@@ -66,9 +66,10 @@ at a seventh of the bytes.
 ## The demos
 
 Runnable prototypes live under `/demo`, one room each, named after the shop
-they are set in: **`/demo/nore`** is the Cursor Assistant prototype today, and
-`/demo/mekik` can move in beside it. They run on this domain rather than on the
-Artifacts they were first published to, so *See demo* keeps people on the site.
+they are set in: **`/demo/nore`** is the Cursor Assistant prototype and
+**`/demo/mekik`** the denim atelier one. They run on this domain rather than on
+the Artifacts they were first published to, so *See demo* keeps people on the
+site.
 
 ```bash
 python3 src/build_demo.py            # reads ../mavi-cursor-chat
@@ -78,6 +79,33 @@ It inlines the prototype's CSS/JS, retitles the page after the *project* rather
 than the shop, and copies the photographs in as plain files — the prototype's
 own builds either hotlink Unsplash or base64 everything, and neither belongs on
 a real site. Output is committed; re-run when the prototype changes.
+
+```bash
+python3 src/build_demo_mekik.py      # reads ../mekik
+```
+
+**`/demo/mekik`** is the room that file always said would move in beside it: the
+MEKİK denim atelier and the AI layer over its search bar. The prototype is one
+self-contained page that reads fifteen photographs off `img/`, so the build is a
+head, a signature in the footer, and those photographs re-encoded to WebP (2.7
+MB → 1.5 MB, nothing resized — they are already the 1000px the layout was drawn
+against). Its own Artifact build base64s downscaled copies into the file; that
+belongs to the Artifact, not to an address with a cache.
+
+The stylesheet names the brief's client in a comment, and the build scrubs it
+the same way `build_demo.py` does for NORE — on this domain the work is Elif's.
+The scrub is an exact string match, so it fails loudly if the prototype's
+wording changes rather than quietly shipping the name.
+
+Its cover is drawn in code for the same reason Sun Ninja's is — `src/cover_mekik/`,
+rendered by `python3 src/make_cover_mekik.py` (add `--shot` to re-shoot the
+prototype, with the site served on :8765). It sits on the shop's own ecru and
+sets the name in the condensed face the shop's mark uses, but the line under it
+runs through the **assistant's** orange→pink ramp rather than the shop's red:
+the shell is MEKİK's, the signature is the assistant's, which is the argument
+the project makes. The artefact is the prototype in its canvas state, cropped to
+the panel and a margin of the blurred store — the full frame was tried first and
+turned into a grey rectangle at card width.
 
 ```bash
 python3 src/build_demo_base360.py    # reads ../base360-journey.html
@@ -124,7 +152,8 @@ disclaimer the product page already had). The CSS and JS stay as files rather
 than inlined: two pages share `style.css`, and inlining would ship it twice and
 throw the cache away on the click between them.
 
-Its work-card cover is the only one not exported from Figma. The project was
+Its work-card cover is one of the two not exported from Figma (MEKİK's is the
+other). The project was
 made in code, so the cover is drawn in code too — `src/cover_sunninja.html`,
 in the prototype's own Poppins over the Sunrise ramp from its own `DAY` table,
 laid out the way the Figma covers are: eyebrow, the page's own sentence with

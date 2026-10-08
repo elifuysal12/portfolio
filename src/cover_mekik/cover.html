@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8">
+<!-- The MEKİK cover. Rendered by ../make_cover_mekik.py, not opened by hand:
+     it is a 2600x1625 plate and the browser has to be that size.
+
+     The project was made in code, so the cover is drawn in code too — the same
+     move as Sun Ninja's, and for the same reason. It sits on the shop's own
+     ecru, sets its name in the condensed face the shop's mark is set in, and
+     pours the line under it through the ASSISTANT's ramp rather than the
+     shop's red: the shell is MEKİK's, the signature is the assistant's, which
+     is the whole argument of the project.
+
+     The artefact is a plain uncropped shot of the prototype in its canvas
+     state — the store blurred behind the panel is the design's own move, not
+     an artefact of the capture. Re-shoot it with `--shot` (see the build).
+
+     Paths are relative so the file renders under file:// with no server. -->
+<style>
+@font-face{font-family:IS;font-weight:500;font-display:block;
+  src:url(../assets/f4.woff2) format('woff2')}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EAE5DB}
+.cover{
+  position:relative; width:2600px; height:1625px; overflow:hidden;
+  background:#EAE5DB;          /* the shop's ecru, flat — one tone, as on every
+                                  other card: a photograph of a store behind a
+                                  screenshot of one would read as noise */
+}
+.copy{position:absolute; left:150px; top:0; height:100%;
+  display:flex; flex-direction:column; justify-content:center; width:960px}
+.eyebrow{
+  font-family:IS,sans-serif; font-weight:500; font-size:27px; letter-spacing:.42em;
+  text-transform:uppercase; color:#C0392F; padding-left:.42em;
+}
+/* the shop's own mark: condensed, uppercase, tracked. Avenir Next Condensed is
+   what the prototype asks for first and what this machine renders it in. */
+.word{
+  margin-top:46px;
+  font-family:"Avenir Next Condensed","Arial Narrow","Helvetica Neue",system-ui,sans-serif;
+  font-weight:700; text-transform:uppercase;
+  font-size:230px; line-height:.88; letter-spacing:.10em; color:#16223A;
+}
+.tag{
+  margin-top:44px;
+  font-family:"Avenir Next Condensed","Arial Narrow","Helvetica Neue",system-ui,sans-serif;
+  font-weight:600; text-transform:uppercase; font-size:74px; letter-spacing:.02em;
+  background:linear-gradient(96deg,#FF7A3D,#FF4D8D);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  width:fit-content;    /* or the ramp spreads across the empty rest of the row */
+}
+.rule{margin-top:52px; width:132px; height:7px; border-radius:4px;
+  background:linear-gradient(96deg,#FF7A3D,#FF4D8D)}
+/* the prototype as it opens, whole and uncropped — the same choice Sun Ninja's
+   cover makes. Rounded and lifted, so it reads as the screen it is rather than
+   as a rectangle pasted on the plate. */
+.shot{
+  position:absolute; left:1180px; top:415px; width:1270px; height:794px;
+  border-radius:22px; overflow:hidden;
+  box-shadow:0 44px 88px rgba(20,22,26,.22), 0 3px 10px rgba(20,22,26,.10);
+}
+.shot img{width:100%; height:100%; object-fit:cover; display:block}
+</style>
+<div class="cover">
+  <div class="copy">
+    <p class="eyebrow">Denim atelier · İstanbul</p>
+    <h1 class="word">MEKİK</h1>
+    <p class="tag">AI discovery layer</p>
+    <span class="rule"></span>
+  </div>
+  <figure class="shot"><img src="shot.jpg" alt=""></figure>
+</div>

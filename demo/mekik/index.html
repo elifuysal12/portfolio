@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    /* mağaza bilinçli olarak tek temalı — kağıt zemin markanın kendisi */
+    color-scheme:light;
+    --ink:#14161A; --paper:#FBFAF8; --indigo:#22314F; --indigo-2:#16223A;
+    --selvedge:#C0392F; --ecru:#EAE5DB; --ecru-2:#F2EEE7; --slate:#6E7278; --line:#DFDBD3;
+    /* Asistanın AI katmanı — markadan bağımsız sabit. Kabuk MEKİK’in, bu imza asistanın.
+       Yalnız asistanın kendi işaretlerinde: konuşma çizgisi, daralma çubuğu, gönder tuşu. */
+    --ai:linear-gradient(152deg,#FF7A3D 0%,#FF4D8D 100%);
+    --ai-soft:linear-gradient(152deg,#FFC2A0 0%,#FFAFC9 100%);
+    --ai-fill:#FCFBF9;   /* gradient stroke’un içini dolduran opak kat */
+    --disp:"Avenir Next Condensed","Arial Narrow","Helvetica Neue",system-ui,sans-serif;
+    --sans:-apple-system,"Segoe UI",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --spring:cubic-bezier(.34,1.3,.48,1); --ease:cubic-bezier(.22,.8,.24,1); --dur:.6s;
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  body::after{ content:''; position:fixed; inset:0; z-index:70; pointer-events:none;
+               background-image:var(--grain); opacity:.05; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ background:var(--paper); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+  svg{ display:block; }
+  img{ display:block; max-width:100%; }
+  /* ikon çizgisi her boyutta ~1,2 px görünsün diye optik denge */
+  .tools svg{ stroke-width:1.6; }
+  .tico svg{ stroke-width:1.5; }
+  .go svg{ stroke-width:1.9; }
+  .rin .ic svg{ stroke-width:1.85; }
+  .rin .go svg{ stroke-width:2.3; }
+  .suplist svg{ stroke-width:1.75; }
+  .backl svg{ stroke-width:2.3; }
+  .dock .back svg{ stroke-width:2.4; }
+  .hc.quiet .ic2 svg{ stroke-width:1.6; }
+  .hc.quiet .go2 svg{ stroke-width:1.9; }
+  form{ margin:0; }
+  button{ font:inherit; color:inherit; background:none; border:none; padding:0; cursor:pointer; }
+  :focus-visible{ outline:2px solid var(--selvedge); outline-offset:3px; }
+
+  .disp{ font-family:var(--disp); text-transform:uppercase; letter-spacing:.01em; font-weight:600; }
+  .lot{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+
+  /* ---------- site ---------- */
+  .site{ transition:filter .5s var(--ease); }
+  body[data-s="2"] .site, body[data-s="3"] .site{ filter:blur(9px) saturate(.92); }
+
+  .top{ display:flex; align-items:center; gap:34px; padding:20px 34px; border-bottom:1px solid var(--line); }
+  .mark{ font-family:var(--disp); text-transform:uppercase; font-weight:700; font-size:25px; letter-spacing:.14em; }
+  .nav{ display:flex; gap:24px; font-size:13px; letter-spacing:.02em; }
+  .nav a{ color:var(--ink); text-decoration:none; padding-bottom:2px; border-bottom:1px solid transparent; }
+  .nav a:hover{ border-color:var(--ink); }
+  .tools{ margin-left:auto; display:flex; gap:18px; color:var(--ink); }
+  .tools svg{ width:18px; height:18px; }
+
+  .hero{ position:relative; height:min(90vh,820px); overflow:hidden; }
+  .hero img{ width:100%; height:100%; object-fit:cover; }
+  .hero .cap{ position:absolute; left:34px; bottom:170px; right:34px; max-width:58%; color:#fff; }
+  .hero h1{ margin:0; font-family:var(--disp); text-transform:uppercase; font-weight:700;
+            font-size:clamp(38px,7vw,86px); line-height:.92; letter-spacing:-.005em; text-wrap:balance; }
+  .hero p{ margin:12px 0 0; font-size:14px; max-width:46ch; opacity:.92; line-height:1.55; }
+  .hero .rule{ width:52px; height:3px; background:var(--selvedge); margin-bottom:18px; }
+
+  .strip{ display:flex; gap:34px; align-items:baseline; padding:26px 34px; border-bottom:1px solid var(--line); }
+  .strip h2{ margin:0; font-family:var(--disp); text-transform:uppercase; font-size:19px; letter-spacing:.08em; font-weight:600; }
+  .strip .note{ font-size:13px; color:var(--slate); }
+  .strip .all{ margin-left:auto; font-size:13px; border-bottom:1px solid var(--ink); }
+
+  .grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+         border-bottom:1px solid var(--line); }
+  .card{ background:var(--paper); padding:0 0 18px; }
+  .ph{ aspect-ratio:4/5; overflow:hidden; background:var(--ecru-2); }
+  .ph img{ width:100%; height:100%; object-fit:cover; transition:transform .7s var(--ease); }
+  .card:hover .ph img{ transform:scale(1.035); }
+  .card .body{ padding:14px 16px 0; }
+  .card h3{ margin:0 0 5px; font-size:14px; font-weight:400; letter-spacing:-.01em; }
+  .card .price{ font-family:var(--mono); font-size:13px; }
+  .card .lot{ margin-top:8px; }
+
+  /* ürün sayfası — kanvastan tıklanınca açılır, widget Yoldaş’a küçülür */
+  .pdp{ display:none; }
+  body[data-pdp="1"] .pdp{ display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--line); }
+  body[data-pdp="1"] .hero, body[data-pdp="1"] .strip,
+  body[data-pdp="1"] .grid, body[data-pdp="1"] .band{ display:none; }
+  .pdp .ph3{ background:var(--ecru-2); max-height:80vh; overflow:hidden; }
+  .pdp .ph3 img{ width:100%; height:100%; object-fit:cover; }
+  .pdp .info{ padding:52px 46px; display:flex; flex-direction:column; gap:17px; justify-content:center; }
+  .pdp h2{ margin:0; font-family:var(--disp); text-transform:uppercase; font-weight:700;
+           font-size:clamp(28px,3.6vw,46px); line-height:1; }
+  .pdp .pr{ font-family:var(--mono); font-size:19px; }
+  .pdp p{ margin:0; font-size:14.5px; line-height:1.65; color:#3A3E44; max-width:48ch; }
+  .sizes{ display:flex; flex-wrap:wrap; gap:7px; }
+  .sizes button{ padding:10px 17px; border:1px solid var(--line); border-radius:999px; font-size:13.5px;
+                 transition:border-color .18s var(--ease), background .18s var(--ease); }
+  .sizes button:hover{ border-color:var(--ink); background:var(--ecru-2); }
+  .addc{ align-self:flex-start; margin-top:4px; padding:14px 30px; border-radius:999px;
+         background:var(--indigo); color:#fff; font-size:14px; }
+  .backp{ display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--slate);
+          align-self:flex-start; }
+  .backp svg{ width:12px; height:12px; stroke-width:2.2; }
+  .backp:hover{ color:var(--ink); }
+
+  .band{ display:grid; grid-template-columns:1.1fr .9fr; border-bottom:1px solid var(--line); }
+  .band img{ width:100%; height:100%; object-fit:cover; min-height:340px; }
+  .band .txt{ padding:52px 44px; display:flex; flex-direction:column; justify-content:center; gap:16px; background:var(--ecru-2); }
+  .band h2{ margin:0; font-family:var(--disp); text-transform:uppercase; font-weight:700;
+            font-size:clamp(26px,3.4vw,44px); line-height:1; }
+  .band p{ margin:0; font-size:14.5px; line-height:1.65; color:#3A3E44; max-width:52ch; }
+
+  footer{ padding:34px; display:flex; flex-wrap:wrap; gap:18px; align-items:baseline; }
+  footer .lot{ margin-left:auto; }
+
+  /* ---------- widget ---------- */
+  .scrim{ position:fixed; inset:0; background:rgba(14,17,22,.42); opacity:0; pointer-events:none;
+          transition:opacity .45s var(--ease); z-index:40; }
+  body[data-s="2"] .scrim, body[data-s="3"] .scrim{ opacity:1; pointer-events:auto; cursor:pointer; }
+
+  /* kapatma tutamağı — köşede ikon yerine yüzeyin kendi parçası */
+  .grab{ position:absolute; top:0; left:50%; transform:translateX(-50%); z-index:6;
+         display:none; padding:9px 20px 8px; }
+  .grab i{ display:block; width:42px; height:4px; border-radius:999px; background:var(--line);
+           transition:background .2s var(--ease), width .42s var(--spring); }
+  .grab:hover i{ background:var(--slate); width:54px; }
+  body[data-s="2"] .grab, body[data-s="3"] .grab{ display:block; }
+
+  .w{ position:fixed; z-index:50; left:50%; transform:translateX(-50%); background:#fff; color:var(--ink);
+      box-shadow:0 18px 60px rgba(14,20,32,.22), 0 2px 6px rgba(14,20,32,.10); overflow:hidden;
+      transition:width var(--dur) var(--spring), height var(--dur) var(--spring),
+                 top var(--dur) var(--spring), border-radius .48s var(--ease),
+                 border-color .25s var(--ease); }
+  body[data-s="1"] .w{ width:min(540px,84vw); height:62px; top:80vh; border-radius:999px; }
+  body[data-s="2"] .w{ width:min(960px,90vw); height:min(640px,82vh); top:calc(50vh - min(320px,41vh)); border-radius:22px; }
+  body[data-s="3"] .w{ width:min(1140px,94vw); height:min(700px,88vh); top:calc(50vh - min(350px,44vh)); border-radius:22px; }
+  body[data-s="4"] .w{ width:min(700px,92vw); height:62px; top:calc(100vh - 92px); border-radius:999px; }
+  body[data-s="1"] .w, body[data-s="4"] .w{ cursor:pointer; }
+  body[data-s="1"] .w:hover, body[data-s="4"] .w:hover{ border-color:rgba(255,255,255,.48); }
+  body[data-s="1"] .w:hover .ph2, body[data-s="4"] .w:hover .dhint{ color:rgba(234,229,219,.98); }
+
+  /* cam katman */
+  body[data-s="1"] .w, body[data-s="4"] .w{
+    background:linear-gradient(180deg, rgba(41,60,99,.62), rgba(20,32,56,.70)); color:var(--ecru);
+    -webkit-backdrop-filter:blur(28px) saturate(1.9); backdrop-filter:blur(28px) saturate(1.9);
+    border:1px solid rgba(255,255,255,.30);
+    box-shadow:0 20px 52px rgba(8,12,22,.42), inset 0 1px 0 rgba(255,255,255,.38); }
+  body[data-s="2"] .w, body[data-s="3"] .w{
+    background:rgba(252,251,249,.84);
+    -webkit-backdrop-filter:blur(34px) saturate(1.4); backdrop-filter:blur(34px) saturate(1.4);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 28px 76px rgba(12,18,32,.28), inset 0 1px 0 rgba(255,255,255,.8); }
+
+  .pane{ position:absolute; inset:0; opacity:0; visibility:hidden; transform:translateY(8px);
+         transition:opacity .3s var(--ease), transform .44s var(--spring), visibility .3s; }
+  .pane.on{ opacity:1; visibility:visible; transform:none; transition-delay:.16s; }
+
+  /* konuya göre değişen ikon */
+  .tico{ position:relative; flex:none; width:21px; height:21px; color:rgba(234,229,219,.92); }
+  .tico span{ position:absolute; inset:0; display:block;
+              transition:opacity .3s var(--ease), transform .5s var(--spring); }
+  .tico span.pre{ opacity:0; transform:translateY(7px) scale(.6); }
+  .tico span.out{ opacity:0; transform:translateY(-7px) scale(.6); }
+  .bar{ display:flex; align-items:center; gap:14px; height:100%; padding:0 10px 0 20px; }
+  .bar .ph2{ flex:1; min-width:0; font-size:15px; color:rgba(234,229,219,.86);
+             white-space:nowrap; overflow:hidden; }
+  .caret{ display:inline-block; width:1.5px; height:16px; background:currentColor; opacity:.75;
+          vertical-align:-3px; margin-left:1px; animation:blink 1.05s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .go{ flex:none; width:40px; height:40px; border-radius:999px; background:var(--ai); display:grid; place-items:center; }
+  .go svg{ width:15px; height:15px; color:#fff; }
+  .bar .go{ background:var(--ai); box-shadow:0 2px 12px rgba(255,90,90,.42); }
+  .bar .go svg{ color:#fff; }
+
+  /* hol */
+  #p2{ height:100%; }
+  .hub{ display:flex; flex-direction:column; height:100%; padding:34px 28px 24px; gap:17px; }
+  .hubin{ display:flex; align-items:center; gap:12px; padding:13px 11px 13px 19px; border-radius:999px;
+          border:1.5px solid transparent;
+          background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, var(--ai-soft) border-box;
+          transition:box-shadow .28s var(--ease); }
+  .hubin:focus-within{ background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, var(--ai) border-box;
+                       box-shadow:0 0 0 4px rgba(255,105,110,.14); }
+  .hubin input{ flex:1; min-width:0; border:none; outline:none; background:none; font:inherit; font-size:15.5px; color:var(--ink); }
+  .hubin input::placeholder{ color:var(--slate); }
+  .lbl2{ font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); }
+  .cats{ display:flex; flex-wrap:wrap; gap:7px; margin-top:-6px; }
+  .cat{ padding:8px 15px; border:1px solid var(--line); border-radius:999px; font-size:13.5px;
+        transition:border-color .18s var(--ease), background .18s var(--ease); }
+  .cat:hover{ border-color:var(--ink); background:var(--ecru-2); }
+  .hubcards{ flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr auto; gap:13px; }
+  .hc{ position:relative; border-radius:14px; overflow:hidden; background:var(--ecru-2); text-align:left;
+       display:flex; flex-direction:column; justify-content:flex-end;
+       transition:transform .38s var(--spring), box-shadow .24s var(--ease); }
+  .hc:hover{ transform:translateY(-4px); box-shadow:0 12px 30px rgba(14,20,32,.18); }
+  .hc img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .hc .cap2{ position:relative; padding:34px 16px 15px; color:#fff;
+             background:linear-gradient(to top, rgba(10,14,20,.86), rgba(10,14,20,0)); }
+  .hc .cap2 b{ display:block; font-family:var(--disp); text-transform:uppercase; font-size:16px;
+               font-weight:600; letter-spacing:.03em; margin-bottom:3px; }
+  .hc .cap2 em{ font-style:normal; font-size:12.5px; opacity:.85; }
+  .hc.quiet{ grid-column:1 / -1; flex-direction:row; align-items:center; gap:15px; padding:15px 18px;
+             border:1px solid var(--line); background:var(--paper); }
+  .hc.quiet:hover{ transform:none; box-shadow:none; border-color:var(--ink); }
+  .hc.quiet .cap2{ position:static; flex:1; padding:0; background:none; color:var(--ink); }
+  .hc.quiet .cap2 b{ margin-bottom:1px; }
+  .hc.quiet .cap2 em{ color:var(--slate); opacity:1; }
+  .hc.quiet .ic2{ position:static; flex:none; width:19px; height:19px; color:var(--slate); }
+  .hc.quiet .go2{ flex:none; width:15px; height:15px; color:var(--slate); }
+
+  /* oyun */
+  .game{ display:flex; flex-direction:column; height:100%; padding:30px 26px 22px; }
+  .gtop{ display:flex; align-items:center; gap:12px; }
+  .prog{ display:flex; gap:6px; }
+  .prog i{ width:28px; height:3px; border-radius:999px; background:var(--line); transition:background .3s var(--ease); }
+  .prog i.done{ background:var(--indigo); opacity:.4; }
+  .prog i.on{ background:var(--selvedge); }
+  .skip{ margin-left:auto; font-size:13px; color:var(--slate); border-bottom:1px solid var(--line); }
+  .skip:hover{ color:var(--ink); border-color:var(--ink); }
+  .gq{ margin:14px 0 3px; font-family:var(--disp); text-transform:uppercase; font-weight:700; font-size:30px; letter-spacing:.005em; }
+  .gsub{ margin:0; font-size:13.5px; color:var(--slate); }
+  .cards{ display:grid; grid-template-columns:1fr 1fr; gap:16px; flex:1; min-height:0; margin:16px 0; }
+  .pick{ position:relative; border-radius:14px; overflow:hidden; background:var(--ecru-2);
+         transition:transform .4s var(--spring), box-shadow .25s var(--ease); }
+  .pick img{ width:100%; height:100%; object-fit:cover; }
+  .pick:hover{ transform:translateY(-5px); box-shadow:0 14px 34px rgba(14,20,32,.20); }
+  .pick.taken{ transform:translateY(-5px) scale(1.02); box-shadow:0 0 0 3px var(--selvedge); }
+  .pick b{ position:absolute; left:0; right:0; bottom:0; padding:34px 16px 14px; text-align:left; color:#fff;
+           font-family:var(--disp); text-transform:uppercase; font-size:17px; font-weight:600; letter-spacing:.03em;
+           background:linear-gradient(to top, rgba(10,14,20,.82), rgba(10,14,20,0)); }
+  .gbot{ display:flex; align-items:center; gap:12px; padding-top:14px; border-top:1px solid var(--line); }
+  .tray{ flex:1; min-width:0; display:flex; flex-wrap:wrap; gap:6px; }
+  .cnt{ font-family:var(--mono); font-size:12px; color:var(--slate); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .cnt b{ color:var(--selvedge); font-size:16px; font-weight:500; }
+  .help{ font-size:12.5px; color:var(--slate); border-bottom:1px solid var(--line); white-space:nowrap; }
+  .help:hover{ color:var(--ink); border-color:var(--ink); }
+
+  .chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 11px; font-size:12px; border-radius:999px;
+         background:var(--ecru); color:var(--indigo-2); white-space:nowrap; }
+  .chip.g{ background:transparent; border:1px solid var(--line); color:var(--slate);
+           transition:border-color .18s var(--ease), color .18s var(--ease); }
+  button.chip.g:hover{ border-color:var(--ink); color:var(--ink); }
+  .chip.key{ background:var(--indigo); color:#fff; }
+  /* anladığı her şey silinebilir */
+  .chip.x{ padding-right:6px; }
+  .chip .rm{ display:grid; place-items:center; width:15px; height:15px; border-radius:999px;
+             color:currentColor; opacity:.45; transition:opacity .18s var(--ease), background .18s var(--ease); }
+  .chip .rm svg{ width:8px; height:8px; stroke-width:2.4; }
+  .chip .rm:hover{ opacity:1; background:rgba(20,22,26,.12); }
+  .chip.key .rm:hover{ background:rgba(255,255,255,.26); }
+  .tray .chip:last-child{ animation:pop .44s var(--spring) both; }
+  @keyframes pop{ from{ opacity:0; transform:scale(.6) translateY(6px);} to{ opacity:1; transform:none; } }
+
+  /* kanvas */
+  .cv{ display:flex; flex-direction:column; height:100%; padding:26px 26px 20px; gap:14px; }
+  .cvhead{ display:flex; gap:20px; align-items:center; padding:0 0 13px; border-bottom:1px solid var(--line); }
+  .cvchips{ display:flex; flex-wrap:wrap; gap:6px; flex:1; min-width:0; }
+
+  /* sohbet dizisi — geçmiş burada durur, eskiye tıklayınca o an geri gelir */
+  .cvwrap{ flex:1; min-height:0; display:grid; grid-template-columns:322px 1fr; gap:24px; }
+  .thread{ min-height:0; overflow-y:auto; padding-right:10px; display:flex; flex-direction:column;
+           gap:15px; border-right:1px solid var(--line); scrollbar-width:thin; }
+  .turn{ display:flex; flex-direction:column; gap:9px; text-align:left; width:100%;
+         transition:opacity .25s var(--ease); }
+  .turn.past{ opacity:.42; }
+  .turn.past:hover{ opacity:.9; }
+  .turn .you{ align-self:flex-end; max-width:94%; padding:9px 14px; font-size:13.5px; line-height:1.45;
+              background:var(--indigo); color:#fff; border-radius:16px 16px 5px 16px; }
+  .turn .bot{ display:flex; gap:10px; align-items:stretch; }
+  .turn .bot i{ flex:none; width:2.5px; border-radius:2px; background:var(--ai); }
+  .turn .bot p{ margin:0; font-size:13.5px; line-height:1.55; color:#3A3E44; }
+  .turn.in{ animation:noteIn .52s var(--spring) both; }
+  @keyframes noteIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  .rewind{ align-self:flex-start; font-size:11px; font-family:var(--mono); letter-spacing:.08em;
+           text-transform:uppercase; color:var(--slate); border-bottom:1px solid var(--line); }
+  .turn.past:hover .rewind{ color:var(--selvedge); border-color:var(--selvedge); }
+
+  /* sonuç rayı — 4’te kesilmiyor, yatay kayıyor */
+  .rail{ position:relative; min-width:0; display:flex; flex-direction:column; }
+  /* yatay kaydırıcı dikeyde kırpar; kalkan kart ve gölgesi kesilmesin diye
+     içeride nefes payı açıp aynı kadar negatif marjla yerinde tutuyoruz */
+  .railview{ flex:1; min-height:0; display:flex; gap:14px; overflow-x:auto; overflow-y:hidden;
+             scroll-behavior:smooth; scrollbar-width:none;
+             padding:12px 2px 22px; margin:-12px -2px -22px; }
+  .railview::-webkit-scrollbar{ display:none; }
+  /* devamı var işareti — sert kesim yerine sönüm */
+  .rail.more .railview{ -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 52px),transparent);
+                        mask-image:linear-gradient(90deg,#000 calc(100% - 52px),transparent); }
+  /* üstüne gelince kart gibi kalkıp AI çerçevesini takınır */
+  .rail .pc{ flex:none; width:190px; padding:9px 9px 13px; border-radius:15px;
+             border:1.5px solid transparent;
+             background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, transparent border-box;
+             transition:transform .38s var(--spring), box-shadow .26s var(--ease); }
+  .rail .pc .pcph{ border-radius:9px; transition:opacity .26s var(--ease); }
+  .rail .pc:hover, .rail .pc:focus-visible{
+             transform:translateY(-6px);
+             background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, var(--ai) border-box;
+             box-shadow:0 16px 38px rgba(14,20,32,.17); }
+  .rail .pc:hover .pcph{ opacity:1; }
+  .rail .pc:hover b{ color:var(--ink); }
+  .rnav{ position:absolute; top:calc(50% - 40px); width:34px; height:34px; border-radius:999px;
+         background:rgba(255,255,255,.94); border:1px solid var(--line); display:grid; place-items:center;
+         box-shadow:0 4px 14px rgba(14,20,32,.14); z-index:3;
+         transition:transform .3s var(--spring), opacity .2s var(--ease); }
+  .rnav svg{ width:14px; height:14px; stroke-width:2; color:var(--ink); }
+  .rnav:hover{ transform:scale(1.09); }
+  .rnav[disabled]{ opacity:0; pointer-events:none; }
+  .rnav.l{ left:-13px; } .rnav.r{ right:-13px; }
+  .railcap{ flex:none; padding-top:11px; font-size:12px; color:var(--slate); }
+  .narrow{ display:flex; align-items:center; gap:11px; flex:none; width:300px; }
+  .nbar{ flex:1; height:4px; border-radius:999px; background:var(--ecru); overflow:hidden; }
+  .nbar i{ display:block; height:100%; width:5%; background:var(--ai); border-radius:999px;
+           transition:width .6s var(--ease); }
+  .narrow span{ font-family:var(--mono); font-size:11.5px; color:var(--slate); white-space:nowrap; }
+  .narrow b{ color:var(--ink); font-weight:500; }
+  /* fill-mode both olursa animasyon transform’u kilitler ve hover’daki kalkma çalışmaz */
+  .pc{ display:flex; flex-direction:column; gap:8px; min-height:0; cursor:pointer;
+       animation:pcIn .5s var(--spring) backwards; }
+  @keyframes pcIn{ from{ opacity:0; transform:translateY(11px) scale(.985); } to{ opacity:1; transform:none; } }
+  .pcph{ flex:1; min-height:0; border-radius:12px; overflow:hidden; background:var(--ecru-2); }
+  .pcph img{ width:100%; height:100%; object-fit:cover; }
+  .pc b{ font-size:13.5px; font-weight:400; letter-spacing:-.01em; }
+  .pc i{ font-style:normal; font-family:var(--mono); font-size:12.5px; color:var(--slate); }
+  /* mono büyük harf markanın ürün etiketi dili — asistanın kendi sözü düz yazı */
+  .pc em{ font-style:normal; font-size:11.5px; color:var(--slate); }
+  /* tam eşleşmeyen ama bir filtre farkla yakın olanlar — ızgara boş kalmasın */
+  .pc.near .pcph{ opacity:.66; }
+  .pc.near b{ color:var(--slate); }
+  .cvfoot{ display:flex; flex-direction:column; gap:9px; }
+  .suggl{ font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+          color:var(--slate); }
+  /* asistana yazılan yer — çerçevesi AI katmanının kendisi */
+  .rin{ display:flex; align-items:center; gap:11px; padding:11px 12px 11px 15px; border-radius:999px;
+        border:1.5px solid transparent;
+        background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, var(--ai-soft) border-box;
+        transition:box-shadow .28s var(--ease); }
+  .rin:focus-within{ background:linear-gradient(var(--ai-fill),var(--ai-fill)) padding-box, var(--ai) border-box;
+                     box-shadow:0 0 0 4px rgba(255,105,110,.14); }
+  .rin .ic{ flex:none; width:15px; height:15px; color:var(--slate); }
+  .rin input{ flex:1; min-width:0; border:none; outline:none; background:none; font:inherit;
+              font-size:13.5px; color:var(--ink); }
+  .rin input::placeholder{ color:var(--slate); }
+  .rin .go{ width:28px; height:28px; }
+  .rin .go svg{ width:12px; height:12px; }
+
+  /* destek */
+  .sup{ display:flex; flex-direction:column; height:100%; padding:32px 26px 26px; }
+  .sup h4{ margin:0 0 4px; font-family:var(--disp); text-transform:uppercase; font-weight:700; font-size:26px; }
+  .sup > p{ margin:0; font-size:13.5px; color:var(--slate); }
+  .suplist{ display:flex; flex-direction:column; gap:2px; margin-top:16px; }
+  .suplist button{ display:flex; align-items:center; gap:13px; padding:14px 12px; border-radius:12px;
+                   font-size:15px; text-align:left; transition:background .18s var(--ease); }
+  .suplist button:hover{ background:var(--ecru-2); }
+  .suplist svg{ width:16px; height:16px; color:var(--slate); flex:none; }
+  .suplist small{ display:block; font-size:12.5px; color:var(--slate); margin-top:2px; }
+  .backl{ margin-top:auto; display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--slate); align-self:flex-start; }
+  .backl svg{ width:12px; height:12px; }
+
+  /* dock */
+  .dock{ display:flex; align-items:center; gap:10px; height:100%; padding:0 10px 0 18px; }
+  .dock .tray{ flex:none; flex-wrap:nowrap; overflow:hidden; }
+  .dhint{ flex:1; min-width:0; font-size:13px; color:rgba(234,229,219,.52);
+          white-space:nowrap; overflow:hidden; }
+  .dock .back{ margin-left:auto; flex:none; display:flex; align-items:center; gap:7px; padding:9px 16px;
+               border-radius:999px; background:var(--indigo); color:#fff; font-size:13px; white-space:nowrap; }
+  .dock .back svg{ width:11px; height:11px; }
+
+  /* sunum kumandası */
+  .remote{ position:fixed; left:14px; bottom:14px; z-index:60; display:flex; gap:2px; padding:3px;
+           background:rgba(255,255,255,.82); border:1px solid var(--line); border-radius:999px;
+           opacity:.2; transition:opacity .25s var(--ease); backdrop-filter:blur(8px); }
+  .remote:hover{ opacity:1; }
+  .remote button{ padding:5px 9px; border-radius:999px; font-size:10.5px; color:var(--slate); }
+  .remote button[aria-pressed="true"]{ background:var(--ink); color:var(--paper); }
+
+  @media (max-width:900px){
+    .grid{ grid-template-columns:repeat(2,1fr); }
+    .band{ grid-template-columns:1fr; }
+    .cvgrid{ grid-template-columns:repeat(2,1fr); }
+    .top{ gap:18px; padding:16px 18px; }
+    .nav{ display:none; }
+    .hero .cap{ left:18px; right:18px; bottom:22px; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ transition-duration:.12s !important; animation:none !important; } }
+</style>
+<title>MEKİK — live prototype · Elif Beyza Uysal</title>
+<meta name="description" content="A denim atelier storefront and the AI discovery layer on top of it — the running prototype, by Elif Beyza Uysal.">
+<meta property="og:title" content="MEKİK — live prototype · Elif Beyza Uysal">
+<meta property="og:description" content="A denim atelier storefront and the AI discovery layer on top of it — the running prototype, by Elif Beyza Uysal.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://elifbeyzauysal.com/demo/mekik/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E">
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "589b26a9898440e583a7272ff182a1e4"}'></script>
+</head>
+<body data-s="1">
+
+<div class="site">
+  <header class="top">
+    <div class="mark">Mekİk</div>
+    <nav class="nav">
+      <a href="#">Jean</a><a href="#">Ceket</a><a href="#">Gömlek</a><a href="#">Selvedge</a><a href="#">Atölye</a>
+    </nav>
+    <div class="tools" id="tools"></div>
+  </header>
+
+  <section class="pdp" id="pdp"></section>
+
+  <section class="hero">
+    <img src="img/p4.webp" alt="Sokakta denim giyen iki kişi">
+    <div class="cap">
+      <div class="rule"></div>
+      <h1>Ham indigo,<br>dokuz yıkama</h1>
+      <p>Mekikli tezgâhta dokunan selvedge kumaş, İstanbul’daki atölyemizde kesiliyor. Her parçanın kendi lot numarası var.</p>
+    </div>
+  </section>
+
+  <div class="strip">
+    <h2>Yeni gelenler</h2>
+    <span class="note">Sonbahar lotu · 2026</span>
+    <button class="all" type="button">Tümünü gör</button>
+  </div>
+  <section class="grid" id="grid"></section>
+
+  <section class="band">
+    <img src="img/p2.webp" alt="Denim ceketli portre">
+    <div class="txt">
+      <h2>Kumaşı<br>tanıyoruz</h2>
+      <p>13,5 ons ham denim, mekikli tezgâhta dar enli dokunur. Kenarındaki kırmızı çizgi kumaşın kendi kenarıdır — kesilmez, sökülmez. Pantolonun paçasını katladığında görürsün.</p>
+      <p>Yıkama sayısı arttıkça renk açılır ve kumaş sana göre oturur. Biz bunu bir kusur değil, ürünün ömrü sayıyoruz.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mark" style="font-size:17px">Mekİk</span>
+    <span class="lot">İstanbul · Atölye no. 4</span>
+    <span class="lot">Konsept çalışması · fotoğraflar Unsplash</span>
+    <span class="lot">Tasarım · Elif Beyza Uysal</span>
+  </footer>
+</div>
+
+<div class="scrim"></div>
+
+<div class="w" id="w">
+  <div class="pane" data-p="1">
+    <div class="bar">
+      <span class="tico" id="tic"></span>
+      <span class="ph2"><span id="ph1"></span><i class="caret"></i></span>
+      <span class="go" id="g1"></span>
+    </div>
+  </div>
+  <div class="pane" data-p="2"><div id="p2"></div></div>
+  <div class="pane" data-p="3"><div class="cv" id="cv"></div></div>
+  <div class="pane" data-p="4">
+    <div class="dock">
+      <span class="tico" id="dic"></span>
+      <div class="tray" id="dtray"></div>
+      <span class="dhint">kaldığın yerden devam et</span>
+      <span class="back" id="back4"></span>
+    </div>
+  </div>
+  <button class="grab" id="grab" type="button" aria-label="Küçült"><i></i></button>
+</div>
+
+<div class="remote" id="remote">
+  <button type="button" data-go="1" aria-pressed="true">Sakin</button>
+  <button type="button" data-go="2" aria-pressed="false">Odak</button>
+  <button type="button" data-go="3" aria-pressed="false">Kanvas</button>
+  <button type="button" data-go="4" aria-pressed="false">Yoldaş</button>
+</div>
+
+<script>
+(function(){
+  function g(i){ return '<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true" fill="none" '
+    +'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+i+'</svg>'; }
+  var I={
+    up:     g('<path d="M12 19.4V5.6M6.2 11.4 12 5.6l5.8 5.8"/>'),
+    arrow:  g('<path d="M4.9 12h13.4M13 6.7 18.3 12 13 17.3"/>'),
+    back:   g('<path d="M20 12H4M10.4 5.6 4 12l6.4 6.4"/>'),
+    search: g('<circle cx="11" cy="11" r="6.4"/><path d="m15.9 15.9 4.3 4.3"/>'),
+    heart:  g('<path d="M12 20.3 4.7 13a4.6 4.6 0 0 1 0-6.5 4.6 4.6 0 0 1 6.5 0l.8.8.8-.8a4.6 4.6 0 0 1 6.5 0 4.6 4.6 0 0 1 0 6.5Z"/>'),
+    bag:    g('<path d="M5.4 8.3h13.2l1 12.4H4.4Z"/><path d="M9 10.5v-3a3 3 0 0 1 6 0v3"/>'),
+    /* kargo */
+    truck:  g('<path d="M13.2 16.6V7.3H3.2v9.3h1.9"/><path d="M13.2 10.9h3.4l3.4 3.5v2.2h-1.8"/>'
+             +'<path d="M8.9 16.6h5.9"/><circle cx="7" cy="17.7" r="1.9"/><circle cx="16.8" cy="17.7" r="1.9"/>'),
+    /* beden — mezura */
+    tape:   g('<g transform="rotate(-38 12 12)"><path d="M2.2 9.2h15.5a2.8 2.8 0 0 1 0 5.6H2.2Z"/>'
+             +'<path d="M5.7 9.2v2.1M9.2 9.2v3.4M12.7 9.2v2.1M16.2 9.2v3.4"/></g>'),
+    /* kalıp */
+    hanger: g('<path d="M12 9.6V8.2a2.2 2.2 0 1 1 2.2-2.2"/><path d="M12 9.6 3.6 17.4h16.8L12 9.6Z"/>'),
+    /* kombin */
+    tee:    g('<path d="M9.2 4.3 4.5 6.6l1.6 4.1 2.4-.9v10.2h7V9.8l2.4.9 1.6-4.1-4.7-2.3a3.2 3.2 0 0 1-5.6 0Z"/>'),
+    /* yeni gelenler */
+    box:    g('<path d="M12 3.6 20.5 8v8L12 20.4 3.5 16V8Z"/><path d="M3.7 8.1 12 12.4l8.3-4.3M12 12.4v7.9"/>'),
+    /* trend / asistan */
+    spark:  g('<path d="M10.6 3.6c.82 4.4 2.22 5.8 6.62 6.62-4.4.82-5.8 2.22-6.62 6.62-.82-4.4-2.22-5.8-6.62-6.62 4.4-.82 5.8-2.22 6.62-6.62Z"/>'
+             +'<path d="M18.6 15.4c.38 2 1 2.62 3 3-2 .38-2.62 1-3 3-.38-2-1-2.62-3-3 2-.38 2.62-1 3-3Z"/>'),
+    /* iade ve değişim */
+    swap:   g('<path d="M4 8.7h13.4M14.5 5.8l2.9 2.9-2.9 2.9"/><path d="M20 15.3H6.6M9.5 12.4l-2.9 2.9 2.9 2.9"/>'),
+    chat:   g('<path d="M20.4 14.3a2.7 2.7 0 0 1-2.7 2.7H9.1L4.6 20.4V6.9a2.7 2.7 0 0 1 2.7-2.7h10.4a2.7 2.7 0 0 1 2.7 2.7Z"/>'),
+    x:      g('<path d="M6.6 6.6 17.4 17.4M17.4 6.6 6.6 17.4"/>'),
+    cl:     g('<path d="M14.6 5.5 8.1 12l6.5 6.5"/>'),
+    cr:     g('<path d="M9.4 5.5 15.9 12l-6.5 6.5"/>'),
+    cam:    g('<path d="M20.6 18.2a1.9 1.9 0 0 1-1.9 1.9H5.3a1.9 1.9 0 0 1-1.9-1.9V9.4a1.9 1.9 0 0 1 1.9-1.9h2.5l1.5-2.4h5.4'
+             +'l1.5 2.4h2.5a1.9 1.9 0 0 1 1.9 1.9Z"/><circle cx="12" cy="13.6" r="3.3"/>')
+  };
+  var $=function(i){ return document.getElementById(i); };
+
+  var PRODUCTS=[
+    ['p11','Kırpılmış denim ceket','3.450 ₺','LOT 007 · 12 oz'],
+    ['p9','İspanyol paça jean','2.890 ₺','LOT 012 · 11 oz'],
+    ['p13','Yüksek bel straight','2.450 ₺','LOT 004 · 13,5 oz'],
+    ['p3','Oversize denim ceket','3.890 ₺','LOT 009 · 14 oz'],
+    ['p5','Yıkamalı denim gömlek','1.950 ₺','LOT 015 · 8 oz'],
+    ['p10','Klasik jean ceket','3.250 ₺','LOT 002 · 12 oz'],
+    ['p7','Açık yıkama ceket','3.150 ₺','LOT 011 · 12 oz'],
+    ['p14','Uzun denim gömlek','2.150 ₺','LOT 006 · 9 oz']
+  ];
+  $('grid').innerHTML=PRODUCTS.map(function(p){
+    return '<article class="card"><div class="ph"><img src="img/'+p[0]+'.webp" alt="'+p[1]+'"></div>'
+     +'<div class="body"><h3>'+p[1]+'</h3><div class="price">'+p[2]+'</div><div class="lot">'+p[3]+'</div></div></article>';
+  }).join('');
+  $('tools').innerHTML=['search','heart','bag'].map(function(k){
+    return '<span style="width:18px;height:18px">'+I[k]+'</span>'; }).join('');
+  $('g1').innerHTML=I.up;
+  $('back4').innerHTML='Sohbete dön<span style="width:11px;height:11px;display:block">'+I.arrow+'</span>';
+
+  /* ---------- katalog ----------
+     [görsel, ad, fiyat, kategori, etiketler] — kanvas bunun üstünde daralıyor */
+  var CAT=[
+    ['p13','Yüksek bel straight jean','2.450 ₺','jean',  ['koyu yıkama','yüksek bel','bol paça','ofise uygun','siyah']],
+    ['p9', 'İspanyol paça jean',       '2.890 ₺','jean',  ['açık yıkama','orta bel','bol paça','günlük','mavi']],
+    ['p12','Bol kesim baggy jean',     '2.690 ₺','jean',  ['koyu yıkama','orta bel','bol paça','günlük','indigo']],
+    ['p4', 'Ham indigo straight jean', '2.750 ₺','jean',  ['koyu yıkama','yüksek bel','dar paça','ofise uygun','indigo']],
+    ['p11','Kırpılmış denim ceket',    '3.450 ₺','ceket', ['açık yıkama','dar kalıp','günlük','mavi']],
+    ['p7', 'Açık yıkama ceket',        '3.150 ₺','ceket', ['açık yıkama','dar kalıp','günlük','mavi']],
+    ['p3', 'Oversize denim ceket',     '3.890 ₺','ceket', ['orta yıkama','bol kalıp','günlük','mavi']],
+    ['p10','Klasik jean ceket',        '3.250 ₺','ceket', ['orta yıkama','dar kalıp','ofise uygun','mavi']],
+    ['p8', 'Yıkamalı denim ceket',     '3.190 ₺','ceket', ['açık yıkama','bol kalıp','günlük','gri']],
+    ['p6', 'Dar kalıp jean ceket',     '2.950 ₺','ceket', ['orta yıkama','dar kalıp','ofise uygun','mavi']],
+    ['p15','Kolsuz siyah denim ceket', '3.690 ₺','ceket', ['koyu yıkama','dar kalıp','günlük','siyah']],
+    ['p1', 'Yamalı crop ceket',        '4.250 ₺','ceket', ['koyu yıkama','bol kalıp','günlük','gri']],
+    ['p2', 'Ham indigo ceket',         '3.750 ₺','ceket', ['koyu yıkama','dar kalıp','ofise uygun','indigo']],
+    ['p5', 'Yıkamalı denim gömlek',    '1.950 ₺','gömlek',['açık yıkama','bol kalıp','günlük','mavi']],
+    ['p14','Uzun denim gömlek',        '2.150 ₺','gömlek',['koyu yıkama','dar kalıp','ofise uygun','indigo']]
+  ];
+
+  /* sözlük — k: eşleşme anahtarı (etiketin içinde geçer), say: çipte yazan, ax: eksen */
+  var LEX=[
+    {ax:'cat', k:'jean',   say:'jean',        re:/jean|kot|pantol/},
+    {ax:'cat', k:'ceket',  say:'ceket',       re:/ceket|mont/},
+    {ax:'cat', k:'gömlek', say:'gömlek',      re:/gömlek|gomlek/},
+    {ax:'wash',k:'koyu',   say:'koyu yıkama', re:/koyu|ham indigo/},
+    {ax:'wash',k:'açık',   say:'açık yıkama', re:/açık|acik|soluk|beyazlat/},
+    /* renk kendi ekseni — yıkamayla karıştırılmasın */
+    {ax:'renk',k:'siyah',  say:'siyah',   re:/siyah|black/},
+    {ax:'renk',k:'indigo', say:'indigo',  re:/indigo|lacivert/},
+    {ax:'renk',k:'mavi',   say:'mavi',    re:/mavi|blue/},
+    {ax:'renk',k:'gri',    say:'gri',     re:/gri|antrasit|füme|fume/},
+    {ax:'renk',k:'ekru',   say:'ekru',    re:/ekru|beyaz|krem|off.?white/},
+    {ax:'fit', k:'dar',    say:'dar kalıp',   re:/dar|ince|slim|skinny|daralt/},
+    {ax:'fit', k:'bol',    say:'bol kalıp',   re:/bol|geniş|genis|salaş|salas|baggy|rahat|oversize/},
+    {ax:'rise',k:'yüksek bel', say:'yüksek bel', re:/yüksek bel|yuksek bel|beli yüksek/},
+    {ax:'rise',k:'orta bel',   say:'orta bel',   re:/orta bel|düşük bel|dusuk bel/},
+    {ax:'use', k:'ofise',  say:'ofise uygun', re:/ofis|işe|ise|iş yer|toplantı|resmi/},
+    {ax:'use', k:'günlük', say:'günlük',      re:/günlük|gunluk|hafta sonu|sokak|gündelik/}
+  ];
+
+  /* atölyenin dokumadığı şeyler — boş sonuç yerine dürüst cevap + en yakın kapı */
+  var MISS={
+    /* renk cevabı ızgarayı değiştirmek zorunda değil — söylenecek şey sözde */
+    kırmızı:{re:/kırmızı|kirmizi|bordo/,
+             line:'Kırmızımız tek bir yerde: kumaşın kenarındaki selvedge çizgisi. Paçayı katlayınca çıkıyor — '
+                 +'parçanın kendisi değil imzası kırmızı. Boyalı denim dokumuyoruz.',
+             pivot:'Selvedge’i görünen kalıplar', ask:'bol paça'},
+    boyalı: {re:/yeşil|yesil|sarı|sari|pembe|mor|turuncu|kahve/,
+             line:'Boyalı denim dokumuyoruz. Bütün renklerimiz indigonun ve yıkamanın tonları: '
+                 +'ham indigo, mavi, gri, siyah, bir de boyanmamış ekru.',
+             pivot:'Renkleri göster', ask:'indigo'},
+    kemer:  {re:/kemer/, line:'Kemer dokumuyoruz — atölye yalnız denim çalışıyor. Ama jean’lerimizin beli sabit dokuma, '
+             +'kemersiz oturuyor. Bel oturmuyorsa mesele kemer değil kalıp olabilir.',
+             pivot:'Bele oturan kalıplar', ask:'yüksek bel jean'},
+    çanta:  {re:/çanta|canta/, line:'Çanta yok. Elimizde kalan kumaşları atölyede topluyoruz, torbalar sonbahar sonunda çıkacak.',
+             pivot:'Ceketlere bakalım', ask:'ceket'},
+    tişört: {re:/tişört|tisort|t-shirt|tshirt/, line:'Tişört dokumuyoruz. Ceketin altına ne gittiğini soruyorsan '
+             +'gömleklerimiz o işi görüyor — ince dokuma, ceket altında şişmiyor.',
+             pivot:'Gömlekleri göster', ask:'gömlek'},
+    ayakkabı:{re:/ayakkabı|ayakkabi|bot|sneaker/, line:'Ayakkabı yapmıyoruz. Ama paça boyu ayakkabıya göre değişiyor — '
+             +'hangi paçayı aradığını söylersen ona göre daralayım.',
+             pivot:'Bol paça jean’ler', ask:'bol paça jean'}
+  };
+
+  /* ---------- oyun ---------- */
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ROUNDS=[
+    {q:'Hangi yıkama?', s:'Düşünme, hangisine gözün gittiyse ona dokun.',
+     a:{img:'p9',  n:'Açık yıkama', c:'açık yıkama'}, b:{img:'p13', n:'Koyu yıkama', c:'koyu yıkama'}},
+    {q:'Hangi kalıp?', s:'Seçtiğin yıkamayla gösteriyoruz.',
+     a:{img:'p11', n:'Dar paça',    c:'dar paça'},    b:{img:'p12', n:'Bol paça',    c:'bol paça'}},
+    {q:'Hangi bel?', s:'Son soru, sonra ürünlere geçiyoruz.',
+     a:{img:'p3',  n:'Yüksek bel',  c:'yüksek bel'},  b:{img:'p5',  n:'Orta bel',    c:'orta bel'}}
+  ];
+  var COUNTS=[2180,940,286,34];
+  var ri=0;
+
+  function tr(n){ return n.toLocaleString('tr-TR'); }
+  /* anladığı her şey çip; rm=true ise her biri tek tek silinebilir */
+  function tray(rm){
+    return Q.f.map(function(f,i){
+      return '<span class="chip'+(i===0?' key':'')+(rm?' x':'')+'">'+f.say
+        +(rm?'<button class="rm" type="button" data-rm="'+i+'" aria-label="“'+f.say+'” filtresini kaldır">'
+             +I.x+'</button>':'')
+        +'</span>';
+    }).join('');
+  }
+  /* her sayaç kendi kuşağını taşır: eski animasyon yeni sayıyı ezmesin,
+     rAF kısılsa bile bitiş değeri garanti yazılsın */
+  function tick(el,from,to){
+    if(!el) return;
+    var my=(el._t||0)+1; el._t=my;
+    if(RM || from===to){ el.textContent=tr(to); return; }
+    var t0=null;
+    requestAnimationFrame(function step(t){
+      if(el._t!==my || !el.isConnected) return;
+      if(t0===null)t0=t;
+      var p=Math.min(1,(t-t0)/620), e=1-Math.pow(1-p,3);
+      el.textContent=tr(p<1 ? Math.round(from+(to-from)*e) : to);
+      if(p<1) requestAnimationFrame(step);
+    });
+    setTimeout(function(){ if(el._t===my && el.isConnected) el.textContent=tr(to); }, 900);
+  }
+  var CATS=['Jean','Ceket','Gömlek','Tişört','Kemer','Çanta'];
+  function renderHub(){
+    $('p2').innerHTML=
+      '<div class="hub">'
+      +'<form class="hubin"><input type="text" id="hubin" autocomplete="off"'
+        +' placeholder="Bir şey yaz — “kargom nerede”, “koyu bir ceket”, “ne giysem”…" aria-label="Asistana yaz">'
+        +'<button class="go" type="submit" aria-label="Gönder">'+I.up+'</button></form>'
+      +'<div class="lbl2">Aklında bir kategori varsa</div>'
+      +'<div class="cats">'+CATS.map(function(c){
+          return '<button class="cat" type="button" data-cat="'+c+'">'+c+'</button>'; }).join('')+'</div>'
+      +'<div class="hubcards">'
+        +'<button class="hc" type="button" data-act="new"><img src="img/p2.webp" alt="">'
+          +'<span class="cap2"><b>Ne var ne yok</b><em>Sonbahar lotu · 24 yeni parça</em></span></button>'
+        +'<button class="hc" type="button" data-act="game"><img src="img/p6.webp" alt="">'
+          +'<span class="cap2"><b>Jean’ini bulalım</b><em>Üç soru, hepsi görsel</em></span></button>'
+        +'<button class="hc quiet" type="button" data-act="sup">'
+          +'<span class="ic2">'+I.truck+'</span>'
+          +'<span class="cap2"><b>Siparişim</b><em>Kargo takibi, iade, değişim</em></span>'
+          +'<span class="go2">'+I.arrow+'</span></button>'
+      +'</div></div>';
+  }
+
+  function renderRound(){
+    var r=ROUNDS[ri];
+    $('p2').innerHTML=
+      '<div class="game"><div class="gtop"><div class="prog">'+ROUNDS.map(function(_,i){
+        return '<i class="'+(i<ri?'done':i===ri?'on':'')+'"></i>'; }).join('')+'</div>'
+       +'<button class="skip" type="button" data-act="skip">geç</button></div>'
+     +'<h3 class="gq">'+r.q+'</h3><p class="gsub">'+r.s+'</p>'
+     +'<div class="cards">'
+       +'<button class="pick" type="button" data-side="a"><img src="img/'+r.a.img+'.webp" alt=""><b>'+r.a.n+'</b></button>'
+       +'<button class="pick" type="button" data-side="b"><img src="img/'+r.b.img+'.webp" alt=""><b>'+r.b.n+'</b></button>'
+     +'</div>'
+     +'<div class="gbot"><div class="tray">'+tray()+'</div>'
+       +'<span class="cnt"><b id="cn">'+tr(COUNTS[ri])+'</b> ürün</span>'
+       +'<button class="help" type="button" data-act="hub">Geri</button></div></div>';
+  }
+  function renderSup(){
+    $('p2').innerHTML=
+      '<div class="sup"><h4>Sana nasıl yardım edelim?</h4>'
+      +'<p>Alışverişi bırakmana gerek yok, kaldığın yerden devam edebilirsin.</p>'
+      +'<div class="suplist">'
+        +'<button type="button"><span style="display:block;width:16px;height:16px">'+I.truck+'</span>'
+          +'<span>Siparişim nerede<small>Son sipariş · 14 Ağustos · kargoda</small></span></button>'
+        +'<button type="button"><span style="display:block;width:16px;height:16px">'+I.swap+'</span>'
+          +'<span>İade ve değişim<small>30 gün içinde ücretsiz</small></span></button>'
+        +'<button type="button"><span style="display:block;width:16px;height:16px">'+I.chat+'</span>'
+          +'<span>Bir kişiyle konuşmak istiyorum<small>Hafta içi 09.00 – 18.00</small></span></button>'
+      +'</div>'
+      +'<button class="backl" type="button" data-act="hub">'
+        +'<span style="display:block;width:12px;height:12px">'+I.back+'</span>Alışverişe dön</button></div>';
+  }
+  /* ---------- kanvas: soru durumu ----------
+     Cevap metin değil ızgaranın kendisi. Sohbet burada birikmez, durum burada durur. */
+  var STEPS=[2180,420,96,34,14,8];
+  var Q={ f:[], note:'', pivot:null, pivotAsk:null, dropped:null, lost:'', lot:false,
+          turns:[], at:-1, prev:2180 };
+
+  var FACT={
+    'koyu':'Koyular ham indigo — ilk üç yıkamada gözle görülür açılıyor, sonra sana göre oturuyor.',
+    'açık':'Açık yıkamalar taş yıkama; renk oturmuş, ilk günden bugünkü halinde.',
+    'dar':'Dar kalıplarda bir beden büyük almanı söylerim, ham denim ilk hafta esnemiyor.',
+    'bol':'Bol kalıplar dokunduğu enle kesiliyor — paçayı katlayınca selvedge çizgisi görünür.',
+    'yüksek bel':'Yüksek bellerin beli sabit dokuma, gün içinde inmiyor.',
+    'orta bel':'Orta beller yumuşak kesim, oturunca sıkmıyor.',
+    'ofise':'Ofis dediklerimiz düz paça ve koyu — kırışığı belli etmiyor.',
+    'günlük':'Bunlar yıprandıkça güzelleşen kalıplar, sık giyilmek için dokundu.',
+    'siyah':'Siyahlarımız boyalı değil, ham denim üstüne çift dip yıkama — zamanla griye çalışıyor.',
+    'indigo':'Ham indigo en çok değişen rengimiz; üç yıkamada senin giyişine göre açılıyor.',
+    'mavi':'Klasik indigo mavisi, taş yıkamayla oturmuş — ilk günden bugünkü tonunda.',
+    'gri':'Griler siyahın açılmışı; solmuş değil, öyle dokundu.',
+    'ekru':'Ekru boyanmamış pamuğun kendi rengi — hiç indigoya girmedi.'
+  };
+  var OPEN={
+    'jean':'Dört kalıpta jean dokuyoruz, hepsi 13,5 ons. Yıkama mı kalıp mı, hangisinden başlayalım?',
+    'ceket':'Ceketlerin hepsi aynı kumaştan; fark kalıpta ve yıkamada. Kırpılmıştan oversize’a kadar var.',
+    'gömlek':'Gömlekler 8–9 ons — ceketin altında şişmeyen ince dokuma.'
+  };
+
+  function hasTag(it,key){
+    for(var i=0;i<it[4].length;i++){ if(it[4][i].indexOf(key)>-1) return true; }
+    return false;
+  }
+  function matches(fs){
+    return CAT.filter(function(it){
+      for(var i=0;i<fs.length;i++){
+        if(fs[i].ax==='cat' ? it[3]!==fs[i].k : !hasTag(it,fs[i].k)) return false;
+      }
+      return true;
+    });
+  }
+  /* çıkmaz sokak yok — hiçbir şey kalmadıysa en eski niteliği bırak ve bunu söyle */
+  function resolve(){
+    var fs=Q.f.slice(), out=matches(fs), i;
+    Q.dropped=null;
+    while(!out.length && fs.length>1){
+      var at=-1;
+      for(i=0;i<fs.length;i++){ if(fs[i].ax!=='cat'){ at=i; break; } }
+      if(at<0) break;
+      Q.dropped=fs[at]; fs.splice(at,1); out=matches(fs);
+    }
+    return out;
+  }
+  /* ızgara hep dolu: tam eşleşmeler önde, kalan yer bir filtre farkla “yakın” olanlarla dolar */
+  var SHOW=10;
+  function fill(res){
+    var out=res.slice(0,SHOW).map(function(r){ return {it:r, near:false}; }), d, fs;
+    function take(list){
+      for(var i=0;i<list.length && out.length<SHOW;i++){
+        var dup=false, j;
+        for(j=0;j<out.length;j++){ if(out[j].it[0]===list[i][0]){ dup=true; break; } }
+        if(!dup) out.push({it:list[i], near:true});
+      }
+    }
+    /* önce tek filtre bırakarak, sonra yalnız kategoriyle, en son tüm katalogla doldur */
+    for(d=Q.f.length-1; d>=0 && out.length<SHOW; d--){
+      if(Q.f[d].ax==='cat') continue;
+      fs=Q.f.slice(); fs.splice(d,1); take(matches(fs));
+    }
+    if(out.length<SHOW) take(matches(Q.f.filter(function(f){ return f.ax==='cat'; })));
+    if(out.length<SHOW) take(CAT);
+    return out;
+  }
+  function suggest(){
+    var used={}, out=[];
+    Q.f.forEach(function(f){ used[f.ax]=1; });
+    if(!used.renk) out.push('siyah olsun');
+    if(!used.wash) out.push('daha koyu yıkama');
+    if(!used.fit)  out.push('daha bol olsun');
+    if(!used.use)  out.push('ofise uygun');
+    if(!used.rise) out.push('yüksek bel');
+    if(used.cat && Q.f.length>1) out.unshift('buna uyacak bir üst');
+    if(!used.cat)  out.unshift('ceket');
+    if(Q.pivotAsk) out.unshift(Q.pivotAsk);   /* asistanın kendi teklifi hep önde */
+    return out.slice(0,3);
+  }
+  function note(res,n){
+    if(Q.lot) return 'Sonbahar lotundan 24 parça girdi. Hepsi aynı topun kumaşı — '
+                    +'lot numaraları 001’den 015’e kadar aynı hafta dokundu.';
+    if(Q.pivot) return Q.note;
+    if(Q.lost) return '“'+Q.lost+'” kısmını tam çözemedim, ızgarayı olduğu gibi bıraktım. '
+                     +'Aşağıdakilerden birine dokun ya da başka türlü yaz.';
+    if(Q.dropped) return '“'+Q.dropped.say+'” ile bu ikisi bir arada yok — onu bıraktım, en yakınları bunlar.';
+    if(!Q.f.length) return 'Ne aradığını yaz; ızgara sen yazdıkça daralsın.';
+    var last=Q.f[Q.f.length-1];
+    if(Q.f.length===1 && last.ax==='cat') return OPEN[last.k]||'';
+    var said=Q.f.map(function(f){ return f.say; }).join(' + ');
+    var tail=(res.length&&res.length<4)
+      ? ' Tam eşleşen '+res.length+' parçayı öne aldım, kalanlar bir filtre farkla yakın.'
+      : ' '+(FACT[last.k]||'');
+    return said+': '+tr(n)+' parça kaldı.'+tail;
+  }
+
+  /* bir turun tüm durumu — geriye dönebilmek için saklanıyor */
+  function snapshot(you,bot){
+    return { you:you, bot:bot, f:Q.f.slice(), lot:Q.lot, pivot:Q.pivot,
+             pivotAsk:Q.pivotAsk, lost:Q.lost, note:Q.note, prev:Q.prev };
+  }
+  function restore(i){
+    var t=Q.turns[i];
+    Q.at=i; Q.f=t.f.slice(); Q.lot=t.lot; Q.pivot=t.pivot;
+    Q.pivotAsk=t.pivotAsk; Q.lost=t.lost; Q.note=t.note;
+    renderCanvas(true);
+  }
+
+  function renderCanvas(anim, utter){
+    var res=resolve();
+    var n=STEPS[Math.min(Q.f.length, STEPS.length-1)];
+    if(res.length>n) n=res.length;
+    /* renk/stok cevabı ızgarayı sıfırlamasın — filtre varsa sonuçlar yerinde kalır */
+    if(Q.pivot && !Q.f.length){ n=STEPS[0]; res=CAT.slice(); }
+    if(Q.lot){ n=24; res=[CAT[3],CAT[11],CAT[10],CAT[13],CAT[6],CAT[8]]; }
+    var pct=Math.max(4, Math.round(n/2180*100));
+    var show=fill(res), line=note(res,n);
+
+    if(utter!==undefined){
+      Q.turns=Q.turns.slice(0, Q.at+1);
+      Q.turns.push(snapshot(utter,line));
+      Q.at=Q.turns.length-1;
+    } else if(Q.turns.length){
+      Q.turns[Q.at].bot=line;   /* çip silinince o turun cevabı da güncellenir */
+    }
+
+    $('cv').innerHTML=
+      '<div class="cvhead"><div class="cvchips">'+tray(true)+'</div>'
+       +'<div class="narrow"><span>'+tr(2180)+' üründen</span>'
+         +'<div class="nbar"><i style="width:'+pct+'%"></i></div>'
+         +'<span><b id="cvn">'+tr(anim?Q.prev:n)+'</b> ürün</span></div></div>'
+     +'<div class="cvwrap"><div class="thread" id="thread">'
+       +Q.turns.map(function(t,i){
+          return '<div class="turn'+(i<Q.at?' past':'')+(anim&&i===Q.at?' in':'')+'" data-turn="'+i+'">'
+           +'<span class="you">'+t.you+'</span>'
+           +'<span class="bot"><i></i><p>'+t.bot+'</p></span>'
+           +(i<Q.at?'<button class="rewind" type="button">buraya dön</button>':'')+'</div>'; }).join('')
+      +'</div>'
+      +'<div class="rail">'
+        +'<button class="rnav l" type="button" data-scroll="-1" aria-label="Geri kaydır">'+I.cl+'</button>'
+        +'<div class="railview" id="railview">'+show.map(function(o,i){
+           return '<article class="pc'+(o.near?' near':'')+'" data-prod="'+o.it[0]+'" tabindex="0" role="button"'
+            +' style="animation-delay:'+(anim?i*45:0)+'ms">'
+            +'<div class="pcph"><img src="img/'+o.it[0]+'.webp" alt=""></div>'
+            +'<b>'+o.it[1]+'</b><i>'+o.it[2]+'</i>'
+            +(o.near?'<em>benzer parça</em>':'')+'</article>'; }).join('')+'</div>'
+        +'<button class="rnav r" type="button" data-scroll="1" aria-label="İleri kaydır">'+I.cr+'</button>'
+        +'<div class="railcap">'+tr(n)+' parçadan ilk '+show.length+' tanesi</div>'
+      +'</div></div>'
+     +'<div class="cvfoot"><div class="suggl">Şunları da diyebilirsin</div><div class="tray">'
+        +suggest().map(function(c){
+           return '<button class="chip g" type="button" data-ask="'+c+'">'+c+'</button>'; }).join('')
+      +'</div><form class="rin"><span class="ic">'+I.cam+'</span>'
+        +'<input type="text" id="cvin" autocomplete="off" placeholder="Yaz — “daha koyu olsun”, “ofise de giyeyim”, “bol bir ceket”…" aria-label="Asistana yaz">'
+        +'<button class="go" type="submit" aria-label="Gönder">'+I.up+'</button></form></div>';
+
+    var th=$('thread'); if(th) th.scrollTop=th.scrollHeight;
+    railNav();
+    if(anim) tick($('cvn'), Q.prev, n);
+    Q.prev=n;
+  }
+  /* ray uçlarında oklar kaybolsun */
+  function railNav(){
+    var v=$('railview'); if(!v) return;
+    var l=document.querySelector('.rnav.l'), r=document.querySelector('.rnav.r');
+    var max=v.scrollWidth-v.clientWidth-2;
+    if(l) l.disabled = v.scrollLeft<=2;
+    if(r) r.disabled = v.scrollLeft>=max;
+    v.parentNode.classList.toggle('more', v.scrollLeft<max);
+  }
+
+  /* ---------- ürün sayfası ----------
+     Kanvastan bir parçaya tıklamak siteyi o ürüne götürür; widget Yoldaş’a
+     küçülüp çipleri yanında taşır. Hal 04 ancak böyle hak ediliyor. */
+  function openProduct(key){
+    var it=null, ix=0;
+    CAT.forEach(function(c,i){ if(c[0]===key){ it=c; ix=i; } });
+    if(!it) return;
+    var tags=it[4].slice(0,3).map(function(t){ return t.charAt(0).toLocaleUpperCase('tr')+t.slice(1); });
+    $('pdp').innerHTML=
+      '<div class="ph3"><img src="img/'+it[0]+'.webp" alt="'+it[1]+'"></div>'
+     +'<div class="info">'
+       +'<button class="backp" type="button" data-act="pdpback">'
+         +'<span style="display:block;width:12px;height:12px">'+I.back+'</span>Tüm parçalar</button>'
+       +'<div class="lot">LOT '+('00'+(ix+1)).slice(-3)+' · 13,5 oz selvedge</div>'
+       +'<h2>'+it[1]+'</h2>'
+       +'<div class="pr">'+it[2]+'</div>'
+       +'<p>'+tags.join(' · ')+'. Mekikli tezgâhta dar enli dokundu; kenarındaki kırmızı '
+         +'selvedge çizgisi kesilmez, sökülmez. Yıkandıkça açılır ve sana göre oturur.</p>'
+       +'<div class="sizes">'+['XS','S','M','L','XL'].map(function(s){
+           return '<button type="button">'+s+'</button>'; }).join('')+'</div>'
+       +'<button class="addc" type="button">Sepete ekle</button>'
+     +'</div>';
+    document.body.setAttribute('data-pdp','1');
+    window.scrollTo(0,0);
+    go(4);
+  }
+  $('pdp').addEventListener('click', function(e){
+    if(e.target.closest('[data-act="pdpback"]')) document.body.removeAttribute('data-pdp');
+  });
+
+  /* tek giriş kapısı — hub input’u, kategori çipi, oyun, öneri çipi hepsi buradan geçer.
+     title: yoksa metnin kendisi tırnak içinde, string ise tırnaksız başlık, false ise başlığa dokunma */
+  function ask(text, title){
+    var t=String(text).toLocaleLowerCase('tr'), key, i, hit=[], seen={};
+    var you = title===false ? undefined : (typeof title==='string' ? title : text);
+    Q.pivot=null; Q.pivotAsk=null; Q.lost='';
+    for(key in MISS){
+      if(MISS[key].re.test(t)){
+        Q.note=MISS[key].line; Q.pivot=MISS[key].pivot; Q.pivotAsk=MISS[key].ask;
+        renderCanvas(true, you); return;
+      }
+    }
+    LEX.forEach(function(l){ if(l.re.test(t) && !seen[l.ax]){ seen[l.ax]=1; hit.push(l); } });
+    if(!hit.length){ Q.lost=text; renderCanvas(true, you); return; }
+    hit.forEach(function(l){
+      var at=-1;
+      for(i=0;i<Q.f.length;i++){ if(Q.f[i].ax===l.ax){ at=i; break; } }
+      if(at>-1) Q.f[at]=l; else Q.f.push(l);
+    });
+    renderCanvas(true, you);
+  }
+  function clearQ(){
+    Q.f=[]; Q.pivot=null; Q.pivotAsk=null; Q.dropped=null; Q.lost=''; Q.lot=false;
+    Q.turns=[]; Q.at=-1; Q.prev=2180;
+  }
+
+  /* kanvas içi: öneri çipi, çip silme, serbest yazı — hepsi aynı kapıya gider */
+  $('cv').addEventListener('click', function(e){
+    var s=e.target.closest('[data-ask]');
+    if(s){ ask(s.getAttribute('data-ask')); return; }
+    var r=e.target.closest('[data-rm]');
+    if(r){
+      Q.f.splice(+r.getAttribute('data-rm'),1);
+      Q.pivot=null; Q.pivotAsk=null; Q.lost='';
+      renderCanvas(true); return;
+    }
+    var sc=e.target.closest('[data-scroll]');
+    if(sc){
+      var v=$('railview');
+      v.scrollLeft += (+sc.getAttribute('data-scroll')) * (v.clientWidth-60);
+      setTimeout(railNav,420); return;
+    }
+    var pr=e.target.closest('[data-prod]');
+    /* hal 4’e geçiyoruz; aynı tıklama .w’ye kabarırsa yoldaş tıklaması sanılıp geri döner */
+    if(pr){ e.stopPropagation(); openProduct(pr.getAttribute('data-prod')); return; }
+    var t=e.target.closest('[data-turn]');
+    if(t){ var i=+t.getAttribute('data-turn'); if(i!==Q.at) restore(i); }
+  });
+  $('cv').addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var pr=e.target.closest('[data-prod]');
+    if(pr){ e.preventDefault(); openProduct(pr.getAttribute('data-prod')); }
+  });
+  $('cv').addEventListener('scroll', function(e){
+    if(e.target.id==='railview') railNav();
+  }, true);
+  $('cv').addEventListener('submit', function(e){
+    e.preventDefault();
+    var el=$('cvin'), v=el&&el.value.trim();
+    if(!v) return;
+    ask(v);
+    focusIn('cvin','');   /* imleç alanda kalsın, konuşma devam etsin */
+  });
+
+  function advance(side){
+    var r=ROUNDS[ri];
+    ask((side==='b'?r.b:r.a).c, false);
+    var el=$('cn'); if(el) tick(el, COUNTS[ri], COUNTS[ri+1]);
+    ri++;
+    setTimeout(function(){
+      if(ri<ROUNDS.length){ renderRound(); }
+      else { renderCanvas(true,'Yıkama, kalıp, bel — üçünü seçtim'); go(3); ri=0; renderHub(); }
+    }, RM?0:480);
+  }
+
+  $('p2').addEventListener('click', function(e){
+    var p=e.target.closest('.pick');
+    if(p){ if(p.classList.contains('taken')) return;
+           p.classList.add('taken'); advance(p.getAttribute('data-side')); return; }
+    var c=e.target.closest('[data-cat]');
+    if(c){ var v=c.getAttribute('data-cat'); clearQ(); ask(v.toLocaleLowerCase('tr'), v); go(3); return; }
+    var a=e.target.closest('[data-act]'); if(!a) return;
+    var act=a.getAttribute('data-act');
+    if(act==='skip') advance('a');
+    else if(act==='sup') renderSup();
+    else if(act==='hub'){ ri=0; clearQ(); renderHub(); }
+    else if(act==='game'){ ri=0; clearQ(); ask('jean', false); renderRound(); }
+    else if(act==='new'){ clearQ(); Q.lot=true; renderCanvas(true,'Ne var ne yok?'); go(3); }
+  });
+  /* hub’a yazılan şey de kanvası açar — “kemer yazdım” buradan giriyor */
+  $('p2').addEventListener('submit', function(e){
+    e.preventDefault();
+    var el=$('hubin'), v=el&&el.value.trim();
+    if(!v) return;
+    clearQ(); ask(v); go(3); focusIn('cvin','');
+  });
+
+  /* ---------- haller ---------- */
+  var state=1;
+  function go(n){
+    state=n;
+    document.body.setAttribute('data-s', String(n));
+    [].forEach.call(document.querySelectorAll('.pane'), function(p){
+      p.classList.toggle('on', p.getAttribute('data-p')===String(n)); });
+    [].forEach.call(document.querySelectorAll('[data-go]'), function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-go')===String(n)?'true':'false'); });
+    if(n===3){
+      if(!Q.turns.length) ask('koyu yıkama yüksek bel jean','koyu, yüksek bel bir jean lazım');
+      else renderCanvas(true);
+    }
+    if(n===4){ $('dtray').innerHTML=tray(); setIcon($('dic'),'spark'); }
+    typing(n===1);
+  }
+  $('remote').addEventListener('click', function(e){
+    var b=e.target.closest('[data-go]'); if(b) go(+b.getAttribute('data-go'));
+  });
+  /* stilist sesi — her davetin kendi ikonu var */
+  var LINES=[
+    ['kargonu takip edelim…',                  'truck'],
+    ['bedenini bilmiyorsan beraber ölçelim…',  'tape'],
+    ['sana yakışan kalıbı birlikte bulalım…',  'hanger'],
+    ['o ceketin altına ne gider, söyleyeyim…', 'tee'],
+    ['yeni gelenleri gezelim mi…',             'box'],
+    ['bu sezonun trend jean’lerine bakalım…',  'spark']
+  ];
+  /* ikonu yayla değiştir: eskisi yukarı süzülür, yenisi aşağıdan gelir */
+  function setIcon(el,key){
+    if(!el || el.getAttribute('data-i')===key) return;
+    el.setAttribute('data-i', key);
+    var cur=el.lastElementChild;
+    if(RM){ el.innerHTML='<span>'+I[key]+'</span>'; return; }
+    var s=document.createElement('span');
+    s.className='pre'; s.innerHTML=I[key];
+    el.appendChild(s);
+    void s.offsetWidth;
+    s.className='';
+    if(cur){ cur.className='out';
+             setTimeout(function(){ if(cur.parentNode) cur.parentNode.removeChild(cur); }, 560); }
+  }
+  var li=0, ci=0, del=false, tid=null;
+  function typeStep(){
+    var el=$('ph1'); if(!el) return;
+    var t=LINES[li][0];
+    if(!del){
+      ci++; el.textContent=t.slice(0,ci);
+      if(ci>=t.length){ del=true; tid=setTimeout(typeStep,2100); return; }
+      tid=setTimeout(typeStep,42);
+    }else{
+      ci--; el.textContent=t.slice(0,ci);
+      if(ci<=0){ del=false; li=(li+1)%LINES.length;
+                 setIcon($('tic'), LINES[li][1]);   /* ikon yazıdan önce gelir */
+                 tid=setTimeout(typeStep,340); return; }
+      tid=setTimeout(typeStep,20);
+    }
+  }
+  function typing(on){
+    if(tid){ clearTimeout(tid); tid=null; }
+    if(!on) return;
+    setIcon($('tic'), LINES[li][1]);
+    if(RM){ $('ph1').textContent=LINES[li][0]; return; }
+    tid=setTimeout(typeStep,240);
+  }
+
+  function closeW(){ go(Q.turns.length ? 4 : 1); }
+  $('grab').addEventListener('click', closeW);
+  document.querySelector('.scrim').addEventListener('click', closeW);
+
+  /* ---------- klavyeye teslim ----------
+     Sakin haldeki çubuk gerçek bir input değil. Kullanıcı ona uzanıp yazmaya
+     başlarsa modal açılır ve bastığı harf doğrudan arama alanına düşer —
+     yazdığı hiçbir tuş kaybolmaz. */
+  /* pane’in visibility geçişi .16sn gecikmeli — gizli elemana odak düşmez.
+     Sabit süre beklemek yerine odak tutana kadar dene. */
+  function focusIn(id, seed){
+    var tries=0, last=null;
+    (function attempt(){
+      var el=$(id);
+      if(el){
+        if(seed!=null && el!==last){ el.value=seed; last=el; }
+        el.focus();
+        try{ el.setSelectionRange(el.value.length, el.value.length); }catch(x){}
+        if(document.activeElement===el) return;
+      }
+      if(++tries<16) setTimeout(attempt, 40);
+    })();
+  }
+  function openInput(seed){
+    if(state===3 || state===4){ go(3); focusIn('cvin', seed); }
+    else { go(2); focusIn('hubin', seed); }
+  }
+
+  document.addEventListener('keydown', function(e){
+    var t=e.target, inField = t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA');
+    if(e.key==='Escape'){ if(inField) t.blur(); else if(state===2||state===3) closeW(); return; }
+    if(inField) return;                       /* yazarken sunum kumandası susar */
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    if(e.key==='/'){ e.preventDefault(); openInput(''); return; }
+    if(e.key==='Enter'){ e.preventDefault(); openInput(''); return; }
+    /* tek karakter — rakamlar sunum kısayolu olarak kalıyor */
+    if(e.key.length===1 && /\S/.test(e.key) && !/[1-4]/.test(e.key)){
+      e.preventDefault(); openInput(e.key); return;
+    }
+    if(e.key>='1'&&e.key<='4') go(+e.key);
+    else if(e.key==='ArrowRight') go(state>=4?1:state+1);
+    else if(e.key==='ArrowLeft') go(state<=1?4:state-1);
+  });
+  /* sakin çubuk da yoldaş çubuğu da bütünüyle tıklanabilir — buton tek kapı değil */
+  $('w').addEventListener('click', function(){
+    if(state===1 || state===4) openInput('');
+  });
+
+  renderHub(); go(1);
+})();
+</script>
+</body>
+</html>
