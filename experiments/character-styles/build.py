@@ -118,7 +118,8 @@ html.flat-preview #stage #charMotion{filter:none}
         page = page.replace(
             "  sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));",
             "  if(P.mobile){\n"
-            "    sx=(innerWidth-sayEl.offsetWidth)/2;\n"
+            "    sx=dockPLerp>.5 ? innerWidth-sayEl.offsetWidth-16"
+            " : (innerWidth-sayEl.offsetWidth)/2;\n"
             "    sy=y-CH*s-sayH-18;\n"
             "  }\n"
             "  sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));")
@@ -139,7 +140,8 @@ html.flat-preview #stage #charMotion{filter:none}
             "function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }",
             "function sayProject(k){ pointToProject(k); }")
         page = page.replace("  clearTimeout(typeTimer);",
-                            "  clearTimeout(typeTimer);\n  typing=false;")
+                            "  clearTimeout(typeTimer);\n  typing=false;\n"
+                            "  sayEl.classList.remove('project-cue');")
         page = page.replace(
             "setTimeout(step, 16+Math.random()*22)",
             "setTimeout(step, /[,.!?;:]/.test(text[i-1])?160:22+Math.random()*24)")
@@ -161,6 +163,7 @@ for slug, title, description in variants:
         f'<a class="chip" href="{slug}-extended-compact.html#about">Smaller companion</a>'
         f'<a class="chip" href="{slug}.html?motion=1">Try the gestures</a>'
         f'<a class="chip" href="{slug}.html?gestures=hover">React on interaction</a>'
+        '<a class="chip" href="mobile-preview.html">Mobile preview</a>'
         if slug == "02-retro-toon" else ""
     )
     cards.append(f"""<article class="study">

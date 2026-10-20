@@ -3,7 +3,10 @@ const neutralPose=document.getElementById('neutralPose');
 const roundMouth=document.getElementById('charMouthRound');
 const gestureLayers={};
 const motionPreview=new URLSearchParams(location.search).has('motion');
+const cuePreview=new URLSearchParams(location.search).has('preview-point');
 const onlyOnRequest=new URLSearchParams(location.search).get('gestures')==='hover';
+document.documentElement.classList.toggle('mobile-cue-button',
+  new URLSearchParams(location.search).get('mobile-dialogue')==='button');
 let gesture='neutral', gestureUntil=0, gestureSerial=0, idleIndex=0;
 let nextGestureAt=performance.now()+14000, workPromptAt=0, workPromptDone=false;
 let lastProjectKey='', lastProjectAt=0, mouthFrameAt=0, mouthShape='closed';
@@ -17,7 +20,7 @@ for(const name of ['nails','yawn','thumbs','point']){
     image.src=`assets/${file}.png`; image.alt=''; image.className=cls;
     layer.appendChild(image); return image;
   };
-  const base=makeImage(`gesture-${name}`,'gesture-base');
+  const base=makeImage(name==='point'?'gesture-point-up':`gesture-${name}`,'gesture-base');
   let open=null,round=null;
   if(name!=='yawn'){
     open=makeImage(name==='nails'?'nails-open':'02-retro-toon-speaking','mouth-shape');
@@ -72,9 +75,10 @@ function pointToProject(key,force=false){
   const line=L==='tr'?`${project.mark} projesini gördün mü?`:
     `Have you seen ${project.mark}?`;
   say(t().proj[key]?.i||'grid',line);
-  playGesture('point',motionPreview?60000:7500);
+  sayEl.classList.add('project-cue');
+  playGesture('point',(motionPreview||cuePreview)?60000:7500);
   renderChips([{
-    label:L==='tr'?'Projeye bak':'Take a look',
+    label:L==='tr'?`${project.mark} projesine bak`:`View ${project.mark}`,
     on:()=>{
       resetGesture();
       const link=document.querySelector(`.entry[data-key="${key}"],.tile[data-key="${key}"]`);
@@ -91,13 +95,13 @@ function updateCharacterMotion(now){
   if(gesture==='point'&&zone==='hero')resetGesture();
   // One contextual invitation per visit to Work. Hover/focus remains responsive.
   if(zone==='work'){
-    if(!workPromptAt)workPromptAt=now+6500;
+    if(!workPromptAt)workPromptAt=now+(cuePreview?500:6500);
     if(!onlyOnRequest&&!workPromptDone&&!typing&&now>workPromptAt){
       const project=visibleProject();
       if(project)pointToProject(project.dataset.key);
     }
   }else{workPromptAt=0;workPromptDone=false;}
-  if(!RM&&!motionPreview&&!onlyOnRequest&&gesture==='neutral'&&!typing&&now>nextGestureAt){
+  if(!RM&&!motionPreview&&!cuePreview&&!onlyOnRequest&&gesture==='neutral'&&!typing&&now>nextGestureAt){
     playGesture(['nails','thumbs','yawn'][idleIndex++%3],5200);
     nextGestureAt=now+35000;
   }
@@ -132,6 +136,9 @@ document.addEventListener('focusin',event=>{
   const project=event.target.closest('.entry[data-key],.tile[data-key]');
   if(project)pointToProject(project.dataset.key);
 });
+if(cuePreview)addEventListener('load',()=>{
+  document.getElementById('work').scrollIntoView({behavior:'instant'});
+},{once:true});
 if(motionPreview){
   const controls=document.createElement('div');
   controls.id='motionControls';controls.className='chips';

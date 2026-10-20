@@ -48,6 +48,14 @@ html.flat-preview #stage #charMotion{filter:none}
 @media(max-width:819px){
   #hero .hero-type{position:absolute;top:clamp(112px,24svh,220px);left:0;right:0}
   #stage #say .say-card{width:100%}
+  #stage #say.flip{width:min(260px,calc(100vw - 32px))}
+  #stage #say.flip .say-card{width:fit-content;padding:12px 14px;background:var(--paper-2)}
+  #stage #say.flip .say-ico{display:none}
+  #stage #say.flip .say-txt{padding-top:0}
+  #stage #say.flip .chips{margin-top:7px}
+  #stage #say.flip .chip{min-height:44px}
+  html.mobile-cue-button #stage #say.flip.project-cue .say-card{display:none}
+  html.mobile-cue-button #stage #say.flip.project-cue .chips{margin-top:0}
   #stage #say:not(.flip) .chips{justify-content:center}
   #stage #say.stacked:not(.flip) .say-card:before{
     top:auto;bottom:-6px;left:50%;right:auto;
@@ -1842,6 +1850,7 @@ function setIcon(name){
 function say(icon,text,delay=0){
   clearTimeout(typeTimer);
   typing=false;
+  sayEl.classList.remove('project-cue');
   txtEl.setAttribute('aria-busy','true');
   setIcon(icon);
   sayEl.classList.add('show');
@@ -1934,7 +1943,10 @@ const neutralPose=document.getElementById('neutralPose');
 const roundMouth=document.getElementById('charMouthRound');
 const gestureLayers={};
 const motionPreview=new URLSearchParams(location.search).has('motion');
+const cuePreview=new URLSearchParams(location.search).has('preview-point');
 const onlyOnRequest=new URLSearchParams(location.search).get('gestures')==='hover';
+document.documentElement.classList.toggle('mobile-cue-button',
+  new URLSearchParams(location.search).get('mobile-dialogue')==='button');
 let gesture='neutral', gestureUntil=0, gestureSerial=0, idleIndex=0;
 let nextGestureAt=performance.now()+14000, workPromptAt=0, workPromptDone=false;
 let lastProjectKey='', lastProjectAt=0, mouthFrameAt=0, mouthShape='closed';
@@ -1948,7 +1960,7 @@ for(const name of ['nails','yawn','thumbs','point']){
     image.src=`assets/${file}.png`; image.alt=''; image.className=cls;
     layer.appendChild(image); return image;
   };
-  const base=makeImage(`gesture-${name}`,'gesture-base');
+  const base=makeImage(name==='point'?'gesture-point-up':`gesture-${name}`,'gesture-base');
   let open=null,round=null;
   if(name!=='yawn'){
     open=makeImage(name==='nails'?'nails-open':'02-retro-toon-speaking','mouth-shape');
@@ -2003,9 +2015,10 @@ function pointToProject(key,force=false){
   const line=L==='tr'?`${project.mark} projesini gördün mü?`:
     `Have you seen ${project.mark}?`;
   say(t().proj[key]?.i||'grid',line);
-  playGesture('point',motionPreview?60000:7500);
+  sayEl.classList.add('project-cue');
+  playGesture('point',(motionPreview||cuePreview)?60000:7500);
   renderChips([{
-    label:L==='tr'?'Projeye bak':'Take a look',
+    label:L==='tr'?`${project.mark} projesine bak`:`View ${project.mark}`,
     on:()=>{
       resetGesture();
       const link=document.querySelector(`.entry[data-key="${key}"],.tile[data-key="${key}"]`);
@@ -2022,13 +2035,13 @@ function updateCharacterMotion(now){
   if(gesture==='point'&&zone==='hero')resetGesture();
   // One contextual invitation per visit to Work. Hover/focus remains responsive.
   if(zone==='work'){
-    if(!workPromptAt)workPromptAt=now+6500;
+    if(!workPromptAt)workPromptAt=now+(cuePreview?500:6500);
     if(!onlyOnRequest&&!workPromptDone&&!typing&&now>workPromptAt){
       const project=visibleProject();
       if(project)pointToProject(project.dataset.key);
     }
   }else{workPromptAt=0;workPromptDone=false;}
-  if(!RM&&!motionPreview&&!onlyOnRequest&&gesture==='neutral'&&!typing&&now>nextGestureAt){
+  if(!RM&&!motionPreview&&!cuePreview&&!onlyOnRequest&&gesture==='neutral'&&!typing&&now>nextGestureAt){
     playGesture(['nails','thumbs','yawn'][idleIndex++%3],5200);
     nextGestureAt=now+35000;
   }
@@ -2063,6 +2076,9 @@ document.addEventListener('focusin',event=>{
   const project=event.target.closest('.entry[data-key],.tile[data-key]');
   if(project)pointToProject(project.dataset.key);
 });
+if(cuePreview)addEventListener('load',()=>{
+  document.getElementById('work').scrollIntoView({behavior:'instant'});
+},{once:true});
 if(motionPreview){
   const controls=document.createElement('div');
   controls.id='motionControls';controls.className='chips';
@@ -2075,7 +2091,8 @@ if(motionPreview){
   for(const [name,label] of [['nails','Nails'],['yawn','Yawn'],['thumbs','Thumbs up']]){
     add(label,()=>{
       clearTimeout(typeTimer);
-  typing=false;typing=false;txtEl.setAttribute('aria-busy','false');
+  typing=false;
+  sayEl.classList.remove('project-cue');typing=false;txtEl.setAttribute('aria-busy','false');
       playGesture(name,60000);
     });
   }
@@ -2125,7 +2142,7 @@ function tick(now){
     sayEl.classList.remove('flip');
   }
   if(P.mobile){
-    sx=(innerWidth-sayEl.offsetWidth)/2;
+    sx=dockPLerp>.5 ? innerWidth-sayEl.offsetWidth-16 : (innerWidth-sayEl.offsetWidth)/2;
     sy=y-CH*s-sayH-18;
   }
   sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));

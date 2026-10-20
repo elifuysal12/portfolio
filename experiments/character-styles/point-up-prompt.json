@@ -1,0 +1,6 @@
+{
+  "tool": "Built-in image generation",
+  "reference": "assets/gesture-point.png",
+  "output": "assets/gesture-point-up.png",
+  "prompt": "Use case: precise-object-edit. Edit the supplied transparent cartoon character animation frame. Change ONLY her raised arm and pointing hand on the VIEWER'S LEFT. It currently points horizontally left; redraw the bent elbow, forearm and index finger to clearly point diagonally UP AND LEFT at about 45 degrees, towards a project card above-left of the character. Fingertip should be roughly around x120,y450 rather than at y670. Natural wrist, one extended index finger, thumb relaxed, other fingers curled, five fingers total. Keep arm clear of face. Keep EXACT same canvas 1060x1484, registration, head position, expression, aligned eyes, mouth, glasses, bandana, hair, necklace, torso, loose straight navy shirt, slim straight hips and other arm. Do not shift or resize the character. Keep retro cartoon linework and palette. Do not exaggerate curves. Truly transparent background. No text, icons, arrows or scenery."
+}
