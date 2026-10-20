@@ -18,57 +18,7 @@ html.flat-preview #char img{filter:none}
 </style><script>
 if(new URLSearchParams(location.search).has('flat'))
   document.documentElement.classList.add('flat-preview');
-</script><style>
-#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
-#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
-  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
-#stage #charMotion img{filter:none}
-#stage #charImg{clip-path:inset(38% 0 0)}
-#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
-  transform-origin:50% 38%;will-change:transform}
-#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
-#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
-  opacity:0;will-change:opacity}
-html.flat-preview #stage #charMotion{filter:none}
-</style><style>#stage #neutralPose{position:relative;transition:opacity 160ms ease-in}
-#stage .gesture-pose{position:absolute;inset:0;opacity:0;pointer-events:none;
-  transition:opacity 160ms ease-in;transform-origin:50% 38%}
-#stage .gesture-pose.is-active{opacity:1}
-#stage .gesture-pose>img{position:absolute;left:0;top:0;width:100%}
-/* Align the pointing drawing's face with the other poses. */
-#stage .gesture-pose[data-pose="point"]>.gesture-base{transform:translate(-7.55%,.6%)}
-#stage .mouth-shape{position:absolute;left:0;top:0;width:100%;
-  clip-path:inset(26.8% 43.5% 67.8% 43%);opacity:0}
-#stage .gesture-pose[data-pose="nails"] .mouth-shape{
-  clip-path:inset(26.8% 42.5% 67.8% 44%)}
-#motionControls{position:fixed;top:88px;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);
-  z-index:45;pointer-events:none}
-#motionControls .chip{pointer-events:auto;background:var(--paper-2)}
-#motionControls .chip:hover{background:var(--ink);color:var(--paper)}
-@media(max-width:819px){
-  #hero .hero-type{position:absolute;top:clamp(112px,24svh,220px);left:0;right:0}
-  #stage #say .say-card{width:100%}
-  #stage #say.flip{width:min(260px,calc(100vw - 32px))}
-  #stage #say.flip .say-card{width:fit-content;padding:12px 14px;background:var(--paper-2)}
-  #stage #say.flip .say-ico{display:none}
-  #stage #say.flip .say-txt{padding-top:0}
-  #stage #say.flip .chips{margin-top:7px}
-  #stage #say.flip .chip{min-height:44px}
-  html.mobile-cue-button #stage #say.flip.project-cue .say-card{display:none}
-  html.mobile-cue-button #stage #say.flip.project-cue .chips{margin-top:0}
-  #stage #say:not(.flip) .chips{justify-content:center}
-  #stage #say.stacked:not(.flip) .say-card:before{
-    top:auto;bottom:-6px;left:50%;right:auto;
-    border-left:0;border-top:0;border-right:1px solid var(--line);
-    border-bottom:1px solid var(--line);border-radius:0 0 3px 0}
-}
-@media(prefers-reduced-motion:reduce){
-  #stage #neutralPose,#stage .gesture-pose{transition:none}
-}
-@media(max-width:819px) and (max-height:700px){
-  #hero .hero-type{top:clamp(100px,20svh,140px)}
-}
-</style></head>
+</script></head>
 <body>
 <style>
 /* ============================================================
@@ -485,6 +435,15 @@ html{scroll-snap-type:y proximity}
 .entry-media.own{border-color:transparent}
 .entry-media.own img{object-fit:contain;filter:none}
 .entry:hover .entry-media img{filter:saturate(1)}
+/* The live page sits over its still cover, cropped to the same hero viewport.
+   Pointer events stay on the project link, as this is a preview, not a player. */
+.entry-media.live-cover{position:relative}
+.entry-media.live-cover iframe{
+  position:absolute;top:0;left:50%;border:0;pointer-events:none;
+  transform:translateX(-50%) scale(var(--hero-scale));
+  transform-origin:top center;opacity:0;transition:opacity .5s ease;
+}
+.entry-media.live-cover iframe.ready{opacity:1}
 /* until an export exists, the slot holds the name — deliberate, not empty */
 .plate{
   font-family:var(--display); color:var(--ink); opacity:.4;
@@ -1338,6 +1297,61 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   .exp-row,.cv-skill-row{break-inside:avoid}
   .cv-end{display:none}
 }
+#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
+  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
+#stage #charMotion img{filter:none}
+#stage #charImg{clip-path:inset(38% 0 0)}
+#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
+  transform-origin:50% 38%;will-change:transform}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
+#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
+  opacity:0;will-change:opacity}
+html.flat-preview #stage #charMotion{filter:none}
+#stage #neutralPose{position:relative;transition:opacity 160ms ease-in}
+#stage .gesture-pose{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity 160ms ease-in;transform-origin:50% 38%}
+#stage .gesture-pose.is-active{opacity:1}
+#stage .gesture-pose>img{position:absolute;left:0;top:0;width:100%}
+/* Align the pointing drawing's face with the other poses. */
+#stage .gesture-pose[data-pose="point"]>.gesture-base{transform:translate(-7.55%,.6%)}
+#stage .mouth-shape{position:absolute;left:0;top:0;width:100%;
+  clip-path:inset(26.8% 43.5% 67.8% 43%);opacity:0}
+#stage .gesture-pose[data-pose="nails"] .mouth-shape{
+  clip-path:inset(26.8% 42.5% 67.8% 44%)}
+#motionControls{position:fixed;top:88px;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);
+  z-index:45;pointer-events:none}
+#motionControls .chip{pointer-events:auto;background:var(--paper-2)}
+#motionControls .chip:hover{background:var(--ink);color:var(--paper)}
+@media(max-width:819px){
+  #hero .hero-type{position:absolute;top:clamp(112px,24svh,220px);left:0;right:0}
+  #stage #say .say-card{width:100%}
+  #stage #say.flip{width:min(260px,calc(100vw - 32px))}
+  #stage #say.flip .say-card{width:fit-content;padding:12px 14px;background:var(--paper-2)}
+  #stage #say.flip .say-ico{display:none}
+  #stage #say.flip .say-txt{padding-top:0}
+  #stage #say.flip .chips{margin-top:7px}
+  #stage #say.flip .chip{min-height:44px}
+  html.mobile-cue-button #stage #say.flip.project-cue .say-card{display:none}
+  html.mobile-cue-button #stage #say.flip.project-cue .chips{margin-top:0}
+  #stage #say:not(.flip) .chips{justify-content:center}
+  #stage #say.stacked:not(.flip) .say-card:before{
+    top:auto;bottom:-6px;left:50%;right:auto;
+    border-left:0;border-top:0;border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);border-radius:0 0 3px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  #stage #neutralPose,#stage .gesture-pose{transition:none}
+}
+@media(max-width:819px) and (max-height:700px){
+  #hero .hero-type{top:clamp(100px,20svh,140px)}
+}
+
+/* Dialogue stays light; every response button is an action. */
+#stage #say .chip{background:var(--ink);color:var(--paper);border-color:var(--ink);backdrop-filter:none}
+#stage #say .chip:hover{background:var(--ink-2);border-color:var(--ink-2)}
+#stage #say .chip:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
 </style>
 
 <div class="grain"></div>
@@ -1361,7 +1375,14 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <div id="charMotion"><div id="neutralPose"><img id="charImg" src="assets/02-retro-toon-aligned.png" alt="Elif Uysal" draggable="false"><div id="headMotion"><img id="charHead" src="assets/02-retro-toon-aligned.png" alt="" aria-hidden="true" draggable="false"><img id="charMouth" src="assets/02-retro-toon-speaking.png" alt="" aria-hidden="true" draggable="false"><img id="charMouthRound" class="mouth-shape" src="assets/mouth-round.png" alt="" aria-hidden="true" draggable="false"></div></div></div>
+    <div id="charMotion"><div id="neutralPose">
+      <img id="charImg" src="/assets/character/02-retro-toon-aligned.webp" alt="Elif Uysal" draggable="false" fetchpriority="high">
+      <div id="headMotion">
+        <img id="charHead" src="/assets/character/02-retro-toon-aligned.webp" alt="" aria-hidden="true" draggable="false">
+        <img id="charMouth" src="/assets/character/02-retro-toon-speaking.webp" alt="" aria-hidden="true" draggable="false">
+        <img id="charMouthRound" class="mouth-shape" src="/assets/character/mouth-round.webp" alt="" aria-hidden="true" draggable="false">
+      </div>
+    </div></div>
   </div>
 
   <div id="say">
@@ -1493,10 +1514,11 @@ const PROJECTS = [
    logo:null,      /* ← Elif: Whallet logosu */     client:'Personal',         clientLogo:null,
    year:'2025', disc:['web3','product','uiux']},
 
-  {key:'base360', mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
-   /* kapak: 262:744 frame'inin 4× export'u — src/make_cover.py kendi zeminini
-      (#ECF1F9) okuyup 16:10'a genişletiyor, görsel kırpılmıyor. */
+  {key:'base360', live:true, mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
+   /* Live hero captured from https://base360.ai/b2c/ (2026-10-20).
+      Rebuild: python3 src/make_cover.py base360 src/assets/reference/base360-hero.png --ratio native --width 1800 */
    cover:'/assets/cover/base360.webp', coverBg:'#ECF1F9',
+   coverMotion:{width:1710,height:882,cropWidth:1408},
    logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
    year:'2026', disc:['web','uiux']},
 
@@ -1597,13 +1619,14 @@ const T = {
       chatbot: {i:'chart',   t:'A chatbot analytics dashboard for Jotform, built with a team of three — design, frontend, backend.'},
       thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved — and under NDA, so the page shows the alternates."},
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
-      base360: {i:'monitor', t:'A concept redesign of the base360 website, end to end — a proposal that never went live. Click and the prototype runs.'},
+      base360: {i:'monitor', t:'A complete website redesign for base360, an AI customer engagement platform. Explore the live site.'},
       sunninja:{i:'monitor', t:'A concept redesign of the Sun Ninja storefront — the sky, and the whole palette with it, moves with the sun as you scroll. Click and the prototype runs.'},
       shutter: {i:'gamepad', t:'A game made by three of us. The game design and the game UI are mine.'},
     },
     notes:{grad:'Graduation project'},
     withLine:a=>'With '+a.slice(0,-1).join(', ')+(a.length>1?' and ':'')+a[a.length-1],
     cta_tile:'View case →',
+    cta_site:'Visit website →',
     cta_demo:'Open the prototype →',   /* no case study yet, but it runs */
     disc:{
       service:{s:'Service', l:'Service design'},
@@ -1647,13 +1670,14 @@ const T = {
       chatbot: {i:'chart',   t:'Jotform için chatbot analitik paneli; tasarım, frontend ve backend’den oluşan üç kişilik ekiple.'},
       thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı — ve NDA kapsamında, o yüzden sayfada alternatifler var.'},
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
-      base360: {i:'monitor', t:'base360 web sitesi için baştan sona konsept yeniden tasarım — öneride kaldı, canlıya çıkmadı. Tıkla, prototip çalışsın.'},
+      base360: {i:'monitor', t:'AI destekli müşteri iletişim platformu base360 için baştan sona web sitesi tasarımı. Yayındaki siteyi keşfet.'},
       sunninja:{i:'monitor', t:'Sun Ninja mağazası için konsept yeniden tasarım — kaydırdıkça gökyüzü, onunla birlikte bütün palet günün saatine göre değişiyor. Tıkla, prototip çalışsın.'},
       shutter: {i:'gamepad', t:'Üç kişilik bir oyun. Oyun tasarımı ve oyun arayüzü bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
     withLine:a=>a.slice(0,-1).join(', ')+(a.length>1?' ve ':'')+a[a.length-1]+' ile birlikte',
     cta_tile:'Vakayı gör →',
+    cta_site:'Siteyi ziyaret et →',
     cta_demo:'Prototipi aç →',
     disc:{
       service:{s:'Servis', l:'Servis tasarımı'},
@@ -1753,7 +1777,7 @@ const band  = document.getElementById('band');
    since that page lives inside a sandboxed frame. */
 const projHref = p => (ROUTES && CASES[p.key]) ? `/case/${p.key}/`
                     : (!CASES[p.key] && DEMOS[p.key]) ? DEMOS[p.key] : '#';
-const projCta  = p => (!CASES[p.key] && DEMOS[p.key]) ? t().cta_demo : t().cta_tile;
+const projCta  = p => (!CASES[p.key] && DEMOS[p.key]) ? (p.live ? t().cta_site : t().cta_demo) : t().cta_tile;
 function wireOpen(a,p){
   if(!CASES[p.key] && DEMOS[p.key]){                 // let the link do its job
     if(!ROUTES){ a.target='_blank'; a.rel='noopener noreferrer'; }
@@ -1787,7 +1811,56 @@ function buildBand(){
     const i=document.createElement('i'); i.textContent=w; band.appendChild(i);
   });
 }
+let coverPreviewCleanups = [];
+function mountCoverPreview(entry,p){
+  if(!ROUTES || !p.coverMotion) return;
+  const media = entry.querySelector('.entry-media');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const {width,height,cropWidth} = p.coverMotion;
+  let visible=false, frame=null;
+  media.classList.add('live-cover');
+  const resize = new ResizeObserver(([box])=>{
+    media.style.setProperty('--hero-scale',box.contentRect.width/cropWidth);
+  });
+  resize.observe(media);
+  const remove = ()=>{
+    if(frame){ frame.remove(); frame=null; }
+  };
+  const sync = ()=>{
+    if(!visible || motion.matches || document.hidden ||
+       document.body.classList.contains('sheet-open')){
+      remove(); return;
+    }
+    if(frame) return;
+    frame=document.createElement('iframe');
+    frame.title=`${p.mark} — live website preview`;
+    frame.tabIndex=-1;
+    frame.setAttribute('aria-hidden','true');
+    frame.setAttribute('inert','');
+    frame.setAttribute('sandbox','allow-scripts allow-same-origin');
+    frame.style.width=`${width}px`;
+    frame.style.height=`${height}px`;
+    frame.addEventListener('load',event=>event.currentTarget.classList.add('ready'),{once:true});
+    frame.src=projHref(p);
+    media.appendChild(frame);
+  };
+  const visibility=new IntersectionObserver(([box])=>{
+    visible=box.isIntersecting; sync();
+  });
+  visibility.observe(media);
+  const sheets=new MutationObserver(sync);
+  sheets.observe(document.body,{attributes:true,attributeFilter:['class']});
+  motion.addEventListener('change',sync);
+  document.addEventListener('visibilitychange',sync);
+  coverPreviewCleanups.push(()=>{
+    remove(); resize.disconnect(); visibility.disconnect(); sheets.disconnect();
+    motion.removeEventListener('change',sync);
+    document.removeEventListener('visibilitychange',sync);
+  });
+}
 function buildIndex(){
+  coverPreviewCleanups.forEach(cleanup=>cleanup());
+  coverPreviewCleanups=[];
   const ol = document.getElementById('index');
   ol.innerHTML = '';
   PROJECTS.forEach(p=>{
@@ -1822,6 +1895,7 @@ function buildIndex(){
     a.addEventListener('mouseenter',()=>sayProject(p.key));
     wireOpen(a,p);
     li.appendChild(a); ol.appendChild(li);
+    mountCoverPreview(a,p);
     rio.observe(a);
   });
 }
@@ -1938,6 +2012,17 @@ function pose(){
   };
 }
 
+const CHARACTER_ASSETS={
+  '02-retro-toon-aligned':'/assets/character/02-retro-toon-aligned.webp',
+  '02-retro-toon-speaking':'/assets/character/02-retro-toon-speaking.webp',
+  'mouth-round':'/assets/character/mouth-round.webp',
+  'gesture-nails':'/assets/character/gesture-nails.webp',
+  'gesture-yawn':'/assets/character/gesture-yawn.webp',
+  'gesture-thumbs':'/assets/character/gesture-thumbs.webp',
+  'gesture-point-up':'/assets/character/gesture-point-up.webp',
+  'nails-open':'/assets/character/nails-open.webp',
+  'nails-round':'/assets/character/nails-round.webp'
+};
 /* Raster key poses share the existing rig; speech is a separate face layer. */
 const neutralPose=document.getElementById('neutralPose');
 const roundMouth=document.getElementById('charMouthRound');
@@ -1957,7 +2042,7 @@ for(const name of ['nails','yawn','thumbs','point']){
   layer.setAttribute('aria-hidden','true');
   const makeImage=(file,cls)=>{
     const image=document.createElement('img');
-    image.src=`assets/${file}.png`; image.alt=''; image.className=cls;
+    image.dataset.frame=file; image.alt=''; image.className=cls;
     layer.appendChild(image); return image;
   };
   const base=makeImage(name==='point'?'gesture-point-up':`gesture-${name}`,'gesture-base');
@@ -1967,9 +2052,11 @@ for(const name of ['nails','yawn','thumbs','point']){
     round=makeImage(name==='nails'?'nails-round':'mouth-round','mouth-shape');
   }
   charMotion.appendChild(layer);
-  const ready=Promise.all([...layer.querySelectorAll('img')].map(img=>img.decode()))
-    .then(()=>true,()=>false);
-  gestureLayers[name]={layer,base,open,round,ready};
+  let ready;
+  const load=()=>ready ||= Promise.all([...layer.querySelectorAll('img')].map(img=>{
+    img.src=CHARACTER_ASSETS[img.dataset.frame]; return img.decode();
+  })).then(()=>true,()=>false);
+  gestureLayers[name]={layer,base,open,round,load};
 }
 const neutralMouthReady=Promise.all([charMouth.decode(),roundMouth.decode()])
   .then(()=>true,()=>false);
@@ -1986,7 +2073,7 @@ function resetGesture(){
 async function playGesture(name,duration=5000){
   if(RM||document.hidden||cvOpen||caseOpen) return;
   const serial=++gestureSerial, pose=gestureLayers[name];
-  if(!pose||!await pose.ready||serial!==gestureSerial) return;
+  if(!pose||!await pose.load()||serial!==gestureSerial) return;
   if(document.hidden||cvOpen||caseOpen) return;
   if(name==='yawn'&&typing) return;
   Object.values(gestureLayers).forEach(({layer})=>layer.classList.remove('is-active'));
@@ -2090,9 +2177,7 @@ if(motionPreview){
   };
   for(const [name,label] of [['nails','Nails'],['yawn','Yawn'],['thumbs','Thumbs up']]){
     add(label,()=>{
-      clearTimeout(typeTimer);
-  typing=false;
-  sayEl.classList.remove('project-cue');typing=false;txtEl.setAttribute('aria-busy','false');
+      clearTimeout(typeTimer);typing=false;txtEl.setAttribute('aria-busy','false');
       playGesture(name,60000);
     });
   }
@@ -2109,6 +2194,7 @@ if(motionPreview){
   add('Reset',()=>{resetGesture();nextGestureAt=performance.now()+24000;});
   document.body.appendChild(controls);
 }
+
 
 function tick(now){
   const dt=Math.min(34, now-last); last=now;

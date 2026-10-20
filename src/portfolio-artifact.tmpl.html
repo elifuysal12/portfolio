@@ -1276,6 +1276,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   .exp-row,.cv-skill-row{break-inside:avoid}
   .cv-end{display:none}
 }
+{{CHARACTER_CSS}}
 </style>
 
 <div class="grain"></div>
@@ -1299,7 +1300,14 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <img id="charImg" src="data:image/webp;base64,{{IMG_BUST}}" alt="Elif Uysal" draggable="false">
+    <div id="charMotion"><div id="neutralPose">
+      <img id="charImg" src="{{ASSET:character/02-retro-toon-aligned.webp}}" alt="Elif Uysal" draggable="false" fetchpriority="high">
+      <div id="headMotion">
+        <img id="charHead" src="{{ASSET:character/02-retro-toon-aligned.webp}}" alt="" aria-hidden="true" draggable="false">
+        <img id="charMouth" src="{{ASSET:character/02-retro-toon-speaking.webp}}" alt="" aria-hidden="true" draggable="false">
+        <img id="charMouthRound" class="mouth-shape" src="{{ASSET:character/mouth-round.webp}}" alt="" aria-hidden="true" draggable="false">
+      </div>
+    </div></div>
   </div>
 
   <div id="say">
@@ -1840,6 +1848,8 @@ function setIcon(name){
 
 function say(icon,text,delay=0){
   clearTimeout(typeTimer);
+  typing=false;
+  sayEl.classList.remove('project-cue');
   txtEl.setAttribute('aria-busy','true');
   setIcon(icon);
   sayEl.classList.add('show');
@@ -1849,7 +1859,7 @@ function say(icon,text,delay=0){
     const step=()=>{
       i++;
       txtEl.innerHTML = text.slice(0,i) + (i<text.length?'<span class="caret"></span>':'');
-      if(i<text.length) typeTimer=setTimeout(step, 16+Math.random()*22);
+      if(i<text.length) typeTimer=setTimeout(step, /[,.!?;:]/.test(text[i-1])?160:22+Math.random()*24);
       else { typing=false; txtEl.setAttribute('aria-busy','false'); }
     };
     if(RM){ txtEl.textContent=text; typing=false; txtEl.setAttribute('aria-busy','false'); return; }
@@ -1860,7 +1870,7 @@ function say(icon,text,delay=0){
 }
 
 function sayLine(k){ const l=t().lines[k]; if(l) say(l.i,l.t); }
-function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }
+function sayProject(k){ pointToProject(k); }
 
 const scrollToSection = id => document.getElementById(id).scrollIntoView({behavior:RM?'auto':'smooth'});
 function heroChips(){
@@ -1897,6 +1907,9 @@ function renderChips(list){
    ============================================================= */
 const charEl=document.getElementById('char');
 const charImg=document.getElementById('charImg');
+const charMotion=document.getElementById('charMotion');
+const charHead=document.getElementById('headMotion');
+const charMouth=document.getElementById('charMouth');
 const glow=document.getElementById('glow');
 const cardEl=document.querySelector('.say-card');
 let cardW=0;
@@ -1914,7 +1927,7 @@ function pose(){
   // she rises from the bottom edge and stops below the first word — the
   // headline is the statement, she is not allowed to sit on top of it
   const heroH = mobile ? Math.min(vh*.30,260) : Math.min(vh*.40, 380);
-  const dockH = mobile ? 92 : 124;
+  const dockH = mobile ? 124 : 160;
   const heroS = heroH/CH, dockS = dockH/CH;
   return {
     hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
@@ -1923,6 +1936,8 @@ function pose(){
     mobile
   };
 }
+
+{{CHARACTER_JS}}
 
 function tick(now){
   const dt=Math.min(34, now-last); last=now;
@@ -1944,7 +1959,7 @@ function tick(now){
   if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
   let sx,sy;
   const sayH=sayEl.offsetHeight, half=(CW*s)/2;
-  sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
+  sayEl.classList.toggle('stacked',P.mobile);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
     sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
@@ -1952,8 +1967,12 @@ function tick(now){
     sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);
-    sy = y - CH*s*.78;
+    sy = y - CH*s*.98;
     sayEl.classList.remove('flip');
+  }
+  if(P.mobile){
+    sx=dockPLerp>.5 ? innerWidth-sayEl.offsetWidth-16 : (innerWidth-sayEl.offsetWidth)/2;
+    sy=y-CH*s-sayH-18;
   }
   sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));
   sy=Math.max(74, Math.min(sy, innerHeight-sayH-16));
@@ -1962,13 +1981,15 @@ function tick(now){
   /* ---- she is a flat illustration now, so the life comes from the whole
          figure: parallax lean, a breath, and a small nod while she types.
          (Blink and mouth shapes went with the SVG — they need layers.) ---- */
-  const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);
+  const tx=RM?0:(mx-.5)*(P.mobile?5:12), ty=RM?0:(my-.5)*(P.mobile?3:7);
   hx+=(tx-hx)*k*.55; hy+=(ty-hy)*k*.55;
-  const br  = Math.sin(now/1450)*1.7;                        // breathe
+  const br  = (RM?0:Math.sin(now/1450)*3);                        // breathe
   const nod = (typing && !RM) ? Math.sin(now/150)*1.1 : 0;   // talking
-  charImg.style.transform =
+  charMotion.style.transform =
     `translate3d(${hx.toFixed(2)}px, ${(hy+br+nod).toFixed(2)}px, 0)`+
     ` rotate(${(hx*.06).toFixed(2)}deg) scale(${(1+br*.0016).toFixed(4)})`;
+
+  updateCharacterMotion(now);
 
   /* ---- strips drift ---- */
   if(!RM){

@@ -34,128 +34,17 @@ if(new URLSearchParams(location.search).has('flat'))
 </script>"""
 preview = preview.replace("</head>", flat_mode + "</head>")
 
-for slug, title, _ in variants:
-    image = HERE / "assets" / f"{slug}.png"
-    if not image.is_file():
-        raise FileNotFoundError(image)
-    page, count = re.subn(
-        r'(<img id="charImg" src=")[^"]+',
-        rf'\g<1>assets/{slug}.png',
-        preview,
-    )
-    assert count == 1, "Expected one character swap point"
-    page = re.sub(r"<title>.*?</title>", f"<title>Elif — {title}</title>", page)
-    if slug == "02-retro-toon":
-        bust_page = page
-        # Keep the previous placement available for direct comparison.
-        (HERE / f"{slug}-floating.html").write_text(page)
-        fade = page.replace("</head>", """<style>
-#char{mask-image:linear-gradient(to bottom,black 78%,transparent 100%)}
-</style></head>""")
-        (HERE / f"{slug}-fade.html").write_text(fade)
-        # The source is a bust, so its cut edge belongs below the viewport.
-        # Seven screen pixels cover the existing breath/lean even at dock size.
-        assert page.count("y:vh-22, s:dockS") == 1
-        page = page.replace("y:vh-22, s:dockS", "y:vh+7, s:dockS")
-        # Keep the dialogue's original clearance while lowering only the figure.
-        assert page.count("const sayH=sayEl.offsetHeight, half=(CW*s)/2;") == 1
-        page = page.replace(
-            "const sayH=sayEl.offsetHeight, half=(CW*s)/2;",
-            "const sayH=sayEl.offsetHeight, half=(CW*s)/2;\n"
-            "  const dialogueY=y-29*dockPLerp;",
-        )
-        page = page.replace(
-            "sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;",
-            "sy = P.mobile ? dialogueY-CH*s-sayH-14 : dialogueY-CH*s*.92;",
-        )
-        (HERE / f"{slug}-edge.html").write_text(page)
-        # Keep the original upper-body coordinate system. The extended drawing
-        # overflows BELOW it at its natural aspect ratio, rather than squeezing
-        # the taller figure into the old square and shrinking the face.
-        extended = HERE / "assets" / f"{slug}-aligned.png"
-        if not extended.is_file():
-            raise FileNotFoundError(extended)
-        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-aligned.png")
-        page = page.replace("</head>", """<style>
-#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
-#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
-  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
-#stage #charMotion img{filter:none}
-#stage #charImg{clip-path:inset(38% 0 0)}
-#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
-  transform-origin:50% 38%;will-change:transform}
-#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
-#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
-  opacity:0;will-change:opacity}
-html.flat-preview #stage #charMotion{filter:none}
-</style></head>""")
-        # Both layers share one asset and overlap slightly at the neck. Only the
-        # head rotates; breath and pointer movement apply to the common parent.
-        img_tag = re.search(r'<img id="charImg"[^>]+>', page).group(0)
-        head_tag = img_tag.replace('id="charImg"', 'id="charHead"').replace(
-            'alt="Elif Uysal"', 'alt="" aria-hidden="true"')
-        mouth_tag = head_tag.replace('id="charHead"', 'id="charMouth"').replace(
-            f"{slug}-aligned.png", f"{slug}-speaking.png")
-        round_tag = mouth_tag.replace('id="charMouth"', 'id="charMouthRound" class="mouth-shape"').replace(
-            f"{slug}-speaking.png", "mouth-round.png")
-        assert (HERE / "assets" / f"{slug}-speaking.png").is_file()
-        page = page.replace(img_tag,
-            '<div id="charMotion"><div id="neutralPose">' + img_tag +
-            '<div id="headMotion">' + head_tag + mouth_tag + round_tag + '</div></div></div>')
-        page = page.replace("</head>", "<style>" +
-            (HERE / "retro-motion.css").read_text() + "</style></head>")
-        page = page.replace(
-            "const charImg=document.getElementById('charImg');",
-            "const charImg=document.getElementById('charImg');\n"
-            "const charMotion=document.getElementById('charMotion');\n"
-            "const charHead=document.getElementById('headMotion');\n"
-            "const charMouth=document.getElementById('charMouth');")
-        # Preserve the source's large, centered hero and scroll into the right dock.
-        # Leave room for the raised hand beside the hero's face.
-        page = page.replace("sy = y - CH*s*.78;", "sy = y - CH*s*.98;")
-        page = page.replace("sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);",
-                            "sayEl.classList.toggle('stacked',P.mobile);")
-        page = page.replace(
-            "  sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));",
-            "  if(P.mobile){\n"
-            "    sx=dockPLerp>.5 ? innerWidth-sayEl.offsetWidth-16"
-            " : (innerWidth-sayEl.offsetWidth)/2;\n"
-            "    sy=y-CH*s-sayH-18;\n"
-            "  }\n"
-            "  sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));")
-        page = page.replace(
-            "const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);",
-            "const tx=RM?0:(mx-.5)*(P.mobile?5:12), "
-            "ty=RM?0:(my-.5)*(P.mobile?3:7);")
-        page = page.replace("Math.sin(now/1450)*1.7",
-                            "(RM?0:Math.sin(now/1450)*3)")
-        page = page.replace("charImg.style.transform =", "charMotion.style.transform =")
-        page = page.replace(
-            "  /* ---- strips drift ---- */",
-            "  updateCharacterMotion(now);\n\n"
-            "  /* ---- strips drift ---- */")
-        page = page.replace("function tick(now){",
-            (HERE / "retro-motion.js").read_text() + "\nfunction tick(now){")
-        page = page.replace(
-            "function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }",
-            "function sayProject(k){ pointToProject(k); }")
-        page = page.replace("  clearTimeout(typeTimer);",
-                            "  clearTimeout(typeTimer);\n  typing=false;\n"
-                            "  sayEl.classList.remove('project-cue');")
-        page = page.replace(
-            "setTimeout(step, 16+Math.random()*22)",
-            "setTimeout(step, /[,.!?;:]/.test(text[i-1])?160:22+Math.random()*24)")
-        (HERE / f"{slug}-extended-compact.html").write_text(page)
-        assert page.count("const dockH = mobile ? 92 : 124;") == 1
-        page = page.replace("const dockH = mobile ? 92 : 124;",
-                            "const dockH = mobile ? 124 : 160;")
-    (HERE / f"{slug}.html").write_text(page)
-
-(HERE / "00-original.html").write_text(preview)
+# The selected character now lives in the production template. Older style
+# studies stay frozen; refreshing the retro preview uses the same source as live.
+page = re.sub(r"<title>.*?</title>", "<title>Elif — Retro toon</title>", preview)
+(HERE / "02-retro-toon.html").write_text(page)
+assert page.count("const dockH = mobile ? 124 : 160;") == 1
+compact = page.replace("const dockH = mobile ? 124 : 160;", "const dockH = mobile ? 92 : 124;")
+(HERE / "02-retro-toon-extended-compact.html").write_text(compact)
 
 # Reuse the exact compiled portfolio typography, tokens and component styling.
 css = "\n".join(re.findall(r"<style>(.*?)</style>", source, re.S))
-(HERE / "portfolio.css").write_text(css)
+(HERE / "portfolio.css").write_text(css.rstrip() + "\n")
 
 cards = []
 for slug, title, description in variants:
@@ -213,4 +102,4 @@ background, then open each version in the portfolio and scroll.</p>
 </header>
 <section class="studies" aria-label="Character style comparisons">
 """ + "\n".join(cards) + "</section></main></body></html>")
-print("Built comparison, original and three style previews.")
+print("Refreshed selected retro previews and comparison gallery.")

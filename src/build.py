@@ -6,8 +6,8 @@ Two outputs, same HTML body:
   ../dist/portfolio-artifact.html → what gets published as a Claude Artifact
                                     (the host supplies the <head> there)
 
-Everything is inlined as data: URIs — fonts, the character, the case screens —
-so the site is a single file with no external requests.
+Fonts and runtime code are inlined. Hosted character/case images are linked;
+the Artifact output inlines those images as data URIs as well.
 """
 import base64, mimetypes, os, re, shutil, sys
 
@@ -20,7 +20,8 @@ SUB = {
     '{{F_BRIC_LATINEXT}}': b64('assets/f1.woff2'),   # Bricolage Grotesque — latin-ext (TR)
     '{{F_IS_LATIN}}':      b64('assets/f4.woff2'),   # Instrument Sans — latin
     '{{F_IS_LATINEXT}}':   b64('assets/f5.woff2'),   # Instrument Sans — latin-ext (TR)
-    '{{IMG_BUST}}':        b64('assets/bust_q92.webp'),
+    '{{CHARACTER_CSS}}':   open(os.path.join(HERE, 'character-motion.css'), encoding='utf-8').read(),
+    '{{CHARACTER_JS}}':    open(os.path.join(HERE, 'character-motion.js'), encoding='utf-8').read(),
 }
 
 html = open(os.path.join(HERE, 'portfolio-artifact.tmpl.html'), encoding='utf-8').read()
@@ -78,7 +79,7 @@ open(artifact, 'w', encoding='utf-8').write(artifact_html)
 
 # the linked copies, next to index.html
 copied = []
-for sub in ('case', 'cover', 'alti', 'thy'):  # case screens, cover shots, ALTI, THY
+for sub in ('case', 'cover', 'alti', 'thy', 'character'):
     src_dir = os.path.join(HERE, 'assets', sub)
     if not os.path.isdir(src_dir):
         continue

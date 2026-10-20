@@ -1,7 +1,7 @@
 # elifbeyzauysal.com — portfolio
 
-One page. Fonts and the character illustration are inlined as `data:` URIs, so
-the page draws in its own type with no external requests. Case-study screens are
+One page. Fonts are inlined as `data:` URIs, so
+the page draws in its own type with no external font requests. Character frames and case-study screens are
 the exception: they are 4× Figma exports and ship as real files under `assets/`,
 lazy and cacheable, rather than a megabyte of base64 in front of the first paint.
 
@@ -25,6 +25,14 @@ New screens: export from Figma at **4×** (a 1× export downscaled to card width
 turns the 2px gradient stroke into a sub-pixel smear), drop the file into
 `src/assets/case/`, reference it in the template as `{{ASSET:case/name.webp}}`,
 rebuild.
+
+The retro character uses `src/character-motion.css` and
+`src/character-motion.js`, included by the template build. Delivery frames live in
+`src/assets/character/` as WebP files; original PNG drawings and generation prompts
+remain in `experiments/character-styles/`. Gesture frames load on demand.
+The selected mobile dialogue is the compact conversation with black action buttons.
+After the main build, `python3 experiments/character-styles/build.py` refreshes the
+retro previews from the same production source. Earlier style studies remain frozen.
 
 Work-card covers go through one more step, because the cards are 16:10 and the
 cover frames are not:

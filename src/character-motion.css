@@ -1,3 +1,14 @@
+#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
+  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
+#stage #charMotion img{filter:none}
+#stage #charImg{clip-path:inset(38% 0 0)}
+#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
+  transform-origin:50% 38%;will-change:transform}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
+#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
+  opacity:0;will-change:opacity}
+html.flat-preview #stage #charMotion{filter:none}
 #stage #neutralPose{position:relative;transition:opacity 160ms ease-in}
 #stage .gesture-pose{position:absolute;inset:0;opacity:0;pointer-events:none;
   transition:opacity 160ms ease-in;transform-origin:50% 38%}
@@ -36,3 +47,8 @@
 @media(max-width:819px) and (max-height:700px){
   #hero .hero-type{top:clamp(100px,20svh,140px)}
 }
+
+/* Dialogue stays light; every response button is an action. */
+#stage #say .chip{background:var(--ink);color:var(--paper);border-color:var(--ink);backdrop-filter:none}
+#stage #say .chip:hover{background:var(--ink-2);border-color:var(--ink-2)}
+#stage #say .chip:focus-visible{outline:2px solid var(--accent);outline-offset:3px}

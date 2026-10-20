@@ -414,6 +414,15 @@ html{scroll-snap-type:y proximity}
 .entry-media.own{border-color:transparent}
 .entry-media.own img{object-fit:contain;filter:none}
 .entry:hover .entry-media img{filter:saturate(1)}
+/* The live page sits over its still cover, cropped to the same hero viewport.
+   Pointer events stay on the project link, as this is a preview, not a player. */
+.entry-media.live-cover{position:relative}
+.entry-media.live-cover iframe{
+  position:absolute;top:0;left:50%;border:0;pointer-events:none;
+  transform:translateX(-50%) scale(var(--hero-scale));
+  transform-origin:top center;opacity:0;transition:opacity .5s ease;
+}
+.entry-media.live-cover iframe.ready{opacity:1}
 /* until an export exists, the slot holds the name — deliberate, not empty */
 .plate{
   font-family:var(--display); color:var(--ink); opacity:.4;
@@ -1267,3 +1276,57 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
   .exp-row,.cv-skill-row{break-inside:avoid}
   .cv-end{display:none}
 }
+#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
+  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
+#stage #charMotion img{filter:none}
+#stage #charImg{clip-path:inset(38% 0 0)}
+#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
+  transform-origin:50% 38%;will-change:transform}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
+#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
+  opacity:0;will-change:opacity}
+html.flat-preview #stage #charMotion{filter:none}
+#stage #neutralPose{position:relative;transition:opacity 160ms ease-in}
+#stage .gesture-pose{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity 160ms ease-in;transform-origin:50% 38%}
+#stage .gesture-pose.is-active{opacity:1}
+#stage .gesture-pose>img{position:absolute;left:0;top:0;width:100%}
+/* Align the pointing drawing's face with the other poses. */
+#stage .gesture-pose[data-pose="point"]>.gesture-base{transform:translate(-7.55%,.6%)}
+#stage .mouth-shape{position:absolute;left:0;top:0;width:100%;
+  clip-path:inset(26.8% 43.5% 67.8% 43%);opacity:0}
+#stage .gesture-pose[data-pose="nails"] .mouth-shape{
+  clip-path:inset(26.8% 42.5% 67.8% 44%)}
+#motionControls{position:fixed;top:88px;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);
+  z-index:45;pointer-events:none}
+#motionControls .chip{pointer-events:auto;background:var(--paper-2)}
+#motionControls .chip:hover{background:var(--ink);color:var(--paper)}
+@media(max-width:819px){
+  #hero .hero-type{position:absolute;top:clamp(112px,24svh,220px);left:0;right:0}
+  #stage #say .say-card{width:100%}
+  #stage #say.flip{width:min(260px,calc(100vw - 32px))}
+  #stage #say.flip .say-card{width:fit-content;padding:12px 14px;background:var(--paper-2)}
+  #stage #say.flip .say-ico{display:none}
+  #stage #say.flip .say-txt{padding-top:0}
+  #stage #say.flip .chips{margin-top:7px}
+  #stage #say.flip .chip{min-height:44px}
+  html.mobile-cue-button #stage #say.flip.project-cue .say-card{display:none}
+  html.mobile-cue-button #stage #say.flip.project-cue .chips{margin-top:0}
+  #stage #say:not(.flip) .chips{justify-content:center}
+  #stage #say.stacked:not(.flip) .say-card:before{
+    top:auto;bottom:-6px;left:50%;right:auto;
+    border-left:0;border-top:0;border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);border-radius:0 0 3px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  #stage #neutralPose,#stage .gesture-pose{transition:none}
+}
+@media(max-width:819px) and (max-height:700px){
+  #hero .hero-type{top:clamp(100px,20svh,140px)}
+}
+
+/* Dialogue stays light; every response button is an action. */
+#stage #say .chip{background:var(--ink);color:var(--paper);border-color:var(--ink);backdrop-filter:none}
+#stage #say .chip:hover{background:var(--ink-2);border-color:var(--ink-2)}
+#stage #say .chip:focus-visible{outline:2px solid var(--accent);outline-offset:3px}

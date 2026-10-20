@@ -1,3 +1,14 @@
+const CHARACTER_ASSETS={
+  '02-retro-toon-aligned':'{{ASSET:character/02-retro-toon-aligned.webp}}',
+  '02-retro-toon-speaking':'{{ASSET:character/02-retro-toon-speaking.webp}}',
+  'mouth-round':'{{ASSET:character/mouth-round.webp}}',
+  'gesture-nails':'{{ASSET:character/gesture-nails.webp}}',
+  'gesture-yawn':'{{ASSET:character/gesture-yawn.webp}}',
+  'gesture-thumbs':'{{ASSET:character/gesture-thumbs.webp}}',
+  'gesture-point-up':'{{ASSET:character/gesture-point-up.webp}}',
+  'nails-open':'{{ASSET:character/nails-open.webp}}',
+  'nails-round':'{{ASSET:character/nails-round.webp}}'
+};
 /* Raster key poses share the existing rig; speech is a separate face layer. */
 const neutralPose=document.getElementById('neutralPose');
 const roundMouth=document.getElementById('charMouthRound');
@@ -17,7 +28,7 @@ for(const name of ['nails','yawn','thumbs','point']){
   layer.setAttribute('aria-hidden','true');
   const makeImage=(file,cls)=>{
     const image=document.createElement('img');
-    image.src=`assets/${file}.png`; image.alt=''; image.className=cls;
+    image.dataset.frame=file; image.alt=''; image.className=cls;
     layer.appendChild(image); return image;
   };
   const base=makeImage(name==='point'?'gesture-point-up':`gesture-${name}`,'gesture-base');
@@ -27,9 +38,11 @@ for(const name of ['nails','yawn','thumbs','point']){
     round=makeImage(name==='nails'?'nails-round':'mouth-round','mouth-shape');
   }
   charMotion.appendChild(layer);
-  const ready=Promise.all([...layer.querySelectorAll('img')].map(img=>img.decode()))
-    .then(()=>true,()=>false);
-  gestureLayers[name]={layer,base,open,round,ready};
+  let ready;
+  const load=()=>ready ||= Promise.all([...layer.querySelectorAll('img')].map(img=>{
+    img.src=CHARACTER_ASSETS[img.dataset.frame]; return img.decode();
+  })).then(()=>true,()=>false);
+  gestureLayers[name]={layer,base,open,round,load};
 }
 const neutralMouthReady=Promise.all([charMouth.decode(),roundMouth.decode()])
   .then(()=>true,()=>false);
@@ -46,7 +59,7 @@ function resetGesture(){
 async function playGesture(name,duration=5000){
   if(RM||document.hidden||cvOpen||caseOpen) return;
   const serial=++gestureSerial, pose=gestureLayers[name];
-  if(!pose||!await pose.ready||serial!==gestureSerial) return;
+  if(!pose||!await pose.load()||serial!==gestureSerial) return;
   if(document.hidden||cvOpen||caseOpen) return;
   if(name==='yawn'&&typing) return;
   Object.values(gestureLayers).forEach(({layer})=>layer.classList.remove('is-active'));
