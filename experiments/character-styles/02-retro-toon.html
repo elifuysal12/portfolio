@@ -30,6 +30,36 @@ if(new URLSearchParams(location.search).has('flat'))
 #stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
   opacity:0;will-change:opacity}
 html.flat-preview #stage #charMotion{filter:none}
+</style><style>#stage #neutralPose{position:relative;transition:opacity 160ms ease-in}
+#stage .gesture-pose{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity 160ms ease-in;transform-origin:50% 38%}
+#stage .gesture-pose.is-active{opacity:1}
+#stage .gesture-pose>img{position:absolute;left:0;top:0;width:100%}
+/* Align the pointing drawing's face with the other poses. */
+#stage .gesture-pose[data-pose="point"]>.gesture-base{transform:translate(-7.55%,.6%)}
+#stage .mouth-shape{position:absolute;left:0;top:0;width:100%;
+  clip-path:inset(26.8% 43.5% 67.8% 43%);opacity:0}
+#stage .gesture-pose[data-pose="nails"] .mouth-shape{
+  clip-path:inset(26.8% 42.5% 67.8% 44%)}
+#motionControls{position:fixed;top:88px;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);
+  z-index:45;pointer-events:none}
+#motionControls .chip{pointer-events:auto;background:var(--paper-2)}
+#motionControls .chip:hover{background:var(--ink);color:var(--paper)}
+@media(max-width:819px){
+  #hero .hero-type{position:absolute;top:clamp(112px,24svh,220px);left:0;right:0}
+  #stage #say .say-card{width:100%}
+  #stage #say:not(.flip) .chips{justify-content:center}
+  #stage #say.stacked:not(.flip) .say-card:before{
+    top:auto;bottom:-6px;left:50%;right:auto;
+    border-left:0;border-top:0;border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);border-radius:0 0 3px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  #stage #neutralPose,#stage .gesture-pose{transition:none}
+}
+@media(max-width:819px) and (max-height:700px){
+  #hero .hero-type{top:clamp(100px,20svh,140px)}
+}
 </style></head>
 <body>
 <style>
@@ -1323,7 +1353,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <div id="charMotion"><img id="charImg" src="assets/02-retro-toon-aligned.png" alt="Elif Uysal" draggable="false"><div id="headMotion"><img id="charHead" src="assets/02-retro-toon-aligned.png" alt="" aria-hidden="true" draggable="false"><img id="charMouth" src="assets/02-retro-toon-speaking.png" alt="" aria-hidden="true" draggable="false"></div></div>
+    <div id="charMotion"><div id="neutralPose"><img id="charImg" src="assets/02-retro-toon-aligned.png" alt="Elif Uysal" draggable="false"><div id="headMotion"><img id="charHead" src="assets/02-retro-toon-aligned.png" alt="" aria-hidden="true" draggable="false"><img id="charMouth" src="assets/02-retro-toon-speaking.png" alt="" aria-hidden="true" draggable="false"><img id="charMouthRound" class="mouth-shape" src="assets/mouth-round.png" alt="" aria-hidden="true" draggable="false"></div></div></div>
   </div>
 
   <div id="say">
@@ -1832,7 +1862,7 @@ function say(icon,text,delay=0){
 }
 
 function sayLine(k){ const l=t().lines[k]; if(l) say(l.i,l.t); }
-function sayProject(k){ const p=t().proj[k]; if(p) say(p.i,p.t); }
+function sayProject(k){ pointToProject(k); }
 
 const scrollToSection = id => document.getElementById(id).scrollIntoView({behavior:RM?'auto':'smooth'});
 function heroChips(){
@@ -1879,7 +1909,7 @@ let cardW=0;
 const CW=720, CH=713;
 let mx=.5, my=.5, hx=0, hy=0;                   // cursor + lerped parallax offset
 let stripX=0, bandX=0, stripSpeed=1;
-let dockP=1, dockPLerp=1;                       // 0 = hero pose, 1 = docked corner
+let dockP=0, dockPLerp=0;                       // 0 = hero pose, 1 = docked corner
 let last=performance.now();
 
 addEventListener('pointermove',e=>{ mx=e.clientX/innerWidth; my=e.clientY/innerHeight; },{passive:true});
@@ -1892,11 +1922,175 @@ function pose(){
   const dockH = mobile ? 124 : 160;
   const heroS = heroH/CH, dockS = dockH/CH;
   return {
-    hero:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
+    hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
     // she docks bottom-right, where help lives — and out of the footer's way
     dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
     mobile
   };
+}
+
+/* Raster key poses share the existing rig; speech is a separate face layer. */
+const neutralPose=document.getElementById('neutralPose');
+const roundMouth=document.getElementById('charMouthRound');
+const gestureLayers={};
+const motionPreview=new URLSearchParams(location.search).has('motion');
+const onlyOnRequest=new URLSearchParams(location.search).get('gestures')==='hover';
+let gesture='neutral', gestureUntil=0, gestureSerial=0, idleIndex=0;
+let nextGestureAt=performance.now()+14000, workPromptAt=0, workPromptDone=false;
+let lastProjectKey='', lastProjectAt=0, mouthFrameAt=0, mouthShape='closed';
+
+for(const name of ['nails','yawn','thumbs','point']){
+  const layer=document.createElement('div');
+  layer.className='gesture-pose'; layer.dataset.pose=name;
+  layer.setAttribute('aria-hidden','true');
+  const makeImage=(file,cls)=>{
+    const image=document.createElement('img');
+    image.src=`assets/${file}.png`; image.alt=''; image.className=cls;
+    layer.appendChild(image); return image;
+  };
+  const base=makeImage(`gesture-${name}`,'gesture-base');
+  let open=null,round=null;
+  if(name!=='yawn'){
+    open=makeImage(name==='nails'?'nails-open':'02-retro-toon-speaking','mouth-shape');
+    round=makeImage(name==='nails'?'nails-round':'mouth-round','mouth-shape');
+  }
+  charMotion.appendChild(layer);
+  const ready=Promise.all([...layer.querySelectorAll('img')].map(img=>img.decode()))
+    .then(()=>true,()=>false);
+  gestureLayers[name]={layer,base,open,round,ready};
+}
+const neutralMouthReady=Promise.all([charMouth.decode(),roundMouth.decode()])
+  .then(()=>true,()=>false);
+let speechImagesReady=false;
+neutralMouthReady.then(ready=>{speechImagesReady=ready;});
+
+function resetGesture(){
+  gestureSerial++;
+  gesture='neutral'; gestureUntil=0;
+  neutralPose.style.opacity='1';
+  Object.values(gestureLayers).forEach(({layer})=>layer.classList.remove('is-active'));
+  charMotion.dataset.pose='neutral';
+}
+async function playGesture(name,duration=5000){
+  if(RM||document.hidden||cvOpen||caseOpen) return;
+  const serial=++gestureSerial, pose=gestureLayers[name];
+  if(!pose||!await pose.ready||serial!==gestureSerial) return;
+  if(document.hidden||cvOpen||caseOpen) return;
+  if(name==='yawn'&&typing) return;
+  Object.values(gestureLayers).forEach(({layer})=>layer.classList.remove('is-active'));
+  neutralPose.style.opacity='0';
+  pose.layer.classList.add('is-active');
+  gesture=name; gestureUntil=performance.now()+duration;
+  charMotion.dataset.pose=name;
+  nextGestureAt=gestureUntil+24000+Math.random()*12000;
+}
+function visibleProject(){
+  const entries=[...document.querySelectorAll('.entry[data-key],.tile[data-key]')];
+  return entries.filter(el=>{
+    const r=el.getBoundingClientRect();
+    return r.width>0&&r.top<innerHeight*.78&&r.bottom>100&&
+      r.left<innerWidth*.7&&r.right>0;
+  }).sort((a,b)=>Math.abs(a.getBoundingClientRect().top-innerHeight*.4)-
+    Math.abs(b.getBoundingClientRect().top-innerHeight*.4))[0];
+}
+function pointToProject(key,force=false){
+  if(cvOpen||caseOpen) return;
+  const project=PROJECTS.find(p=>p.key===key);
+  if(!project) return;
+  const now=performance.now();
+  if(!force&&key===lastProjectKey&&now-lastProjectAt<9000) return;
+  lastProjectKey=key; lastProjectAt=now; workPromptDone=true;
+  const line=L==='tr'?`${project.mark} projesini gördün mü?`:
+    `Have you seen ${project.mark}?`;
+  say(t().proj[key]?.i||'grid',line);
+  playGesture('point',motionPreview?60000:7500);
+  renderChips([{
+    label:L==='tr'?'Projeye bak':'Take a look',
+    on:()=>{
+      resetGesture();
+      const link=document.querySelector(`.entry[data-key="${key}"],.tile[data-key="${key}"]`);
+      link?.click();
+    }
+  }]);
+}
+function updateCharacterMotion(now){
+  if(document.hidden||cvOpen||caseOpen){
+    if(gesture!=='neutral')resetGesture();
+    return;
+  }
+  if(gesture!=='neutral'&&(now>gestureUntil||(gesture==='yawn'&&typing)))resetGesture();
+  if(gesture==='point'&&zone==='hero')resetGesture();
+  // One contextual invitation per visit to Work. Hover/focus remains responsive.
+  if(zone==='work'){
+    if(!workPromptAt)workPromptAt=now+6500;
+    if(!onlyOnRequest&&!workPromptDone&&!typing&&now>workPromptAt){
+      const project=visibleProject();
+      if(project)pointToProject(project.dataset.key);
+    }
+  }else{workPromptAt=0;workPromptDone=false;}
+  if(!RM&&!motionPreview&&!onlyOnRequest&&gesture==='neutral'&&!typing&&now>nextGestureAt){
+    playGesture(['nails','thumbs','yawn'][idleIndex++%3],5200);
+    nextGestureAt=now+35000;
+  }
+  const angle=RM?0:Math.sin(now/2900)*1.4+(typing?Math.sin(now/310)*.65:0);
+  charHead.style.transform=`rotate(${angle.toFixed(3)}deg)`;
+  if(gesture!=='neutral'){
+    const sway=Math.sin(now/1100)*.35;
+    gestureLayers[gesture].layer.style.transform=`rotate(${sway.toFixed(3)}deg)`;
+  }
+  // Text-paced visemes: closed consonants, wide vowels and rounded O/U.
+  // This is illustrative dialogue animation, not audio phoneme lip-sync.
+  if(!typing||RM||!speechImagesReady){mouthShape='closed';}
+  else if(now>=mouthFrameAt){
+    const letter=txtEl.textContent.trimEnd().slice(-1).toLocaleLowerCase();
+    if(/[,.!?;:mbp]/.test(letter)||now%1100>950)mouthShape='closed';
+    else if(/[oöuüw]/.test(letter))mouthShape='round';
+    else mouthShape=Math.sin(now/100)>.05?'open':'closed';
+    mouthFrameAt=now+85;
+  }
+  charMouth.style.opacity=mouthShape==='open'?'1':'0';
+  roundMouth.style.opacity=mouthShape==='round'?'1':'0';
+  for(const [name,pose] of Object.entries(gestureLayers)){
+    if(pose.open)pose.open.style.opacity=name===gesture&&mouthShape==='open'?'1':'0';
+    if(pose.round)pose.round.style.opacity=name===gesture&&mouthShape==='round'?'1':'0';
+  }
+  charMotion.dataset.mouth=mouthShape;
+}
+document.addEventListener('visibilitychange',()=>{
+  resetGesture(); nextGestureAt=performance.now()+14000;
+});
+document.addEventListener('focusin',event=>{
+  const project=event.target.closest('.entry[data-key],.tile[data-key]');
+  if(project)pointToProject(project.dataset.key);
+});
+if(motionPreview){
+  const controls=document.createElement('div');
+  controls.id='motionControls';controls.className='chips';
+  controls.setAttribute('role','group');controls.setAttribute('aria-label','Character motion preview');
+  const add=(label,action)=>{
+    const button=document.createElement('button');
+    button.className='chip';button.textContent=label;button.onclick=action;
+    controls.appendChild(button);return button;
+  };
+  for(const [name,label] of [['nails','Nails'],['yawn','Yawn'],['thumbs','Thumbs up']]){
+    add(label,()=>{
+      clearTimeout(typeTimer);
+  typing=false;typing=false;txtEl.setAttribute('aria-busy','false');
+      playGesture(name,60000);
+    });
+  }
+  add('Point to a project',()=>{
+    const visible=visibleProject();
+    if(visible){pointToProject(visible.dataset.key,true);return;}
+    scrollToSection('work');
+    setTimeout(()=>{const project=visibleProject();if(project)pointToProject(project.dataset.key,true);},1100);
+  });
+  add('Speak',()=>{
+    say('spark',"You can explore my work while I show you what I have been building.");
+    if(gesture!=='neutral')gestureUntil=performance.now()+60000;
+  });
+  add('Reset',()=>{resetGesture();nextGestureAt=performance.now()+24000;});
+  document.body.appendChild(controls);
 }
 
 function tick(now){
@@ -1904,7 +2098,7 @@ function tick(now){
   const k=1-Math.pow(.001, dt/1000);            // frame-rate independent lerp
 
   /* ---- dock progress from scroll (pinned while the CV is open) ---- */
-  const p=1; // persistent bottom-right companion
+  const p=(cvOpen||caseOpen) ? 1 : Math.min(1, Math.max(0, scrollY/(innerHeight*.72)));
   dockP = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; // easeInOutQuad
   dockPLerp += (dockP-dockPLerp)*k*.9;
 
@@ -1919,7 +2113,7 @@ function tick(now){
   if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
   let sx,sy;
   const sayH=sayEl.offsetHeight, half=(CW*s)/2;
-  sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
+  sayEl.classList.toggle('stacked',P.mobile);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
     sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
@@ -1927,8 +2121,12 @@ function tick(now){
     sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);
-    sy = y - CH*s*.78;
+    sy = y - CH*s*.98;
     sayEl.classList.remove('flip');
+  }
+  if(P.mobile){
+    sx=(innerWidth-sayEl.offsetWidth)/2;
+    sy=y-CH*s-sayH-18;
   }
   sx=Math.max(10, Math.min(sx, innerWidth-cardW-14));
   sy=Math.max(74, Math.min(sy, innerHeight-sayH-16));
@@ -1945,11 +2143,7 @@ function tick(now){
     `translate3d(${hx.toFixed(2)}px, ${(hy+br+nod).toFixed(2)}px, 0)`+
     ` rotate(${(hx*.06).toFixed(2)}deg) scale(${(1+br*.0016).toFixed(4)})`;
 
-  const headAngle=RM?0:Math.sin(now/2900)*1.4+(typing?Math.sin(now/310)*.65:0);
-  charHead.style.transform=`rotate(${headAngle.toFixed(3)}deg)`;
-  const punctuation=/[,.!?;:]$/.test(txtEl.textContent);
-  const mouthOpen=!RM && typing && !punctuation && now%940<790 && Math.sin(now/83)>-.2;
-  charMouth.style.opacity=mouthOpen?'1':'0';
+  updateCharacterMotion(now);
 
   /* ---- strips drift ---- */
   if(!RM){

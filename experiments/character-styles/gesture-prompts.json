@@ -1,0 +1,38 @@
+{
+  "tool": "Built-in image generation",
+  "background": "transparent",
+  "prompts": [
+    {
+      "id": "nails",
+      "prompt": "Edit this same transparent adult cartoon designer into ONE animation pose. Keep EXACT character identity, aligned eyes behind round glasses, red patterned bandana, brown bob, silver pendant, loose straight navy sleeveless shirt, understated straight slim hips, natural relaxed body. Do not add curves, tight clothing or exaggerated bust/hips. Exact 1060x1484 portrait canvas, same character scale and torso alignment, head stays very near its original location. All hand gestures MUST occur near the face/upper chest (within top 65% of image) so they are visible in a cropped website companion. Five anatomically plausible fingers per hand. True transparent background, no scenery, text, props, borders. Same linework/colors as input. Pose: examining her fingernails. Lift her LEFT hand on viewer's right to upper-chest/cheek height, back of hand facing viewer, fingers softly spread, small red nail polish matching bandana. Bend elbow naturally. Turn eyes and chin slightly toward this raised hand, quietly curious mildly bored expression, mouth closed. Other arm stays relaxed downward. Keep hand distinct from face; no face covering."
+    },
+    {
+      "id": "yawn",
+      "prompt": "Edit this same transparent adult cartoon designer into ONE animation pose. Keep EXACT character identity, aligned eyes behind round glasses, red patterned bandana, brown bob, silver pendant, loose straight navy sleeveless shirt, understated straight slim hips, natural relaxed body. Do not add curves, tight clothing or exaggerated bust/hips. Exact 1060x1484 portrait canvas, same character scale and torso alignment, head stays very near its original location. All hand gestures MUST occur near the face/upper chest (within top 65% of image) so they are visible in a cropped website companion. Five anatomically plausible fingers per hand. True transparent background, no scenery, text, props, borders. Same linework/colors as input. Pose: discreet tired yawn. Raise RIGHT hand on viewer's left to cover her mouth politely with fingers together, palm toward mouth. Eyes softly closed, brows relaxed and slightly tired. Head tilts a little forward; shoulders slightly relax. Hand actually covers mouth; no exaggerated gaping mouth. Other arm relaxed downward. Friendly small sleepy moment, not distressed."
+    },
+    {
+      "id": "thumbs",
+      "prompt": "Edit this same transparent adult cartoon designer into ONE animation pose. Keep EXACT character identity, aligned eyes behind round glasses, red patterned bandana, brown bob, silver pendant, loose straight navy sleeveless shirt, understated straight slim hips, natural relaxed body. Do not add curves, tight clothing or exaggerated bust/hips. Exact 1060x1484 portrait canvas, same character scale and torso alignment, head stays very near its original location. All hand gestures MUST occur near the face/upper chest (within top 65% of image) so they are visible in a cropped website companion. Five anatomically plausible fingers per hand. True transparent background, no scenery, text, props, borders. Same linework/colors as input. Pose: give visitor one friendly thumbs-up. Her RIGHT hand on viewer's left lifts to shoulder height, four fingers curled naturally into fist and one thumb upright. Elbow bent comfortably, hand clear of face. Look directly at viewer with same aligned eyes and small warm closed-mouth smile, tiny confident nod. Other arm stays relaxed downward. No wink, no toothy grin."
+    },
+    {
+      "id": "mouth-round",
+      "ref": "02-retro-toon-aligned.png",
+      "prompt": "Precise animation frame edit, exact same 1060x1484 transparent canvas and registration. Change ONLY the mouth. Preserve every other pixel as closely as possible: same eyes, face, hair, bandana, body, hands, pose, clothing and proportions. Mouth stays at same center; no movement of head or canvas. Replace smile with a small rounded O-shaped speaking mouth as when saying 'oh' or 'oo'. Rounded lips and small dark opening, natural understated expression, not shocked. Restore skin where corners of smile were. Mouth contained within x445..600,y400..475."
+    },
+    {
+      "id": "nails-open",
+      "ref": "gesture-nails.png",
+      "prompt": "Precise animation frame edit, exact same 1060x1484 transparent canvas and registration. Change ONLY the mouth. Preserve every other pixel as closely as possible: same eyes, face, hair, bandana, body, hands, pose, clothing and proportions. Mouth stays at same center; no movement of head or canvas. Keep her raised hand and her gaze on her nails. Change only her closed mouth to a small open friendly speaking mouth as when saying 'ah', natural dark interior. Mouth stays centered around x535,y425, contained within x480..595,y395..475."
+    },
+    {
+      "id": "nails-round",
+      "ref": "gesture-nails.png",
+      "prompt": "Precise animation frame edit, exact same 1060x1484 transparent canvas and registration. Change ONLY the mouth. Preserve every other pixel as closely as possible: same eyes, face, hair, bandana, body, hands, pose, clothing and proportions. Mouth stays at same center; no movement of head or canvas. Keep her raised hand and her gaze on her nails. Change only mouth to a small rounded O speaking shape as saying 'oh', slightly pursed lips, natural small dark opening, not surprised. Mouth stays centered around x535,y425, contained within x480..595,y395..475."
+    },
+    {
+      "id": "gesture-point",
+      "ref": "02-retro-toon-aligned.png",
+      "prompt": "Edit this same adult cartoon designer into one pointing animation pose. Exact 1060x1484 transparent canvas. Keep head/face/expression/eyes/glasses/bandana/hair PIXEL-REGISTERED at same position and scale as reference. Keep straight narrow natural body, loose navy shirt, no exaggerated curves. Lift her right arm on viewer's LEFT and extend forearm HORIZONTALLY toward viewer's LEFT at upper-chest level. Index finger points clearly to LEFT EDGE OF IMAGE (not toward viewer, not upwards), other fingers curled, thumb natural. Entire hand within canvas with slight left margin. Arm and fingertip should be between y580 and y780, visible in website bust crop. Friendly closed-mouth smile looking at visitor. Other arm relaxed. No props, no text, no background."
+    }
+  ]
+}
