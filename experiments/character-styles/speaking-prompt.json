@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Make ONE precise edit to this transparent cartoon character: change ONLY the closed smiling mouth into a small naturally open speaking mouth, about to say 'ah'. Upper mouth corners and mouth position must stay at EXACT same pixel coordinates. Open the lower lip modestly, dark warm interior and small tongue, understated friendly speech, no huge grin. The mouth should remain within the face region x=445..600,y=390..475 of the 1060x1484 source image. Every other feature, ALL EYES AND GLASSES, face, skin shading, hair, bandana, clothing, body, arms and transparent background must remain exactly unchanged and perfectly registered. Keep exact 1060x1484 canvas, no scaling, no shifting, no reframing. This is an animation frame that will be overlaid on the identical closed-mouth base, so pixel alignment is critical. No extra elements.",
+  "input": "assets/02-retro-toon-aligned.png",
+  "output": "assets/02-retro-toon-speaking.png"
+}

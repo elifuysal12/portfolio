@@ -24,10 +24,12 @@ if(new URLSearchParams(location.search).has('flat'))
   will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
 #stage #charMotion img{filter:none}
 #stage #charImg{clip-path:inset(38% 0 0)}
-#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%);
+#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
   transform-origin:50% 38%;will-change:transform}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
+#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
+  opacity:0;will-change:opacity}
 html.flat-preview #stage #charMotion{filter:none}
-#stage #say.stacked .say-card:before{left:30px;right:auto;border-left:0}
 </style></head>
 <body>
 <style>
@@ -1321,7 +1323,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <div id="charMotion"><img id="charImg" src="assets/02-retro-toon-aligned.png" alt="Elif Uysal" draggable="false"><img id="charHead" src="assets/02-retro-toon-aligned.png" alt="" aria-hidden="true" draggable="false"></div>
+    <div id="charMotion"><img id="charImg" src="assets/02-retro-toon-aligned.png" alt="Elif Uysal" draggable="false"><div id="headMotion"><img id="charHead" src="assets/02-retro-toon-aligned.png" alt="" aria-hidden="true" draggable="false"><img id="charMouth" src="assets/02-retro-toon-speaking.png" alt="" aria-hidden="true" draggable="false"></div></div>
   </div>
 
   <div id="say">
@@ -1809,6 +1811,7 @@ function setIcon(name){
 
 function say(icon,text,delay=0){
   clearTimeout(typeTimer);
+  typing=false;
   txtEl.setAttribute('aria-busy','true');
   setIcon(icon);
   sayEl.classList.add('show');
@@ -1818,7 +1821,7 @@ function say(icon,text,delay=0){
     const step=()=>{
       i++;
       txtEl.innerHTML = text.slice(0,i) + (i<text.length?'<span class="caret"></span>':'');
-      if(i<text.length) typeTimer=setTimeout(step, 16+Math.random()*22);
+      if(i<text.length) typeTimer=setTimeout(step, /[,.!?;:]/.test(text[i-1])?160:22+Math.random()*24);
       else { typing=false; txtEl.setAttribute('aria-busy','false'); }
     };
     if(RM){ txtEl.textContent=text; typing=false; txtEl.setAttribute('aria-busy','false'); return; }
@@ -1867,7 +1870,8 @@ function renderChips(list){
 const charEl=document.getElementById('char');
 const charImg=document.getElementById('charImg');
 const charMotion=document.getElementById('charMotion');
-const charHead=document.getElementById('charHead');
+const charHead=document.getElementById('headMotion');
+const charMouth=document.getElementById('charMouth');
 const glow=document.getElementById('glow');
 const cardEl=document.querySelector('.say-card');
 let cardW=0;
@@ -1875,7 +1879,7 @@ let cardW=0;
 const CW=720, CH=713;
 let mx=.5, my=.5, hx=0, hy=0;                   // cursor + lerped parallax offset
 let stripX=0, bandX=0, stripSpeed=1;
-let dockP=0, dockPLerp=0;                       // 0 = hero pose, 1 = docked corner
+let dockP=1, dockPLerp=1;                       // 0 = hero pose, 1 = docked corner
 let last=performance.now();
 
 addEventListener('pointermove',e=>{ mx=e.clientX/innerWidth; my=e.clientY/innerHeight; },{passive:true});
@@ -1888,9 +1892,9 @@ function pose(){
   const dockH = mobile ? 124 : 160;
   const heroS = heroH/CH, dockS = dockH/CH;
   return {
-    hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
+    hero:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
     // she docks bottom-right, where help lives — and out of the footer's way
-    dock:{x:(mobile?62:118), y:vh-22, s:dockS},
+    dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
     mobile
   };
 }
@@ -1900,7 +1904,7 @@ function tick(now){
   const k=1-Math.pow(.001, dt/1000);            // frame-rate independent lerp
 
   /* ---- dock progress from scroll (pinned while the CV is open) ---- */
-  const p=(cvOpen||caseOpen) ? 1 : Math.min(1, Math.max(0, scrollY/(innerHeight*.72)));
+  const p=1; // persistent bottom-right companion
   dockP = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; // easeInOutQuad
   dockPLerp += (dockP-dockPLerp)*k*.9;
 
@@ -1918,9 +1922,9 @@ function tick(now){
   sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
-    sx = P.mobile ? 16 : x+half+14;
+    sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
     sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;
-    sayEl.classList.remove('flip');
+    sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);
     sy = y - CH*s*.78;
@@ -1943,6 +1947,9 @@ function tick(now){
 
   const headAngle=RM?0:Math.sin(now/2900)*1.4+(typing?Math.sin(now/310)*.65:0);
   charHead.style.transform=`rotate(${headAngle.toFixed(3)}deg)`;
+  const punctuation=/[,.!?;:]$/.test(txtEl.textContent);
+  const mouthOpen=!RM && typing && !punctuation && now%940<790 && Math.sin(now/83)>-.2;
+  charMouth.style.opacity=mouthOpen?'1':'0';
 
   /* ---- strips drift ---- */
   if(!RM){

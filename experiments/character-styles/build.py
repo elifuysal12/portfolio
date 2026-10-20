@@ -82,32 +82,39 @@ for slug, title, _ in variants:
   will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
 #stage #charMotion img{filter:none}
 #stage #charImg{clip-path:inset(38% 0 0)}
-#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%);
+#stage #headMotion{position:absolute;left:0;top:0;width:100%;aspect-ratio:1060/1484;
   transform-origin:50% 38%;will-change:transform}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%)}
+#stage #charMouth{position:absolute;left:0;top:0;clip-path:inset(27% 44% 68% 43%);
+  opacity:0;will-change:opacity}
 html.flat-preview #stage #charMotion{filter:none}
-#stage #say.stacked .say-card:before{left:30px;right:auto;border-left:0}
 </style></head>""")
         # Both layers share one asset and overlap slightly at the neck. Only the
         # head rotates; breath and pointer movement apply to the common parent.
         img_tag = re.search(r'<img id="charImg"[^>]+>', page).group(0)
+        head_tag = img_tag.replace('id="charImg"', 'id="charHead"').replace(
+            'alt="Elif Uysal"', 'alt="" aria-hidden="true"')
+        mouth_tag = head_tag.replace('id="charHead"', 'id="charMouth"').replace(
+            f"{slug}-aligned.png", f"{slug}-speaking.png")
+        assert (HERE / "assets" / f"{slug}-speaking.png").is_file()
         page = page.replace(img_tag,
             '<div id="charMotion">' + img_tag +
-            img_tag.replace('id="charImg"', 'id="charHead"')
-                   .replace('alt="Elif Uysal"', 'alt="" aria-hidden="true"') +
-            '</div>')
+            '<div id="headMotion">' + head_tag + mouth_tag + '</div></div>')
         page = page.replace(
             "const charImg=document.getElementById('charImg');",
             "const charImg=document.getElementById('charImg');\n"
             "const charMotion=document.getElementById('charMotion');\n"
-            "const charHead=document.getElementById('charHead');")
+            "const charHead=document.getElementById('headMotion');\n"
+            "const charMouth=document.getElementById('charMouth');")
+        # The companion now belongs bottom-right from the first frame, including
+        # the hero. Avoid the old center-to-corner journey entirely.
         page = page.replace(
-            "dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS}",
-            "dock:{x:(mobile?62:118), y:vh-22, s:dockS}")
+            "hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS}",
+            "hero:{x:vw-(mobile?62:118), y:vh-22, s:dockS}")
+        page = page.replace("let dockP=0, dockPLerp=0;", "let dockP=1, dockPLerp=1;")
         page = page.replace(
-            "sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;",
-            "sx = P.mobile ? 16 : x+half+14;")
-        page = page.replace("sayEl.classList.add('flip');",
-                            "sayEl.classList.remove('flip');")
+            "const p=(cvOpen||caseOpen) ? 1 : Math.min(1, Math.max(0, scrollY/(innerHeight*.72)));",
+            "const p=1; // persistent bottom-right companion")
         page = page.replace(
             "const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);",
             "const tx=RM?0:(mx-.5)*(P.mobile?5:12), "
@@ -119,8 +126,17 @@ html.flat-preview #stage #charMotion{filter:none}
             "  /* ---- strips drift ---- */",
             "  const headAngle=RM?0:Math.sin(now/2900)*1.4"
             "+(typing?Math.sin(now/310)*.65:0);\n"
-            "  charHead.style.transform=`rotate(${headAngle.toFixed(3)}deg)`;\n\n"
+            "  charHead.style.transform=`rotate(${headAngle.toFixed(3)}deg)`;\n"
+            "  const punctuation=/[,.!?;:]$/.test(txtEl.textContent);\n"
+            "  const mouthOpen=!RM && typing && !punctuation"
+            " && now%940<790 && Math.sin(now/83)>-.2;\n"
+            "  charMouth.style.opacity=mouthOpen?'1':'0';\n\n"
             "  /* ---- strips drift ---- */")
+        page = page.replace("  clearTimeout(typeTimer);",
+                            "  clearTimeout(typeTimer);\n  typing=false;")
+        page = page.replace(
+            "setTimeout(step, 16+Math.random()*22)",
+            "setTimeout(step, /[,.!?;:]/.test(text[i-1])?160:22+Math.random()*24)")
         (HERE / f"{slug}-extended-compact.html").write_text(page)
         assert page.count("const dockH = mobile ? 92 : 124;") == 1
         page = page.replace("const dockH = mobile ? 92 : 124;",
