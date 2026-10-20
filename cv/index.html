@@ -1437,7 +1437,7 @@ const PROJECTS = [
    logo:null,      /* ← Elif: Whallet logosu */     client:'Personal',         clientLogo:null,
    year:'2025', disc:['web3','product','uiux']},
 
-  {key:'base360', mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
+  {key:'base360', live:true, mark:'base360',           style:'font-size:23px;font-weight:400;letter-spacing:-.01em',
    /* kapak: 262:744 frame'inin 4× export'u — src/make_cover.py kendi zeminini
       (#ECF1F9) okuyup 16:10'a genişletiyor, görsel kırpılmıyor. */
    cover:'/assets/cover/base360.webp', coverBg:'#ECF1F9',
@@ -1541,13 +1541,14 @@ const T = {
       chatbot: {i:'chart',   t:'A chatbot analytics dashboard for Jotform, built with a team of three — design, frontend, backend.'},
       thy:     {i:'monitor', t:"The Business section of Turkish Airlines' in-flight control device. Approved — and under NDA, so the page shows the alternates."},
       whallet: {i:'wallet',  t:'A Web3 wallet — keys, balances and transactions in one flow.'},
-      base360: {i:'monitor', t:'A concept redesign of the base360 website, end to end — a proposal that never went live. Click and the prototype runs.'},
+      base360: {i:'monitor', t:'A complete website redesign for base360, an AI customer engagement platform. Explore the live site.'},
       sunninja:{i:'monitor', t:'A concept redesign of the Sun Ninja storefront — the sky, and the whole palette with it, moves with the sun as you scroll. Click and the prototype runs.'},
       shutter: {i:'gamepad', t:'A game made by three of us. The game design and the game UI are mine.'},
     },
     notes:{grad:'Graduation project'},
     withLine:a=>'With '+a.slice(0,-1).join(', ')+(a.length>1?' and ':'')+a[a.length-1],
     cta_tile:'View case →',
+    cta_site:'Visit website →',
     cta_demo:'Open the prototype →',   /* no case study yet, but it runs */
     disc:{
       service:{s:'Service', l:'Service design'},
@@ -1591,13 +1592,14 @@ const T = {
       chatbot: {i:'chart',   t:'Jotform için chatbot analitik paneli; tasarım, frontend ve backend’den oluşan üç kişilik ekiple.'},
       thy:     {i:'monitor', t:'Türk Hava Yolları uçak içi kontrol cihazının Business bölümü. Onaylandı — ve NDA kapsamında, o yüzden sayfada alternatifler var.'},
       whallet: {i:'wallet',  t:'Web3 cüzdan — anahtarlar, bakiye ve işlemler tek akışta.'},
-      base360: {i:'monitor', t:'base360 web sitesi için baştan sona konsept yeniden tasarım — öneride kaldı, canlıya çıkmadı. Tıkla, prototip çalışsın.'},
+      base360: {i:'monitor', t:'AI destekli müşteri iletişim platformu base360 için baştan sona web sitesi tasarımı. Yayındaki siteyi keşfet.'},
       sunninja:{i:'monitor', t:'Sun Ninja mağazası için konsept yeniden tasarım — kaydırdıkça gökyüzü, onunla birlikte bütün palet günün saatine göre değişiyor. Tıkla, prototip çalışsın.'},
       shutter: {i:'gamepad', t:'Üç kişilik bir oyun. Oyun tasarımı ve oyun arayüzü bana ait.'},
     },
     notes:{grad:'Mezuniyet projesi'},
     withLine:a=>a.slice(0,-1).join(', ')+(a.length>1?' ve ':'')+a[a.length-1]+' ile birlikte',
     cta_tile:'Vakayı gör →',
+    cta_site:'Siteyi ziyaret et →',
     cta_demo:'Prototipi aç →',
     disc:{
       service:{s:'Servis', l:'Servis tasarımı'},
@@ -1697,7 +1699,7 @@ const band  = document.getElementById('band');
    since that page lives inside a sandboxed frame. */
 const projHref = p => (ROUTES && CASES[p.key]) ? `/case/${p.key}/`
                     : (!CASES[p.key] && DEMOS[p.key]) ? DEMOS[p.key] : '#';
-const projCta  = p => (!CASES[p.key] && DEMOS[p.key]) ? t().cta_demo : t().cta_tile;
+const projCta  = p => (!CASES[p.key] && DEMOS[p.key]) ? (p.live ? t().cta_site : t().cta_demo) : t().cta_tile;
 function wireOpen(a,p){
   if(!CASES[p.key] && DEMOS[p.key]){                 // let the link do its job
     if(!ROUTES){ a.target='_blank'; a.rel='noopener noreferrer'; }
