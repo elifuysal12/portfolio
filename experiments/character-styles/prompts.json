@@ -1,0 +1,34 @@
+[
+  {
+    "id": "01-clean-animation",
+    "prompt": "Use case: style-transfer. Produce ONE standalone transparent PNG character asset for a designer's portfolio. First image is the character identity/composition reference: Elif, an adult woman with warm light skin, dark brown shoulder-length bob, red patterned bandana, round thin metal glasses, navy sleeveless top and small silver spiral pendant. Preserve these identifying details and original red/navy/warm-skin palette. Preserve front-facing waist-up centered pose, friendly subtle smile, arms relaxed down by sides, entire head and shoulders inside frame, torso extends to bottom edge. Portrait or square canvas with small transparent margins around head and sides. Other images are STYLE references ONLY: ignore all text, app UI and surrounding scenery. Truly transparent background, no ground, no rectangle, no checkerboard, no text, no watermark. Redraw from scratch in requested drawing language, do not retain original glossy anime rendering. Style: match the supplied 2D TV animation frames: fine even near-black contours, very simple flat matte color fills, almost no shading, grown-up elongated face and neck proportions, restrained expressive oval eyes with simple pupils, small line nose, simple curved mouth. Hair a unified dark silhouette with only a few interior lines. Facial construction and outline economy should closely follow the purple-haired glasses woman in the screenshot, translated to Elif's own brown bob, red bandana, navy shirt. No purple hair. Clean animated sitcom drawing, not anime, not 3D.",
+    "references": [
+      "/Users/elifuysal/Projects/portfolio-site-worktrees/character-style-lab/src/assets/bust_q92.webp",
+      "/Users/elifuysal/Downloads/IMG_5013.PNG",
+      "/Users/elifuysal/Downloads/IMG_5009.PNG"
+    ],
+    "tool": "built-in image_gen",
+    "output": "assets/01-clean-animation.png"
+  },
+  {
+    "id": "02-retro-toon",
+    "prompt": "Use case: style-transfer. Produce ONE standalone transparent PNG character asset for a designer's portfolio. First image is the character identity/composition reference: Elif, an adult woman with warm light skin, dark brown shoulder-length bob, red patterned bandana, round thin metal glasses, navy sleeveless top and small silver spiral pendant. Preserve these identifying details and original red/navy/warm-skin palette. Preserve front-facing waist-up centered pose, friendly subtle smile, arms relaxed down by sides, entire head and shoulders inside frame, torso extends to bottom edge. Portrait or square canvas with small transparent margins around head and sides. Other images are STYLE references ONLY: ignore all text, app UI and surrounding scenery. Truly transparent background, no ground, no rectangle, no checkerboard, no text, no watermark. Redraw from scratch in requested drawing language, do not retain original glossy anime rendering. Style: take the playful hand-inked vintage cartoon language of the little creatures IN the post illustrations: rounded squash-and-stretch silhouette, oversized rounded head, simple small expressive oval eyes, cheeky gentle smile, short rounded torso and soft rubber-hose arms, sparse slightly imperfect dark contour, broad flat matte fills, occasional hard-edged cel shadow. Translate this to a recognizable human adult Elif caricature, keeping round glasses, red bandana, dark bob, navy tank, necklace; do not copy a pink creature or turn her skin pink. Strongly graphic charming retro animation, clearly different proportions from original, no glossy anime rendering, no scenery.",
+    "references": [
+      "/Users/elifuysal/Projects/portfolio-site-worktrees/character-style-lab/src/assets/bust_q92.webp",
+      "/Users/elifuysal/Downloads/IMG_5141.PNG",
+      "/Users/elifuysal/Downloads/IMG_5139.PNG"
+    ],
+    "tool": "built-in image_gen",
+    "output": "assets/02-retro-toon.png"
+  },
+  {
+    "id": "03-pencil-pastel",
+    "prompt": "Use case: style-transfer. Produce ONE standalone transparent PNG character asset for a designer's portfolio. First image is the character identity/composition reference: Elif, an adult woman with warm light skin, dark brown shoulder-length bob, red patterned bandana, round thin metal glasses, navy sleeveless top and small silver spiral pendant. Preserve these identifying details and original red/navy/warm-skin palette. Preserve front-facing waist-up centered pose, friendly subtle smile, arms relaxed down by sides, entire head and shoulders inside frame, torso extends to bottom edge. Portrait or square canvas with small transparent margins around head and sides. Other images are STYLE references ONLY: ignore all text, app UI and surrounding scenery. Truly transparent background, no ground, no rectangle, no checkerboard, no text, no watermark. Redraw from scratch in requested drawing language, do not retain original glossy anime rendering. Style: match the editorial hand-drawn illustration inside final screenshot: visibly waxy colored-pencil and oil-pastel strokes, irregular broken edges, layered directional hatching, expressive elongated adult face, angular simplified nose, understated half-oval eyes, slightly asymmetrical delicate smile, beautifully imperfect drawing. Rich red bandana, dark brown hair and navy sleeveless top rendered through textured strokes with paperlike gaps that are transparent, warm natural skin. Simplified silver pendant. Preserve identity but abandon clean digital/anime outlines. No chair, landscape, typography, background paper or props.",
+    "references": [
+      "/Users/elifuysal/Projects/portfolio-site-worktrees/character-style-lab/src/assets/bust_q92.webp",
+      "/Users/elifuysal/Downloads/IMG_5106.PNG"
+    ],
+    "tool": "built-in image_gen",
+    "output": "assets/03-pencil-pastel.png"
+  }
+]
