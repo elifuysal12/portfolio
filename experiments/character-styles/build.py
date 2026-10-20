@@ -72,13 +72,55 @@ for slug, title, _ in variants:
         # Keep the original upper-body coordinate system. The extended drawing
         # overflows BELOW it at its natural aspect ratio, rather than squeezing
         # the taller figure into the old square and shrinking the face.
-        extended = HERE / "assets" / f"{slug}-relaxed.png"
+        extended = HERE / "assets" / f"{slug}-aligned.png"
         if not extended.is_file():
             raise FileNotFoundError(extended)
-        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-relaxed.png")
+        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-aligned.png")
         page = page.replace("</head>", """<style>
 #stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+#stage #charMotion{position:relative;width:100%;transform-origin:50% 713px;
+  will-change:transform;filter:drop-shadow(0 18px 30px rgba(23,20,15,.18))}
+#stage #charMotion img{filter:none}
+#stage #charImg{clip-path:inset(38% 0 0)}
+#stage #charHead{position:absolute;left:0;top:0;clip-path:inset(0 0 61.6%);
+  transform-origin:50% 38%;will-change:transform}
+html.flat-preview #stage #charMotion{filter:none}
+#stage #say.stacked .say-card:before{left:30px;right:auto;border-left:0}
 </style></head>""")
+        # Both layers share one asset and overlap slightly at the neck. Only the
+        # head rotates; breath and pointer movement apply to the common parent.
+        img_tag = re.search(r'<img id="charImg"[^>]+>', page).group(0)
+        page = page.replace(img_tag,
+            '<div id="charMotion">' + img_tag +
+            img_tag.replace('id="charImg"', 'id="charHead"')
+                   .replace('alt="Elif Uysal"', 'alt="" aria-hidden="true"') +
+            '</div>')
+        page = page.replace(
+            "const charImg=document.getElementById('charImg');",
+            "const charImg=document.getElementById('charImg');\n"
+            "const charMotion=document.getElementById('charMotion');\n"
+            "const charHead=document.getElementById('charHead');")
+        page = page.replace(
+            "dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS}",
+            "dock:{x:(mobile?62:118), y:vh-22, s:dockS}")
+        page = page.replace(
+            "sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;",
+            "sx = P.mobile ? 16 : x+half+14;")
+        page = page.replace("sayEl.classList.add('flip');",
+                            "sayEl.classList.remove('flip');")
+        page = page.replace(
+            "const tx=(mx-.5)*(P.mobile?5:12), ty=(my-.5)*(P.mobile?3:7);",
+            "const tx=RM?0:(mx-.5)*(P.mobile?5:12), "
+            "ty=RM?0:(my-.5)*(P.mobile?3:7);")
+        page = page.replace("Math.sin(now/1450)*1.7",
+                            "(RM?0:Math.sin(now/1450)*3)")
+        page = page.replace("charImg.style.transform =", "charMotion.style.transform =")
+        page = page.replace(
+            "  /* ---- strips drift ---- */",
+            "  const headAngle=RM?0:Math.sin(now/2900)*1.4"
+            "+(typing?Math.sin(now/310)*.65:0);\n"
+            "  charHead.style.transform=`rotate(${headAngle.toFixed(3)}deg)`;\n\n"
+            "  /* ---- strips drift ---- */")
         (HERE / f"{slug}-extended-compact.html").write_text(page)
         assert page.count("const dockH = mobile ? 92 : 124;") == 1
         page = page.replace("const dockH = mobile ? 92 : 124;",

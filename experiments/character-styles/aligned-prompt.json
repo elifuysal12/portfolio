@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Precise edit to attached transparent cartoon character: correct ONLY the eyes so she looks directly at the viewer with calm aligned eyes. Currently the pupils look inconsistent/cross-eyed. Make each dark brown pupil smaller with visible white on BOTH sides and center it in its own eyeball along a parallel forward gaze. Both eyes look at the same distant point straight ahead, not at her nose; no inward convergence, no wandering outward eye. Keep her round eyeglasses unchanged. Preserve exactly the rest of the head, face proportions, smile, hair, bandana, necklace, relaxed loose navy shirt, straight narrow body, arms and navy trousers. Do not make clothes fitted or alter body proportions. Same transparent background, same 1060x1484 composition, same head size and position, same pose, no added elements. Surgical eye correction; all other pixels as unchanged as possible.",
+  "input": "assets/02-retro-toon-relaxed.png",
+  "output": "assets/02-retro-toon-aligned.png"
+}
