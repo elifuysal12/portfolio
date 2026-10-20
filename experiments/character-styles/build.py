@@ -45,6 +45,28 @@ for slug, title, _ in variants:
     )
     assert count == 1, "Expected one character swap point"
     page = re.sub(r"<title>.*?</title>", f"<title>Elif — {title}</title>", page)
+    if slug == "02-retro-toon":
+        # Keep the previous placement available for direct comparison.
+        (HERE / f"{slug}-floating.html").write_text(page)
+        fade = page.replace("</head>", """<style>
+#char{mask-image:linear-gradient(to bottom,black 78%,transparent 100%)}
+</style></head>""")
+        (HERE / f"{slug}-fade.html").write_text(fade)
+        # The source is a bust, so its cut edge belongs below the viewport.
+        # Seven screen pixels cover the existing breath/lean even at dock size.
+        assert page.count("y:vh-22, s:dockS") == 1
+        page = page.replace("y:vh-22, s:dockS", "y:vh+7, s:dockS")
+        # Keep the dialogue's original clearance while lowering only the figure.
+        assert page.count("const sayH=sayEl.offsetHeight, half=(CW*s)/2;") == 1
+        page = page.replace(
+            "const sayH=sayEl.offsetHeight, half=(CW*s)/2;",
+            "const sayH=sayEl.offsetHeight, half=(CW*s)/2;\n"
+            "  const dialogueY=y-29*dockPLerp;",
+        )
+        page = page.replace(
+            "sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;",
+            "sy = P.mobile ? dialogueY-CH*s-sayH-14 : dialogueY-CH*s*.92;",
+        )
     (HERE / f"{slug}.html").write_text(page)
 
 (HERE / "00-original.html").write_text(preview)
@@ -55,6 +77,10 @@ css = "\n".join(re.findall(r"<style>(.*?)</style>", source, re.S))
 
 cards = []
 for slug, title, description in variants:
+    dock_option = (
+        f'<a class="chip" href="{slug}-fade.html#about">Soft fade alternative</a>'
+        if slug == "02-retro-toon" else ""
+    )
     cards.append(f"""<article class="study">
   <a class="portrait" href="{slug}.html" aria-label="Open {title} portfolio preview">
     <img src="assets/{slug}.png" alt="Elif illustrated in the {title.lower()} style">
@@ -65,6 +91,7 @@ for slug, title, description in variants:
     <div class="chips">
       <a class="chip" href="{slug}.html">In the portfolio</a>
       <a class="chip" href="{slug}.html?flat=1">Flat background</a>
+{dock_option}
     </div>
   </div>
 </article>""")

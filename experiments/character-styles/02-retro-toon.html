@@ -1878,7 +1878,7 @@ function pose(){
   return {
     hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
     // she docks bottom-right, where help lives — and out of the footer's way
-    dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
+    dock:{x:vw-(mobile?62:118), y:vh+7, s:dockS},
     mobile
   };
 }
@@ -1903,11 +1903,12 @@ function tick(now){
   if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
   let sx,sy;
   const sayH=sayEl.offsetHeight, half=(CW*s)/2;
+  const dialogueY=y-29*dockPLerp;
   sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
     sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
-    sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;
+    sy = P.mobile ? dialogueY-CH*s-sayH-14 : dialogueY-CH*s*.92;
     sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);
