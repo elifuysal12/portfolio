@@ -46,6 +46,7 @@ for slug, title, _ in variants:
     assert count == 1, "Expected one character swap point"
     page = re.sub(r"<title>.*?</title>", f"<title>Elif — {title}</title>", page)
     if slug == "02-retro-toon":
+        bust_page = page
         # Keep the previous placement available for direct comparison.
         (HERE / f"{slug}-floating.html").write_text(page)
         fade = page.replace("</head>", """<style>
@@ -67,6 +68,21 @@ for slug, title, _ in variants:
             "sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;",
             "sy = P.mobile ? dialogueY-CH*s-sayH-14 : dialogueY-CH*s*.92;",
         )
+        (HERE / f"{slug}-edge.html").write_text(page)
+        # Keep the original upper-body coordinate system. The extended drawing
+        # overflows BELOW it at its natural aspect ratio, rather than squeezing
+        # the taller figure into the old square and shrinking the face.
+        extended = HERE / "assets" / f"{slug}-extended.png"
+        if not extended.is_file():
+            raise FileNotFoundError(extended)
+        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-extended.png")
+        page = page.replace("</head>", """<style>
+#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+</style></head>""")
+        (HERE / f"{slug}-extended-compact.html").write_text(page)
+        assert page.count("const dockH = mobile ? 92 : 124;") == 1
+        page = page.replace("const dockH = mobile ? 92 : 124;",
+                            "const dockH = mobile ? 124 : 160;")
     (HERE / f"{slug}.html").write_text(page)
 
 (HERE / "00-original.html").write_text(preview)
@@ -78,7 +94,7 @@ css = "\n".join(re.findall(r"<style>(.*?)</style>", source, re.S))
 cards = []
 for slug, title, description in variants:
     dock_option = (
-        f'<a class="chip" href="{slug}-fade.html#about">Soft fade alternative</a>'
+        f'<a class="chip" href="{slug}-extended-compact.html#about">Smaller companion</a>'
         if slug == "02-retro-toon" else ""
     )
     cards.append(f"""<article class="study">

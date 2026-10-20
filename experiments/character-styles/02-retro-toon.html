@@ -18,7 +18,9 @@ html.flat-preview #char img{filter:none}
 </style><script>
 if(new URLSearchParams(location.search).has('flat'))
   document.documentElement.classList.add('flat-preview');
-</script></head>
+</script><style>
+#stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
+</style></head>
 <body>
 <style>
 /* ============================================================
@@ -1311,7 +1313,7 @@ body.case-open.case-light nav{background:rgba(255,255,255,.86)}
      ============================================================ -->
 <div id="stage">
   <div id="char">
-    <img id="charImg" src="assets/02-retro-toon.png" alt="Elif Uysal" draggable="false">
+    <img id="charImg" src="assets/02-retro-toon-extended.png" alt="Elif Uysal" draggable="false">
   </div>
 
   <div id="say">
@@ -1873,12 +1875,12 @@ function pose(){
   // she rises from the bottom edge and stops below the first word — the
   // headline is the statement, she is not allowed to sit on top of it
   const heroH = mobile ? Math.min(vh*.30,260) : Math.min(vh*.40, 380);
-  const dockH = mobile ? 92 : 124;
+  const dockH = mobile ? 124 : 160;
   const heroS = heroH/CH, dockS = dockH/CH;
   return {
     hero:{x:vw*.5, y:vh*(mobile?.94:1.0), s:heroS},
     // she docks bottom-right, where help lives — and out of the footer's way
-    dock:{x:vw-(mobile?62:118), y:vh+7, s:dockS},
+    dock:{x:vw-(mobile?62:118), y:vh-22, s:dockS},
     mobile
   };
 }
@@ -1903,12 +1905,11 @@ function tick(now){
   if(typing || cardW===0) cardW = Math.max(cardEl.offsetWidth, chipsEl.offsetWidth); // grows while she types
   let sx,sy;
   const sayH=sayEl.offsetHeight, half=(CW*s)/2;
-  const dialogueY=y-29*dockPLerp;
   sayEl.classList.toggle('stacked',P.mobile&&dockPLerp>.5);
   if(dockPLerp>.5){
     // docked bottom-right: the card opens to her left, like a helper would
     sx = P.mobile ? innerWidth-cardW-16 : x-half-cardW-14;
-    sy = P.mobile ? dialogueY-CH*s-sayH-14 : dialogueY-CH*s*.92;
+    sy = P.mobile ? y-CH*s-sayH-14 : y-CH*s*.92;
     sayEl.classList.add('flip');
   }else{
     sx = x + half + (P.mobile?4:18);

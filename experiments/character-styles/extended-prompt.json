@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit / downward outpainting. Edit the attached transparent character. Extend the canvas DOWNWARD ONLY by roughly 35-40%, continuing her navy sleeveless top through her waist to hips and continuing both relaxed arms downward naturally. Original is square; output should be a taller portrait approximately 5:7 aspect ratio. The EXISTING head, face, glasses, bandana, hair, expression, tilt, necklace, shoulders and upper torso must stay visually identical, with the SAME proportions, linework, colors, shading and scale relative to canvas WIDTH. Do not redraw or redesign the face. Do not shrink the existing character to fit more body in a square. Add new image area below the original bottom edge. Continue the navy fabric and its folds, arms and simple dark navy lower clothing to bottom edge; no exposed midriff or new accessories. This asset is for a website companion: the lower torso must extend sufficiently far down below the visible viewport so her torso never looks like a cropped floating bust. True transparent alpha background everywhere outside silhouette, no shadows or scenery or text, no white rectangle. One single character, no multiple panels.",
+  "input": "assets/02-retro-toon.png",
+  "output": "assets/02-retro-toon-extended.png"
+}
