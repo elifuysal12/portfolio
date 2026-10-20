@@ -429,6 +429,15 @@ html{scroll-snap-type:y proximity}
 .entry-media.own{border-color:transparent}
 .entry-media.own img{object-fit:contain;filter:none}
 .entry:hover .entry-media img{filter:saturate(1)}
+/* The live page sits over its still cover, cropped to the same hero viewport.
+   Pointer events stay on the project link, as this is a preview, not a player. */
+.entry-media.live-cover{position:relative}
+.entry-media.live-cover iframe{
+  position:absolute;top:0;left:50%;border:0;pointer-events:none;
+  transform:translateX(-50%) scale(var(--hero-scale));
+  transform-origin:top center;opacity:0;transition:opacity .5s ease;
+}
+.entry-media.live-cover iframe.ready{opacity:1}
 /* until an export exists, the slot holds the name — deliberate, not empty */
 .plate{
   font-family:var(--display); color:var(--ink); opacity:.4;
@@ -1441,6 +1450,7 @@ const PROJECTS = [
    /* Live hero captured from https://base360.ai/b2c/ (2026-10-20).
       Rebuild: python3 src/make_cover.py base360 src/assets/reference/base360-hero.png --ratio native --width 1800 */
    cover:'/assets/cover/base360.webp', coverBg:'#ECF1F9',
+   coverMotion:{width:1710,height:882,cropWidth:1408},
    logo:null,                                       client:'base360',          clientLogo:null,  /* ← Elif: base360 logosu */
    year:'2026', disc:['web','uiux']},
 
@@ -1733,7 +1743,56 @@ function buildBand(){
     const i=document.createElement('i'); i.textContent=w; band.appendChild(i);
   });
 }
+let coverPreviewCleanups = [];
+function mountCoverPreview(entry,p){
+  if(!ROUTES || !p.coverMotion) return;
+  const media = entry.querySelector('.entry-media');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const {width,height,cropWidth} = p.coverMotion;
+  let visible=false, frame=null;
+  media.classList.add('live-cover');
+  const resize = new ResizeObserver(([box])=>{
+    media.style.setProperty('--hero-scale',box.contentRect.width/cropWidth);
+  });
+  resize.observe(media);
+  const remove = ()=>{
+    if(frame){ frame.remove(); frame=null; }
+  };
+  const sync = ()=>{
+    if(!visible || motion.matches || document.hidden ||
+       document.body.classList.contains('sheet-open')){
+      remove(); return;
+    }
+    if(frame) return;
+    frame=document.createElement('iframe');
+    frame.title=`${p.mark} — live website preview`;
+    frame.tabIndex=-1;
+    frame.setAttribute('aria-hidden','true');
+    frame.setAttribute('inert','');
+    frame.setAttribute('sandbox','allow-scripts allow-same-origin');
+    frame.style.width=`${width}px`;
+    frame.style.height=`${height}px`;
+    frame.addEventListener('load',event=>event.currentTarget.classList.add('ready'),{once:true});
+    frame.src=projHref(p);
+    media.appendChild(frame);
+  };
+  const visibility=new IntersectionObserver(([box])=>{
+    visible=box.isIntersecting; sync();
+  });
+  visibility.observe(media);
+  const sheets=new MutationObserver(sync);
+  sheets.observe(document.body,{attributes:true,attributeFilter:['class']});
+  motion.addEventListener('change',sync);
+  document.addEventListener('visibilitychange',sync);
+  coverPreviewCleanups.push(()=>{
+    remove(); resize.disconnect(); visibility.disconnect(); sheets.disconnect();
+    motion.removeEventListener('change',sync);
+    document.removeEventListener('visibilitychange',sync);
+  });
+}
 function buildIndex(){
+  coverPreviewCleanups.forEach(cleanup=>cleanup());
+  coverPreviewCleanups=[];
   const ol = document.getElementById('index');
   ol.innerHTML = '';
   PROJECTS.forEach(p=>{
@@ -1768,6 +1827,7 @@ function buildIndex(){
     a.addEventListener('mouseenter',()=>sayProject(p.key));
     wireOpen(a,p);
     li.appendChild(a); ol.appendChild(li);
+    mountCoverPreview(a,p);
     rio.observe(a);
   });
 }
