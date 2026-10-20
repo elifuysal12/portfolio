@@ -72,10 +72,10 @@ for slug, title, _ in variants:
         # Keep the original upper-body coordinate system. The extended drawing
         # overflows BELOW it at its natural aspect ratio, rather than squeezing
         # the taller figure into the old square and shrinking the face.
-        extended = HERE / "assets" / f"{slug}-extended.png"
+        extended = HERE / "assets" / f"{slug}-relaxed.png"
         if not extended.is_file():
             raise FileNotFoundError(extended)
-        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-extended.png")
+        page = bust_page.replace(f"assets/{slug}.png", f"assets/{slug}-relaxed.png")
         page = page.replace("</head>", """<style>
 #stage #char img{height:auto;object-fit:initial;transform-origin:50% 713px}
 </style></head>""")
